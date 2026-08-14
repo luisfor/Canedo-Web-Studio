@@ -1,0 +1,30 @@
+{
+  "_comment": "Optional pre-authorization for luis-estudio-web. Copy these entries into your ~/.claude/settings.json under permissions.allow. Covers the four capabilities (connect, build, images, publish). Scoped to this skill's scripts, the Hostinger connection commands, and a few safe helpers — nothing destructive.",
+
+  "permissions": {
+    "allow": [
+      "Bash(python *luis-estudio-web/scripts/*.py*)",
+      "Bash(python3 *luis-estudio-web/scripts/*.py*)",
+      "Bash(bash *luis-estudio-web/scripts/*.sh*)",
+      "Bash(node *luis-estudio-web/scripts/*.mjs*)",
+      "Bash(powershell *luis-estudio-web/scripts/*.ps1*)",
+      "Bash(npx wrangler *)",
+
+      "Bash(claude mcp add *)",
+      "Bash(claude mcp list*)",
+      "Bash(npm install -g hostinger-api-mcp*)",
+      "Bash(hostinger-*-mcp *)",
+      "Bash(winget install OpenJS.NodeJS*)",
+
+      "Bash(mkdir -p *)",
+      "Bash(ls *)",
+      "Bash(cp *)",
+      "Bash(grep *)",
+      "Bash(command -v *)",
+      "Bash(which *)",
+
+      "Bash(python -m http.server *)",
+      "Bash(python3 -m http.server *)"
+    ]
+  }
+}

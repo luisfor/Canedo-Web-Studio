@@ -1,0 +1,55 @@
+{
+  "skill_name": "luis-estudio-web",
+  "note": "Core behavior under test: each capability runs ON ITS OWN when asked. The skill must NOT chain capabilities or force a full pipeline. It does exactly the requested capability, verifies, and stops — offering at most one optional next step, never starting it.",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "connect-only-no-chaining",
+      "prompt": "Usuario no técnico: 'conéctame mi cuenta de Hostinger a Claude para poder subir mis webs'. No pide nada más.",
+      "assertions": [
+        "Ejecuta SOLO la capacidad de conexión (instalar/actualizar Node, registrar el conector con --scope user, login OAuth por navegador, verificar con una llamada real)",
+        "NO empieza a crear una web ni a generar imágenes ni a desplegar nada por su cuenta",
+        "Prioriza el login por navegador sobre pedir un token manual",
+        "Verifica con una llamada de solo lectura antes de declarar éxito, y es honesto si no pudo verificar",
+        "Texto sin jerga técnica (MCP, CLI, npm, stdio, API)",
+        "Como mucho ofrece en UNA frase opcional un siguiente paso, sin iniciarlo"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "build-without-images-only",
+      "prompt": "Usuario: 'ahora hazme una landing para mi empresa de reformas, sin imágenes de momento, ya las pondremos'.",
+      "assertions": [
+        "Construye SOLO la web (index.html, styles.css, main.js, .htaccess) con un arquetipo y placeholders para las imágenes",
+        "NO llama al genio de imágenes (ni Openverse, ni OpenAI) porque el usuario dijo sin imágenes",
+        "NO publica/despliega en Hostinger de forma automática",
+        "Respeta los invariantes (IIFE sin módulos ES, WebP cuando haya imágenes, reduced-motion solo en efectos intrusivos, verificar antes de afirmar)",
+        "Previsualiza/verifica el resultado antes de darlo por bueno"
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "images-only-on-existing-site",
+      "prompt": "Usuario, con una web ya creada en la carpeta: 'vale, ahora rellénala con imágenes a medida'.",
+      "assertions": [
+        "Ejecuta SOLO la capacidad de imágenes sobre la web existente (no regenera la web entera)",
+        "Para la vía IA (OpenAI gpt-image-2): ofrece la opción explicando el coste y pide confirmación/clave antes de gastar; si no, usa stock o deja placeholders",
+        "Integra las imágenes finales como WebP en assets/img y respeta el contrato del banner (hero verificado en 16:9 y móvil) si aplica",
+        "La clave de OpenAI y las carpetas de trabajo quedan FUERA de la carpeta que se publica",
+        "NO despliega en Hostinger salvo que se lo pidan"
+      ]
+    },
+    {
+      "id": 4,
+      "eval_name": "publish-only",
+      "prompt": "Usuario, con Hostinger ya conectado y una web lista: 'publícala'.",
+      "assertions": [
+        "Ejecuta SOLO el despliegue (empaqueta con index.html en la raíz e incluye .htaccess, excluye clave/archivos de trabajo, despliega con el conector de Sitios web)",
+        "Gestiona el aprovisionamiento asíncrono (esperar/reintentar ante 'No website found') sin tratarlo como error",
+        "Verifica la URL en vivo (200 + contenido + estilos/JS cargando) antes de dar el enlace",
+        "Si el conector no estuviera conectado, lo dice y ofrece conectarlo, sin forzarlo",
+        "Entrega el enlace en vivo y NO sigue con más cambios no pedidos"
+      ]
+    }
+  ]
+}
