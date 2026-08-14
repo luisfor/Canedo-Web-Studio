@@ -35,3 +35,36 @@ El entorno integra múltiples inteligencias que trabajan juntas pero se pueden e
 
 ---
 *Desarrollado para la agencia Canedo Web Studio.*
+
+## 💻 Cómo usar el Asistente en tu día a día
+
+### 1. Activar la IA gratuita (OpenRouter)
+Abre la terminal en esta carpeta. Para que Claude Code use tu conexión de OpenRouter (sin coste), ejecuta siempre este comando antes de arrancar (esto lee la clave de tu archivo `.env`):
+```bash
+export ANTHROPIC_API_KEY=$OPENROUTER_API_KEY
+export ANTHROPIC_BASE_URL="https://openrouter.ai/api/v1"
+```
+
+### 2. Llamar al Asistente
+Escribe el comando oficial para despertar a la IA:
+```bash
+claude
+```
+
+### 3. ¡Dale órdenes! (Ejemplos Reales)
+Una vez que el asistente esté escuchando, puedes pedirle cualquiera de las 3 opciones de la agencia:
+
+* **Para Cazar (Rediseñar):**
+  > *"Quiero que analices y caces esta página: https://pizzeria-vieja.com. Extrae toda su información, logo y colores, y reconstrúyela con calidad de agencia."*
+
+* **Para Crear desde Cero:**
+  > *"Crea una landing page para una clínica dental. Hazla desde cero con un diseño limpio. Usa fotos libres de derechos de odontólogos."*
+
+* **Para Analizar Redes Sociales:**
+  > *"Analiza el perfil de TikTok @tiktoker. Deduzce qué servicios ofrece y créale una web promocional espectacular."*
+
+### 4. Desplegar
+Cuando termine de programar, o cuando la web te guste, dile:
+> *"Está perfecta, publícala."*
+
+El asistente se detendrá y te preguntará: *"¿Dónde quieres que la despliegue: Servidor Local, Hostinger, o Cloudflare?"*. Responde la opción que prefieras y la IA hará todo el trabajo de conexión.
