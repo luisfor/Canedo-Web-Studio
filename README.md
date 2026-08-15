@@ -38,6 +38,12 @@ No más complicaciones de servidores FTP. Al terminar la web, la IA te preguntar
 - **Hostinger:** Se conecta por debajo a tu panel de Hostinger y sube los archivos directamente a tu dominio.
 - **Cloudflare Pages:** Usa Wrangler para subir la web a la infraestructura ultrarrápida de Cloudflare y te devuelve un enlace público (perfecto y gratuito para mostrarle el demo al cliente).
 
+
+### 6. 🛠️ Aplicaciones Web Complejas (Full-Stack)
+¿El cliente necesita un panel de usuarios, Login o Base de Datos (PostgreSQL, Node.js, Next.js)? 
+El asistente también es capaz de programar aplicaciones complejas desde cero como un proyecto de software tradicional. 
+*(Nota: El despliegue automático One-Click de este kit está optimizado para páginas web estáticas ultrarrápidas. Las aplicaciones Full-Stack con bases de datos requerirán un despliegue manual en plataformas como Vercel, Supabase o un VPS).*
+
 ---
 
 ## 🗂️ Qué hay en tu Estudio
