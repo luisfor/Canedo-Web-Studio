@@ -479,3 +479,5 @@ Para justificar un aspecto ultra-premium de alta gama, TODAS las webs deben cump
 - **6. Widget de Chat (Lead Capture)**: Toda web premium DEBE incluir en la esquina inferior derecha un botón flotante (estilo WhatsApp o Chatbot) con animación de pulso y un pequeño tooltip ("¿Necesitas ayuda?"). Es innegociable para la conversión.
 
 - **7. Preservación de Mapas (Local SEO)**: Si en la fase de extracción detectas que la web original tiene un iframe de Google Maps o una dirección física explícita, DEBES incluir obligatoriamente una sección de "Ubicación" con el iframe de Google Maps en el nuevo diseño. Si no lo tiene, omítelo.
+
+- **8. Favicon Obligatorio (Branding)**: TODA web generada DEBE incluir el logo de la empresa como icono en la pestaña del navegador (Favicon). En el `<head>` del HTML, debes añadir `<link rel="icon" type="image/x-icon" href="ruta-del-logo">` (o png/svg según corresponda) para que el branding sea perfecto.
