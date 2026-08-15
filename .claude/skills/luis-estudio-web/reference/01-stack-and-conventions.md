@@ -466,3 +466,12 @@ document.addEventListener("click", e => {
 - [ ] No `.jpg` or `.png` references in HTML/CSS/JS — all `.webp`.
 - [ ] `assets/img/` is the only image folder referenced.
 - [ ] Skip-link present, focus-visible styled, alt-text on every image.
+
+## 10. REGLAS ESTÉTICAS INQUEBRANTABLES ($30,000 PREMIUM)
+Para justificar un aspecto ultra-premium de alta gama, TODAS las webs deben cumplir estas reglas obligatoriamente, sin importar el arquetipo:
+
+- **1. Fluid & Massive Typography**: Usa `clamp()` para titulares. Los `<h1>` deben ser colosales en escritorio (mínimo `clamp(3.5rem, 8vw, 8rem)`). Las fuentes deben verse intencionalmente enormes y audaces.
+- **2. Asimetría Bento-Grid**: PROHIBIDO usar los clásicos grids de 3 columnas de tamaños iguales. Usa `display: grid` con tarjetas que ocupen distintos tamaños (ej. una tarjeta ocupa 2 columnas, la siguiente 1).
+- **3. Glassmorfismo & Texturas**: Las tarjetas o contenedores oscuros deben tener `backdrop-filter: blur(16px)` y bordes sutiles (`border: 1px solid rgba(255,255,255,0.1)`).
+- **4. Whitespace Extremo**: Deja "respirar" el diseño. Los márgenes entre secciones deben ser masivos (mínimo `12vh` o `160px`).
+- **5. Micro-Interacciones de Lujo**: Todo elemento interactivo debe tener transiciones suaves (`transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1)`). Usa hover states que revelen contenido o apliquen un ligero scale/glow.

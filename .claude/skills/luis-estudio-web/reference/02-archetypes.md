@@ -1012,3 +1012,10 @@ A single Spline 3D scene as the hero centerpiece (embedded iframe or runtime). T
 If the brief truly does not fit any archetype, **don't invent a new one** in the moment. Pick the closest match and adapt the **palette and microcopy**, NOT the layout topology. The 10 archetypes are the design vocabulary; the rest is content.
 
 If after 3 prompts you've seen the same archetype twice for similar-feeling briefs, force the next-most-suitable. Diversity is part of the deliverable.
+
+### 11. Ultra-Premium Agency (The $30,000 Look)
+- **Vibe**: Caro, misterioso, Apple-like, vanguardista.
+- **Palette**: Modo oscuro profundo (#0a0a0c) con acentos desaturados (plata, bronce, o un azul neón muy sutil) y tipografía en blanco roto (#f0f0f0).
+- **Typography**: Tipografías suizas modernas (Inter, Roobert, o serifas afiladas como Ogg) en tamaños exagerados (titulares de 12vw).
+- **Layout**: Bento Box Grid. Bloques flotantes asimétricos con bordes de cristal.
+- **Effects**: Cursores personalizados (opcional), parallax en cada imagen, botones con pulsos magnéticos, y fondos con gradientes radiales muy tenues moviéndose lentamente.
