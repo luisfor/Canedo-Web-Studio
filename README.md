@@ -2,44 +2,58 @@
 
 > ¿Primera vez? Abre **[`EMPIEZA-AQUI.md`](EMPIEZA-AQUI.md)**: Configura tus llaves gratuitas en 3 pasos y a trabajar.
 
-Convierte Claude Code en tu agencia de desarrollo automatizada. **Canedo Web Studio** te permite crear webs estáticas premium ($30,000 look) para negocios locales de tres formas distintas:
+Convierte Claude Code en tu agencia de desarrollo automatizada. **Canedo Web Studio** te permite crear webs estáticas premium ($30,000 look) para negocios locales, gestionando todo el ciclo de vida: desde la prospección y rediseño, hasta la venta y el despliegue automático.
 
-1. **Cazar Webs (Rediseño)**: Le pasas una URL antigua, extrae el branding real (colores, fotos, textos) y la reconstruye con un diseño premium.
-2. **Crear desde Cero (Ideas)**: Le pasas una idea o negocio y crea toda la estructura, copy y diseño.
-3. **Analizar Redes (Innovación)**: Le pasas el perfil de Instagram/TikTok de un cliente, deduce sus servicios y crea una landing profesional.
+---
 
-## 🚀 Capacidades del Estudio
+## 🌟 Todo lo que este Estudio es capaz de hacer por ti
 
-El entorno integra múltiples inteligencias que trabajan juntas pero se pueden ejecutar por separado:
+Este kit no es solo un generador de código, es tu equipo completo de agencia (Programador, Diseñador y Vendedor). Aquí tienes el listado completo de sus súper-poderes:
 
-- 🎨 **Construcción Inteligente**: Genera HTML/CSS/JS estático. Sin frameworks pesados (`node_modules`), puro rendimiento.
-- 🖼️ **Genio de Imágenes**: Usa la IA para crear fotografías a medida o extrae imágenes profesionales 100% gratuitas de Openverse.
-- 🚀 **Despliegue Multi-Cloud Interactivo**: Al terminar la web, la IA te preguntará dónde subirla: **Servidor Local** (pruebas), **Hostinger** (panel de cliente), o **Cloudflare Pages** (ultrarrápido y gratuito).
+### 1. 🎯 Cazar Webs (Auditoría y Rediseño)
+Le pasas la URL de una web antigua de un negocio local y la IA se encarga de:
+- Analizar a fondo todos los problemas de diseño y conversión actuales.
+- Extraer el branding real del cliente (colores corporativos, logo, textos, menú de servicios).
+- Reconstruir la web entera desde cero con un diseño premium moderno (HTML/CSS/JS).
+
+### 2. 📝 Generación Automática de Propuestas de Venta
+Junto con cada web que rediseña (o "caza"), el sistema te redacta automáticamente un **Informe y Propuesta Comercial**:
+- Utiliza la `plantilla-propuesta.md` para crear un documento personalizado para el cliente.
+- Te detalla qué fallaba en su web anterior y le argumenta por qué el nuevo diseño que le has hecho le generará más ventas. ¡Listo para enviar por correo y cobrar!
+
+### 3. 🚀 Crear Webs desde Cero (Ideas o Redes Sociales)
+No necesitas tener una URL antigua para trabajar. Puedes decirle:
+- *"Crea una web para una peluquería desde cero"*.
+- *"Analiza este perfil de TikTok/Instagram, deduce los servicios que ofrecen y créales una landing page"*.
+La IA inventará la estructura, redactará el copywriting (los textos de venta) y la programará.
+
+### 4. 🖼️ El Genio de las Imágenes
+Olvídate de buscar fotos en Google. El estudio gestiona las imágenes por ti:
+- **Gratis:** Busca y descarga automáticamente fotografías profesionales sin derechos de autor desde *Openverse*.
+- **Premium (Opcional):** Si configuras OpenAI, puede generar imágenes completamente a medida con IA (DALL-E) que encajen perfectamente con el diseño de tu cliente.
+
+### 5. ☁️ Despliegue Multi-Cloud Interactivo
+No más complicaciones de servidores FTP. Al terminar la web, la IA te preguntará: *"¿Dónde quieres que la publique?"* y con tu respuesta hará todo el trabajo sucio:
+- **Servidor Local:** Para que pruebes la web en tu navegador.
+- **Hostinger:** Se conecta por debajo a tu panel de Hostinger y sube los archivos directamente a tu dominio.
+- **Cloudflare Pages:** Usa Wrangler para subir la web a la infraestructura ultrarrápida de Cloudflare y te devuelve un enlace público (perfecto y gratuito para mostrarle el demo al cliente).
+
+---
 
 ## 🗂️ Qué hay en tu Estudio
 
 | Pieza | Qué es |
 |---|---|
 | `EMPIEZA-AQUI.md` | Los 3 pasos para dejarlo funcionando a coste $0. |
-| `.claude/skills/luis-rediseño-premium/` | El motor especializado en "Cazar" y rediseñar URLs existentes. |
+| `.claude/skills/luis-rediseño-premium/` | El motor especializado en "Cazar", rediseñar URLs e informes. |
 | `.claude/skills/luis-estudio-web/` | El motor para crear desde cero, generar imágenes y gestionar los despliegues. |
-| `.env` (Oculto) | Donde guardas de forma segura tus API Keys (OpenRouter, OpenAI). No se sube a GitHub. |
-| `ejemplos/web-de-practica/` | La web de un restaurante ficticio, para hacer pruebas seguras. |
-| `plantilla-propuesta.md` | La propuesta comercial que se rellena sola para venderle la web al cliente final. |
-
-## 🛠️ Tecnologías y Reglas de Oro
-
-- **No-Build-Step**: Cero configuraciones de webpack o vite. Listo para abrir y desplegar.
-- **GSAP & ScrollTrigger**: Animaciones fluidas preconfiguradas.
-- **Modelos de IA**: Configurado para poder trabajar con la capa gratuita de OpenRouter, minimizando tus costes de agencia al máximo.
-
----
-*Desarrollado para la agencia Canedo Web Studio.*
+| `.env` (Oculto) | Donde guardas de forma segura tus API Keys (OpenRouter). No se sube a GitHub. |
+| `plantilla-propuesta.md` | La propuesta comercial que se rellena sola para venderle la web al cliente. |
 
 ## 💻 Cómo usar el Asistente en tu día a día
 
 ### 1. Activar la IA gratuita (OpenRouter)
-Abre la terminal en esta carpeta. Para que Claude Code use tu conexión de OpenRouter (sin coste), ejecuta siempre este comando antes de arrancar (esto lee la clave de tu archivo `.env`):
+Abre la terminal en esta carpeta. Para que Claude Code use tu conexión gratuita, ejecuta siempre este comando antes de arrancar:
 ```bash
 export ANTHROPIC_API_KEY=$OPENROUTER_API_KEY
 export ANTHROPIC_BASE_URL="https://openrouter.ai/api/v1"
@@ -52,19 +66,15 @@ claude
 ```
 
 ### 3. ¡Dale órdenes! (Ejemplos Reales)
-Una vez que el asistente esté escuchando, puedes pedirle cualquiera de las 3 opciones de la agencia:
-
-* **Para Cazar (Rediseñar):**
-  > *"Quiero que analices y caces esta página: https://pizzeria-vieja.com. Extrae toda su información, logo y colores, y reconstrúyela con calidad de agencia."*
+* **Para Cazar y generar Propuesta:**
+  > *"Analiza y caza esta página: https://pizzeria-vieja.com. Extrae su info, reconstrúyela y redáctame la propuesta de venta para el cliente."*
 
 * **Para Crear desde Cero:**
-  > *"Crea una landing page para una clínica dental. Hazla desde cero con un diseño limpio. Usa fotos libres de derechos de odontólogos."*
+  > *"Crea una landing page para una clínica dental. Diseño limpio, usa fotos gratis."*
 
-* **Para Analizar Redes Sociales:**
-  > *"Analiza el perfil de TikTok @tiktoker. Deduzce qué servicios ofrece y créale una web promocional espectacular."*
+* **Para Desplegar:**
+  > *"Está perfecta, publícala."*
+  *(La IA te preguntará si en Local, Hostinger o Cloudflare).*
 
-### 4. Desplegar
-Cuando termine de programar, o cuando la web te guste, dile:
-> *"Está perfecta, publícala."*
-
-El asistente se detendrá y te preguntará: *"¿Dónde quieres que la despliegue: Servidor Local, Hostinger, o Cloudflare?"*. Responde la opción que prefieras y la IA hará todo el trabajo de conexión.
+---
+*Desarrollado para la agencia Canedo Web Studio.*
