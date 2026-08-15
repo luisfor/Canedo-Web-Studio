@@ -46,6 +46,9 @@ El asistente también es capaz de programar aplicaciones complejas desde cero co
 
 ---
 
+
+### 7. 🤖 Componentes Nativos de IA (Gemini API)
+El estudio puede programar Chatbots de atención al cliente y Calculadoras con Visión Artificial (ej. leer facturas de luz para paneles solares) conectados 100% gratis a la API de Google Gemini.
 ## 🗂️ Qué hay en tu Estudio
 
 | Pieza | Qué es |

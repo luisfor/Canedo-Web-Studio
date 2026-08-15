@@ -9,6 +9,9 @@ Para usar la Inteligencia Artificial sin coste, utilizaremos OpenRouter y Openve
 2. Regístrate en [OpenRouter.ai](https://openrouter.ai/) y crea una clave (API Key).
 3. Pega tu clave dentro del `.env` donde dice `OPENROUTER_API_KEY="..."`.
 
+*(Nota: Si le pides que cree un Chatbot con IA o una Calculadora Inteligente, la IA generará el código y te pedirá que consigas una API Key gratuita de **Google AI Studio** para pegarla en el archivo `main.js` del proyecto).* 
+
+
 ## Paso 2: Conecta Claude a OpenRouter
 
 Cada vez que abras la terminal para trabajar, debes decirle a Claude que use tu clave gratuita. Ejecuta esto en tu terminal:

@@ -1460,3 +1460,46 @@ function setupContactForm() {
 - **Don't combine bilingual scramble + Cmd+K + side dots + cursor + tilt + ...** That's a SaaS dashboard, not editorial.
 - **Avoid effects that fight each other.** Lenis + scroll-snap don't mix. Tilt + magnetic on the same element compete. Particle system + mesh gradient over-saturate.
 - **The mobile experience drops some effects automatically.** 3D scenes, particles, magnetic, custom cursor → `hover: none` skips them. Your job is to make the mobile composition still feel intentional.
+
+/* ============================================================
+   COMPONENTES NATIVOS DE INTELIGENCIA ARTIFICIAL (GEMINI API)
+   ============================================================ */
+Si el usuario solicita un Chatbot con IA o una Calculadora de Visión Artificial, DEBES usar este patrón exacto con la API de Google Gemini (1.5 Flash). No asumas que hay librerías externas.
+
+### 1. Gemini Chatbot (JavaScript Fetch)
+Inyecta este código en `main.js` y crea el markup flotante en HTML.
+```javascript
+async function sendToGemini(prompt) {
+  const GEMINI_API_KEY = "TU_API_GOOGLE_AQUI"; // El usuario la reemplazará
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+  
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+  });
+  const data = await response.json();
+  return data.candidates[0].content.parts[0].text;
+}
+```
+
+### 2. Visión Artificial (Leer Facturas/Imágenes)
+Si piden analizar una factura (ej. paneles solares), usa este código para pasar Base64 a Gemini:
+```javascript
+async function analyzeImageGemini(base64Image, prompt) {
+  const GEMINI_API_KEY = "TU_API_GOOGLE_AQUI";
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+  
+  const payload = {
+    contents: [{
+      parts: [
+        { text: prompt },
+        { inline_data: { mime_type: "image/jpeg", data: base64Image.split(",")[1] } }
+      ]
+    }]
+  };
+  const response = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+  const data = await response.json();
+  return data.candidates[0].content.parts[0].text;
+}
+```
