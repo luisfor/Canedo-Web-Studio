@@ -78,6 +78,11 @@ claude
 * **Para Crear desde Cero:**
   > *"Crea una landing page para una clínica dental. Diseño limpio, usa fotos gratis."*
 
+
+* **Para Modificar una web ya terminada:**
+  > *"Añade un mapa de Google con la dirección X al final de la página."*
+  > *"Cambia el color principal a un azul más oscuro."*
+
 * **Para Desplegar:**
   > *"Está perfecta, publícala."*
   *(La IA te preguntará si en Local, Hostinger o Cloudflare).*
