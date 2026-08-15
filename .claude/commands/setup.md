@@ -43,7 +43,7 @@ nunca mandes al usuario a la terminal.
 
 Cierra con el resumen de ✓ y ofrece las **TRES** vías principales del estudio para que el usuario elija su primer proyecto:
 
-1. **Rediseñar una web (Cazar)**: Escribe -> *"Caza esta web: [URL de un negocio de tu zona]"*
+1. **Rediseñar una web (Cazar)**: Escribe -> *"Analiza y caza esta web: [URL]. Extrae su info, reconstrúyela tipo premium de 30.000 dólares y redáctame la propuesta de venta."*
 2. **Crear desde Cero**: Escribe -> *"Crea una landing page para [Tipo de negocio]"*
 3. **Analizar Redes Sociales**: Escribe -> *"Analiza el perfil de TikTok [Usuario] y créale una web"*
 

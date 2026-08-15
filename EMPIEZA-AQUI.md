@@ -28,7 +28,7 @@ claude
 A partir de ahora, tu IA tiene superpoderes. Puedes pedirle lo que necesites:
 
 ### Si quieres Cazar (Rediseñar):
-> *"Caza esta web: https://restaurante-antiguo.com y rediséñala entera con un look premium."*
+> *"Analiza y caza esta web: https://cardiologamariajose.com/. Extrae toda su información, reconstrúyela desde cero para que tenga un aspecto premium de 30.000 dólares y redáctame la propuesta de venta para presentarle al cliente."*
 
 ### Si quieres Crear desde cero:
 > *"Crea una web para una clínica dental, búscate fotos gratis de dentistas y publícala en Cloudflare."*
