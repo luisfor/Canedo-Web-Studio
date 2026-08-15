@@ -165,16 +165,15 @@ Este zip es lo que el usuario arrastra a Netlify Drop (preview gratis) o sube al
 Administrador de archivos de Hostinger (publicación final) — el paso a paso está
 en `despliegue.md` del kit. Menciónaselo al entregar.
 
-## Fase 5 · Propuesta (`propuesta.md`)
+## Fase 5 · Propuesta (`propuesta_comercial.html`)
 
-Rellena `plantilla-propuesta.md` (está en la raíz del kit) con: los 5 puntos del
-diagnóstico, 3 mejoras estrella de la nueva web, y los precios del kit. Tono cercano
-y directo, sin jerga técnica — la lee el dueño del negocio.
-
-Firma: `[TU NOMBRE]` y `[TU CONTACTO]` se rellenan con los datos guardados en
-`.claude/setup-completado.json` (los preguntó `/setup`); si no están, pregúntalos
-ahora y guárdalos ahí. `[LINK A LA DEMO]` se queda tal cual: recuérdale al
-usuario que se rellena tras publicar la preview (ver `despliegue.md`).
+**REGLA ESTRICTA:** Queda PROHIBIDO generar la propuesta en formato `.md`. Debes generar un archivo llamado `propuesta_comercial.html`.
+Este archivo debe ser un documento ejecutivo diseñado para ser impreso en PDF.
+- Usa CSS en línea para forzar el tamaño de hoja: `@page { size: A4; margin: 20mm; } body { font-family: sans-serif; color: #333; line-height: 1.6; max-width: 210mm; margin: auto; }`
+- Diseña una cabecera elegante (con espacio para logo).
+- Incluye los 5 puntos del diagnóstico, 3 mejoras estrella de la nueva web, y una tabla de precios clara ($30,000 USD o según el plan).
+- Tono cercano y directo, sin jerga técnica — la lee el dueño del negocio. Firma con `[TU NOMBRE]` y `[TU CONTACTO]`.
+- Al finalizar todo el proceso, dile al usuario: *"Tu propuesta está en `propuesta_comercial.html`. Hazle doble clic, presiona `Ctrl+P` (o Cmd+P) en tu navegador y elige Guardar como PDF para enviársela al cliente."*
 
 ## Al entregar
 
