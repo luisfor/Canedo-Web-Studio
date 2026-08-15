@@ -1,6 +1,6 @@
 ---
 name: luis-estudio-web
-description: One skill bundling several INDEPENDENT capabilities for non-technical Hostinger users — never force-chained; each runs on its own when asked. (a) CONNECT a Hostinger account to Claude Code — install/register the connector, browser login, verify. (b) BUILD studio-grade static websites (HTML/CSS/vanilla JS, no build, no npm) with real wow factor. (c) GENERATE bespoke on-brand images with OpenAI gpt-image-2, or fetch free stock. (d) PUBLISH a site live to Hostinger via that connection. Ask to connect and it only connects; ask for a web without images and it only builds; ask to add images and it only does that; ask to publish and it only publishes. Use it to connect or manage Hostinger, create or edit any website (landing, portfolio, restaurant, agency, SaaS, shop, blog), generate images, or put a site online. Triggers include conectame Hostinger, haz una web, crea una landing, genera imagenes para la web, publicala or subela, and their English equivalents.
+description: One skill bundling several INDEPENDENT capabilities for non-technical Hostinger users — never force-chained; each runs on its own when asked. (a) CONNECT a Hostinger account to Claude Code — install/register the connector, browser login, verify. (b) BUILD studio-grade static websites (HTML/CSS/vanilla JS, no build, no npm) with real wow factor. (c) GENERATE bespoke on-brand images with OpenAI gpt-image-2, or fetch free stock. (d) PUBLISH a site live to Hostinger via that connection. Ask to connect and it only connects; ask for a web without images and it only builds; ask to add images and it only does that; ask to publish and it only publishes. Use it to connect or manage Hostinger, create or edit any website (landing, portfolio, restaurant, agency, SaaS, shop, blog), generate images, or put a site online. Triggers include conectame Hostinger, crea una landing premium, analiza y caza esta web, genera imagenes para la web, publicala or subela, and their English equivalents.
 ---
 
 # Estudio Web Luis Canedo — connect · build · imagine · publish, each on demand
@@ -50,7 +50,7 @@ capability — not a multi-question intake.
 | What they say / the situation | Capability | Primary ref |
 |---|---|---|
 | "conéctame Hostinger", "vincula mi hosting", "que Claude gestione mi web/VPS/dominios" | 🔌 **Connect** | `reference/12-hostinger-connect.md` |
-| "haz una web / crea una landing / necesito una web para mi [negocio]", no project exists | 🎨 **Build** | `02`, `06`, `01`, `03` + `intake-template.md` |
+| "crea una landing premium de $30.000 / diseña una web desde cero para [negocio]", no project exists | 🎨 **Build** | `02`, `06`, `01`, `03` + `intake-template.md` |
 | A project exists and "cambia…/ añade…/ otro color / otra sección" | ✏️ **Surgical edit** | the existing files + invariants |
 | "genera/haz imágenes", "mis fotos del proveedor son feas", "necesito una foto de portada a medida" | 🖼️ **Image genie** | `reference/11-ai-image-generation.md` |
 | "publícala / súbela / ponla online", "sube los cambios" | 🚀 **Publish** | `13-hostinger-deploy.md` or `14-cloudflare-deploy.md` |
