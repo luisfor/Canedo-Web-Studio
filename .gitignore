@@ -8,3 +8,4 @@
 cazas/*
 !cazas/.gitkeep
 .env
+*.local.json
