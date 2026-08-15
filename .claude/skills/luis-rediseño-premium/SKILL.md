@@ -5,6 +5,19 @@ description: Caza una web de un negocio (URL) y la reconstruye con un diseño pr
 
 # Rediseño Premium Luis Canedo
 
+### FASE 0: EL BRIEFING (PREGUNTAR ANTES DE CREAR)
+**REGLA ESTRICTA:** Cuando el usuario te pida crear o cazar una web, TIENES PROHIBIDO empezar a escribir código o generar archivos inmediatamente.
+Primero, debes detenerte y hacerle una breve entrevista ("Briefing") en el chat para saber qué módulos avanzados quiere activar, partiendo de la base de que la web será sencilla (Opt-in). 
+
+Mándale este mensaje exacto o similar:
+> "¡Entendido! Antes de empezar a programar la web, ¿qué módulos adicionales te gustaría instalarle? (Por defecto haré una página sencilla premium). Dime si quieres incluir:
+> 1. **Chat:** ¿Ninguno, Botón de WhatsApp, o Chatbot Inteligente de IA (Gemini)?
+> 2. **Blog:** ¿Ninguno, o la estructura para el Blog Automatizado?
+> 3. **Reseñas:** ¿Le instalo la página oculta del Embudo de Google Maps (`/calificanos`)?
+> 4. **Extras:** ¿Algún color específico o calculadora con IA?"
+
+**ESPERA SU RESPUESTA.** Solo cuando el usuario te conteste qué opciones quiere, pasarás a la Fase 1 para generar el código.
+
 Recibes la URL de la web de un negocio. Entregas, en `cazas/[dominio]/`:
 `branding.json`, `diagnostico.md`, `index.html` (el diseño premium),
 `web-lista.zip` (para publicar) y `propuesta.md` (para vender).
