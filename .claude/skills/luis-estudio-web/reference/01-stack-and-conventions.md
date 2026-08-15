@@ -475,3 +475,5 @@ Para justificar un aspecto ultra-premium de alta gama, TODAS las webs deben cump
 - **3. Glassmorfismo & Texturas**: Las tarjetas o contenedores oscuros deben tener `backdrop-filter: blur(16px)` y bordes sutiles (`border: 1px solid rgba(255,255,255,0.1)`).
 - **4. Whitespace Extremo**: Deja "respirar" el diseño. Los márgenes entre secciones deben ser masivos (mínimo `12vh` o `160px`).
 - **5. Micro-Interacciones de Lujo**: Todo elemento interactivo debe tener transiciones suaves (`transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1)`). Usa hover states que revelen contenido o apliquen un ligero scale/glow.
+
+- **6. Widget de Chat (Lead Capture)**: Toda web premium DEBE incluir en la esquina inferior derecha un botón flotante (estilo WhatsApp o Chatbot) con animación de pulso y un pequeño tooltip ("¿Necesitas ayuda?"). Es innegociable para la conversión.
