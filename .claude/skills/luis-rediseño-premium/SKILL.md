@@ -14,7 +14,8 @@ Mándale este mensaje exacto o similar:
 > 1. **Chat:** ¿Ninguno, Botón de WhatsApp, o Chatbot Inteligente de IA (Gemini)?
 > 2. **Blog:** ¿Ninguno, o la estructura para el Blog Automatizado?
 > 3. **Reseñas:** ¿Le instalo la página oculta del Embudo de Google Maps (`/calificanos`)?
-> 4. **Extras:** ¿Algún color específico o calculadora con IA?"
+> 4. **Idioma:** ¿En qué idioma escribo la página web y configuro el Chatbot (Ej. Español, Inglés, Francés)?
+> 5. **Extras:** ¿Algún color específico o calculadora con IA?"
 
 **ESPERA SU RESPUESTA.** Solo cuando el usuario te conteste qué opciones quiere, pasarás a la Fase 1 para generar el código.
 

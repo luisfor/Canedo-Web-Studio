@@ -76,7 +76,7 @@ claude
 
 ### 3. ¡Dale órdenes! (Ejemplos Reales)
 * **Para Cazar y generar Propuesta:**
-  > *"Analiza y caza esta web: https://cardiologamariajose.com/. Extrae toda su información, reconstrúyela desde cero para que tenga un aspecto premium de 30.000 dólares y redáctame la propuesta de venta para presentarle al cliente."*
+  > *"Analiza y caza esta web: http://www.ejemplo-taller-antiguo.com. Extrae toda su información, reconstrúyela desde cero para que tenga un aspecto premium de 30.000 dólares y redáctame la propuesta de venta para presentarle al cliente."*
 
 * **Para Crear desde Cero:**
   > *"Crea una landing page para una clínica dental. Diseño limpio, usa fotos gratis."*
