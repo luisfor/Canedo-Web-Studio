@@ -111,11 +111,11 @@ Para alcanzar facturaciones de +$10,000/mes de forma pasiva, debes combinar este
    - **El Embudo de Reseñas:** (La página `/calificanos` para filtrar las quejas privadas y mandar a Google Maps las reseñas de 5 estrellas).
 3. Aloja la web estática gratis en **Cloudflare Pages**.
 
-#### Paso 2: El Cerebro Automatizador (n8n / Make.com)
-1. Regístrate en **Make.com** o instala **n8n** en un VPS (ej. Hostinger o DigitalOcean de $5/mes). Solo necesitas **UN** servidor para todos tus clientes.
-2. Crea los flujos de trabajo (Workflows):
-   - **Flujo de Reseñas:** Si el cliente deja 2 estrellas en el formulario de la web, n8n intercepta el mensaje, la IA de OpenAI/Gemini redacta un email de disculpa con un descuento, y se envía automáticamente.
-   - **Flujo de Ventas (Instagram):** n8n lee los Mensajes Directos del cliente. La IA filtra a los curiosos y solo da el enlace de WhatsApp a los "Leads Calientes".
+#### Paso 2: La Arquitectura 100% Serverless (Cero Servidores)
+¡Adiós a pagar servidores! El Kit está programado para usar exclusivamente la nube gratuita de Cloudflare.
+1. **La Fábrica de Artículos (Workers + IA):** El Kit configurará un Cloudflare Worker con un Cron Trigger (Despertador) que se ejecuta semanalmente. Este Worker llama a la IA gratuita de Cloudflare (Llama y Flux) para redactar un artículo SEO y guardarlo en Cloudflare KV, actualizando la web del cliente en automático.
+2. **El Embudo de Reseñas (Frontend JS):** El Kit programa la lógica directamente en JavaScript. Si el cliente selecciona 4-5 estrellas, es redirigido instantáneamente a Google Maps. Si selecciona 1-3 estrellas, se le muestra un formulario que envía la queja silenciosamente vía Formspree.
+3. **El CRM (WhatsApp Business):** En lugar de software complejo, todas las llamadas a la acción dirigen a un enlace directo de WhatsApp, convirtiendo tu celular en el CRM de mayor conversión.
 
 #### Paso 3: El "CMS Involuntario" (Actualización de Fotos y Blog)
 1. Créale a tu cliente un canal privado de Telegram o un número de WhatsApp (conectado a n8n).
