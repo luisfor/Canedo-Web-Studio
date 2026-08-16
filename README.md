@@ -1,8 +1,8 @@
-# 🏛️ Canedo Web Studio v1 — para Claude Code
+# 🏛️ Agencia TechFlow v1 — para Claude Code
 
 > ¿Primera vez? Abre **[`EMPIEZA-AQUI.md`](EMPIEZA-AQUI.md)**: Configura tus llaves gratuitas en 3 pasos y a trabajar.
 
-Convierte Claude Code en tu agencia de desarrollo automatizada. **Canedo Web Studio** te permite crear webs estáticas premium ($30,000 look) para negocios locales, gestionando todo el ciclo de vida: desde la prospección y rediseño, hasta la venta y el despliegue automático.
+Convierte Claude Code en tu agencia de desarrollo automatizada. **Agencia TechFlow** te permite crear webs estáticas premium ($30,000 look) para negocios locales, gestionando todo el ciclo de vida: desde la prospección y rediseño, hasta la venta y el despliegue automático.
 
 ---
 
@@ -91,7 +91,7 @@ claude
   *(La IA te preguntará si en Local, Hostinger o Cloudflare).*
 
 ---
-*Desarrollado para la agencia Canedo Web Studio.*
+*Desarrollado para la agencia Agencia TechFlow.*
 
 ---
 
@@ -137,11 +137,11 @@ Para que el Kit entienda exactamente qué quieres hacer, aquí tienes las "órde
 
 ### 1. Crear una web desde cero (Ideal para tu propia Agencia)
 Si no tienes web ni redes sociales, dale toda la información tú mismo:
-> *"Créame una web premium desde cero para mi agencia. Se llama **Canedo Web Studio**. Ofrecemos diseño de ecosistemas automatizados con IA. Nuestros servicios son: 1. Webs premium de $30k, 2. Chatbots de Inteligencia Artificial, 3. Blogs Autogestionados, y 4. Embudos de Reseñas de Google Maps. Quiero un diseño oscuro, elegante y muy tecnológico. El teléfono es +34 600 000 000 y el email luis@canedo.com. Haz que los textos suenen persuasivos y lujosos."*
+> *"Créame una web premium desde cero para mi agencia. Se llama **Agencia TechFlow**. Ofrecemos diseño de ecosistemas automatizados con IA. Nuestros servicios son: 1. Webs premium de $30k, 2. Chatbots de Inteligencia Artificial, 3. Blogs Autogestionados, y 4. Embudos de Reseñas de Google Maps. Quiero un diseño oscuro, elegante y muy tecnológico. El teléfono es +34 600 000 000 y el email contacto@agenciatechflow.com. Haz que los textos suenen persuasivos y lujosos."*
 
 ### 2. Cazar una web existente (El Rediseño)
 Si el cliente ya tiene una web pero es fea y vieja, la IA entrará, leerá todos sus servicios y le montará una versión premium:
-> *"Caza esta web: **http://www.clinicacardiologica-antigua.com**. Extrae todos sus textos, especialidades, historia y horarios. Reconstruye la web desde cero con un diseño premium moderno orientado a la salud. Quiero que uses colores de confianza (azules/blancos) y que la estructura parezca de una clínica de alto nivel. Entrégame el ZIP y la propuesta en PDF."*
+> *"Caza esta web: **http://www.ejemplo-taller-antiguo.com**. Extrae todos sus textos, especialidades, historia y horarios. Reconstruye la web desde cero con un diseño premium moderno orientado a la salud. Quiero que uses colores de confianza (azules/blancos) y que la estructura parezca de una clínica de alto nivel. Entrégame el ZIP y la propuesta en PDF."*
 
 ### 3. Crear web a partir de Redes Sociales (El Cliente de Instagram)
 Si el cliente no tiene web, pero tiene un Instagram lleno de fotos y precios (ej. un mecánico, un pastelero):
