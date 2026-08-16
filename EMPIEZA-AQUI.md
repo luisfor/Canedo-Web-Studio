@@ -1,43 +1,25 @@
-# EMPIEZA AQUÍ: 3 pasos para poner a funcionar tu Agencia
+# 🚀 EMPIEZA AQUÍ: Guía de Uso del Kit Cazador de Webs
 
-Sigue estos pasos para conectar Claude Code con las **Skills de Canedo Web Studio** y tener a tu asistente listo para cazar, diseñar y desplegar gratis.
+Bienvenido al Kit de Agencia AAA. Antes de empezar a generar webs de $30.000 de forma automática, debes conocer los requisitos del sistema.
 
-## Paso 1: Configura tus llaves (Costo $0)
+## ⚠️ Requisitos Obligatorios (Lo que necesitas para que el Kit funcione)
 
-Para usar la Inteligencia Artificial sin coste, utilizaremos OpenRouter y Openverse.
-1. Busca el archivo oculto `.env` en la raíz de tu proyecto.
-2. Regístrate en [OpenRouter.ai](https://openrouter.ai/) y crea una clave (API Key).
-3. Pega tu clave dentro del `.env` donde dice `OPENROUTER_API_KEY="..."`.
+Este Kit utiliza dos motores de Inteligencia Artificial diferentes, cada uno con una función específica. Debes configurarlos antes de tu primer proyecto.
 
-*(Nota: Si le pides que cree un Chatbot con IA o una Calculadora Inteligente, la IA generará el código y te pedirá que consigas una API Key gratuita de **Google AI Studio** para pegarla en el archivo `main.js` del proyecto).* 
+### 1. La API de OpenRouter (El "Constructor" de la web)
+Para que la Inteligencia Artificial pueda leer tus comandos en VS Code, extraer datos de otras webs y programar el código HTML premium, necesita "gasolina".
+- **¿Es Obligatoria?** SÍ. Sin esta llave, el Kit no encenderá y no podrá programar nada.
+- **¿Cómo se consigue?** Debes ir a `openrouter.ai`, crear una cuenta y generar una API Key.
+- **Limitaciones y Costos:** OpenRouter **NO es gratis**, funciona con recargas. Debes meterle un mínimo de $5 dólares de saldo. Pero no te preocupes: generar una web premium completa te consumirá apenas entre $0.05 y $0.20 centavos de dólar. ¡Con 5 dólares podrás crear decenas de webs!
+- **Dónde ponerla:** Debes pegar esa llave en el archivo de configuración `.claude/settings.local.json`.
 
-
-## Paso 2: Conecta Claude a OpenRouter
-
-Cada vez que abras la terminal para trabajar, debes decirle a Claude que use tu clave gratuita. Ejecuta esto en tu terminal:
-
-```bash
-export ANTHROPIC_API_KEY=$OPENROUTER_API_KEY
-export ANTHROPIC_BASE_URL="https://openrouter.ai/api/v1"
-```
-
-## Paso 3: Arranca tu Agencia
-
-Abre la terminal en esta carpeta y ejecuta:
-```bash
-claude
-```
-
-A partir de ahora, tu IA tiene superpoderes. Puedes pedirle lo que necesites:
-
-### Si quieres Cazar (Rediseñar):
-> *"Analiza y caza esta web: https://cardiologamariajose.com/. Extrae toda su información, reconstrúyela desde cero para que tenga un aspecto premium de 30.000 dólares y redáctame la propuesta de venta para presentarle al cliente."*
-
-### Si quieres Crear desde cero:
-> *"Crea una web para una clínica dental, búscate fotos gratis de dentistas y publícala en Cloudflare."*
-
-### Si quieres Analizar Redes Sociales:
-> *"Analiza este perfil de tiktok: @tiktoker-dental y saca de ahí la información para crearle una web desde cero."*
+### 2. La API de Google Gemini (El "Chatbot" del Cliente)
+Esta es la inteligencia artificial que atenderá a los visitantes de la web de tu cliente (el widget flotante que responde preguntas de ventas 24/7).
+- **¿Es Obligatoria?** Solo si en la Fase de Briefing eliges instalar el módulo "Chatbot de IA". Si eliges "Botón de WhatsApp", no la necesitas.
+- **¿Cómo se consigue?** Vas a `aistudio.google.com` y generas tu API Key.
+- **Limitaciones y Costos:** ¡Es **100% GRATIS**! Google ofrece una capa gratuita enorme. Tu cliente no tendrá que pagar mensualidades de servidor por este Chatbot.
+- **Dónde ponerla:** Cuando el Kit termine de crear la web, te indicará exactamente en qué línea del archivo HTML/JS debes pegar esta llave.
 
 ---
-**¡Ya está!** El asistente deducirá qué "motor" usar (`luis-rediseño-premium` o `luis-estudio-web`), te guiará paso a paso, y finalmente te preguntará dónde quieres publicar el resultado.
+
+*Una vez que tengas tus llaves listas, abre tu terminal y lanza tu primer comando de creación.*
