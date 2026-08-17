@@ -49,6 +49,10 @@ El asistente también es capaz de programar aplicaciones complejas desde cero co
 
 ### 7. 🤖 Componentes Nativos de IA (Gemini API)
 El estudio puede programar Chatbots de atención al cliente y Calculadoras con Visión Artificial (ej. leer facturas de luz para paneles solares) conectados 100% gratis a la API de Google Gemini.
+
+### 8. 📊 Auditoría SEO y Diagnóstico Digital
+El asistente incluye un auditor especializado capaz de revisar el SEO técnico de cualquier URL o el estado de perfiles de redes sociales. Genera un reporte profesional (listo para entregar al cliente) con puntos fuertes, errores críticos y un plan de acción a ejecutar. Ideal para usar como herramienta de preventa o consultoría.
+
 ## 🗂️ Qué hay en tu Estudio
 
 | Pieza | Qué es |
