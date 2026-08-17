@@ -53,6 +53,9 @@ El estudio puede programar Chatbots de atención al cliente y Calculadoras con V
 ### 8. 📊 Auditoría SEO y Diagnóstico Digital
 El asistente incluye un auditor especializado capaz de revisar el SEO técnico de cualquier URL o el estado de perfiles de redes sociales. Genera un reporte profesional (listo para entregar al cliente) con puntos fuertes, errores críticos y un plan de acción a ejecutar. Ideal para usar como herramienta de preventa o consultoría.
 
+### 9. ⭐ Embudo de Reseñas Automático (Review Funnel)
+El kit es capaz de programar e integrar embudos de calificación en cualquier web. Si el cliente recibe 4-5 estrellas, es redirigido a Google Maps; si recibe 1-3 estrellas, la queja se envía en privado al dueño vía email (Formspree). Esto aumenta drásticamente la reputación online del negocio a coste cero.
+
 ## 🗂️ Qué hay en tu Estudio
 
 | Pieza | Qué es |
