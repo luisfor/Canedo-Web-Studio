@@ -59,6 +59,9 @@ El kit es capaz de programar e integrar embudos de calificación en cualquier we
 ### 10. 🤖 Robot Híbrido de Contenidos (The Publishing Engine)
 Un sistema de publicación automatizado blindado. Funciona con un motor híbrido: consume una lista de temas predefinidos, lee prensa RSS verificada por las mañanas y utiliza inventiva de IA por las tardes basándose en la Carta Editorial del cliente. Cuenta con anti-repetición de 3 capas, panel de control propio, filtros de temas vetados y notificaciones por email enriquecidas.
 
+### 11. 🎨 Componentes UI a Prueba de Balas (Slider de Reseñas)
+El kit posee en memoria el código exacto, testeado y perfeccionado para generar Carruseles de Reseñas Premium. Este patrón asegura que las flechas nunca tapen el texto, respeta el "Autoplay Educado" (pausa al pasar el ratón, sin animaciones si el usuario lo prefiere) y evita los 5 errores históricos de maquetación web.
+
 ## 🗂️ Qué hay en tu Estudio
 
 | Pieza | Qué es |
