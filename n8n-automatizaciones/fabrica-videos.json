@@ -1,0 +1,84 @@
+{
+  "name": "Fábrica de Videos Guerrilla (Corregida)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "interval": 1
+            }
+          ]
+        }
+      },
+      "id": "e67e3a9c-0c4a-4d92-9f33-1463e26b86f8",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [100, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "gpt-4o-mini"
+            },
+            {
+              "name": "messages",
+              "value": "[{\"role\": \"user\", \"content\": \"Escribe un guion viral de 30 segundos.\"}]"
+            }
+          ]
+        }
+      },
+      "id": "8b52f1e4-8b63-4c91-b3b4-f089608c02c6",
+      "name": "OpenAI Guionista",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [320, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.pexels.com/videos/search?query=technology&orientation=portrait&per_page=1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "c1f2e4b6-7c2d-4f11-9a74-d0e5b7a1f5c3",
+      "name": "Pexels Camarógrafo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [540, 300]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Guionista",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Guionista": {
+      "main": [
+        [
+          {
+            "node": "Pexels Camarógrafo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
