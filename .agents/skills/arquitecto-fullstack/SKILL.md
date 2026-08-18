@@ -34,7 +34,7 @@ Todo nuevo proyecto complejo debe dividirse obligatoriamente en estas capas sepa
 *"La aplicación Full-Stack está lista. ¿Dónde configuramos el despliegue de esta arquitectura dividida?"*
 
 Ofrécele estas opciones:
-*   **Frontend:** Vercel (Recomendado), Netlify o Cloudflare Pages.
+*   **Frontend:** Cloudflare Pages (Plataforma preferida por la agencia), Vercel o Netlify.
 *   **Backend & BD:** Render (Gratis/Barato), VPS (DigitalOcean/Hostinger) o AWS.
 
 Basado en su respuesta, procede a crear los archivos de configuración específicos (ej. `vercel.json`, `render.yaml`, Dockerfiles o scripts de Nginx) y prepara el repositorio para despliegue.
