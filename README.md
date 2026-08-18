@@ -49,6 +49,19 @@ El asistente también es capaz de programar aplicaciones complejas desde cero co
 
 ### 7. 🤖 Componentes Nativos de IA (Gemini API)
 El estudio puede programar Chatbots de atención al cliente y Calculadoras con Visión Artificial (ej. leer facturas de luz para paneles solares) conectados 100% gratis a la API de Google Gemini.
+
+### 8. ✍️ Blog Autogestionado (el robot redactor) — PROBADO EN PRODUCCIÓN
+Un robot que **escribe y publica artículos solo** en el blog de la web: texto con IA, portada generada con IA, 2 publicaciones al día. Coste: **0 €/mes** (capas gratuitas de Cloudflare). Funciona en canedostudio.com desde agosto 2026.
+- **Sistema híbrido de temas:** 210 temas curados únicos → inspiración en prensa real de marketing (RSS, edición de la mañana) → temas propuestos por IA. Anti-duplicados en 3 capas: nunca repite un artículo.
+- **Sin servidores ni n8n:** un Cloudflare Worker + KV lo hace todo.
+- Receta completa para clonarlo a cualquier cliente en `automatismos/README.md`; robot de referencia en `automatismos/canedostudio-blog-bot/`.
+- Se vende dentro del mantenimiento de 99 €/mes.
+
+### 9. ⭐ Sistema de Reseñas (slider + embudo) — PROBADO EN PRODUCCIÓN
+Las dos piezas de la reputación online, listas para copiar en cualquier web:
+- **Slider de testimonios estilo Google:** carrusel con autoplay (se pausa al interactuar), flechas que no tapan las tarjetas y puntos de posición. Patrón completo en `componente-resenas.md`, con la tabla de los 5 errores típicos ya resueltos.
+- **Embudo de calificación** (`plantilla-calificanos.html`): página oculta sin menú. **4-5 estrellas** → abre Google directo a escribir la reseña en pestaña nueva. **1-3 estrellas** → formulario de queja privado que llega al email del dueño (FormSubmit, sin cuentas ni claves). Las quejas se resuelven en privado y Google solo recibe clientes felices. Solo hay que rellenar 3 huecos: nombre del negocio, email del dueño y enlace de reseña de Google.
+
 ## 🗂️ Qué hay en tu Estudio
 
 | Pieza | Qué es |
@@ -56,6 +69,10 @@ El estudio puede programar Chatbots de atención al cliente y Calculadoras con V
 | `EMPIEZA-AQUI.md` | Los 3 pasos para dejarlo funcionando a coste $0. |
 | `.claude/skills/luis-rediseño-premium/` | El motor especializado en "Cazar", rediseñar URLs e informes. |
 | `.claude/skills/luis-estudio-web/` | El motor para crear desde cero, generar imágenes y gestionar los despliegues. |
+| `automatismos/README.md` | La receta del blog autogestionado (robot redactor con IA, 0 €/mes). |
+| `automatismos/canedostudio-blog-bot/` | El robot de referencia, funcionando en producción. |
+| `componente-resenas.md` | El patrón del slider de reseñas estilo Google + el embudo de calificación. |
+| `plantilla-calificanos.html` | La página del embudo de reseñas lista para copiar a cualquier cliente. |
 | `.env` (Oculto) | Donde guardas de forma segura tus API Keys (OpenRouter). No se sube a GitHub. |
 | `plantilla-propuesta.md` | La propuesta comercial que se rellena sola para venderle la web al cliente. |
 
@@ -112,6 +129,7 @@ Para alcanzar facturaciones de +$10,000/mes de forma pasiva, debes combinar este
 3. Aloja la web estática gratis en **Cloudflare Pages**.
 
 #### Paso 2: El Cerebro Automatizador (n8n / Make.com)
+> 💡 **Atajo real (2026):** el blog autogestionado ya NO necesita n8n — el robot de `automatismos/` (Cloudflare Worker, 0 €/mes) escribe y publica solo. n8n queda para los flujos extra: respuestas automáticas a quejas, filtrado de mensajes de Instagram, etc.
 1. Regístrate en **Make.com** o instala **n8n** en un VPS (ej. Hostinger o DigitalOcean de $5/mes). Solo necesitas **UN** servidor para todos tus clientes.
 2. Crea los flujos de trabajo (Workflows):
    - **Flujo de Reseñas:** Si el cliente deja 2 estrellas en el formulario de la web, n8n intercepta el mensaje, la IA de OpenAI/Gemini redacta un email de disculpa con un descuento, y se envía automáticamente.

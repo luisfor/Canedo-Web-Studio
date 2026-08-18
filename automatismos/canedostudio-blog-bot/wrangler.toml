@@ -1,0 +1,14 @@
+name = "canedostudio-blog-bot"
+main = "src/index.js"
+compatibility_date = "2025-08-01"
+workers_dev = true
+
+[ai]
+binding = "AI"
+
+[[kv_namespaces]]
+binding = "BLOG_POSTS"
+id = "1a3b08427d144d51af218578387e09b5"
+
+[triggers]
+crons = ["0 12,22 * * *"]

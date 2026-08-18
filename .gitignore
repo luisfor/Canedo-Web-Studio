@@ -9,3 +9,9 @@ cazas/*
 !cazas/.gitkeep
 .env
 *.local.json
+
+# Secretos del kit (tokens del robot del blog, etc.) — NUNCA se suben
+secretos/
+
+# Estado local de Cloudflare Wrangler — solo sirve en este ordenador
+.wrangler/
