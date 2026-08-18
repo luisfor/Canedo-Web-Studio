@@ -56,6 +56,9 @@ El asistente incluye un auditor especializado capaz de revisar el SEO técnico d
 ### 9. ⭐ Embudo de Reseñas Automático (Review Funnel)
 El kit es capaz de programar e integrar embudos de calificación en cualquier web. Si el cliente recibe 4-5 estrellas, es redirigido a Google Maps; si recibe 1-3 estrellas, la queja se envía en privado al dueño vía email (Formspree). Esto aumenta drásticamente la reputación online del negocio a coste cero.
 
+### 10. 🤖 Robot Híbrido de Contenidos (The Publishing Engine)
+Un sistema de publicación automatizado blindado. Funciona con un motor híbrido: consume una lista de temas predefinidos, lee prensa RSS verificada por las mañanas y utiliza inventiva de IA por las tardes basándose en la Carta Editorial del cliente. Cuenta con anti-repetición de 3 capas, panel de control propio, filtros de temas vetados y notificaciones por email enriquecidas.
+
 ## 🗂️ Qué hay en tu Estudio
 
 | Pieza | Qué es |
