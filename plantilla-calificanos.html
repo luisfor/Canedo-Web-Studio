@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<!--
+  ═══════════════════════════════════════════════════════════════════
+  PLANTILLA DEL KIT — Embudo de reseñas (página oculta "calificanos")
+  ═══════════════════════════════════════════════════════════════════
+  Probada en producción en canedostudio.com (2026-08-17). Un solo
+  archivo, sin dependencias: funciona en cualquier web del kit.
+
+  QUÉ HACE:
+  · 4-5 estrellas → abre Google (escribir reseña) en pestaña NUEVA;
+    esta página se queda abierta y el cliente vuelve al cerrar.
+  · 1-3 estrellas → formulario de queja privado que llega al email
+    del dueño vía FormSubmit (sin cuentas ni claves).
+  Resultado: las quejas se resuelven en privado y Google solo recibe
+  clientes felices.
+
+  ANTES DE ENTREGAR, cambia SOLO estos 3 huecos (busca "▶▶"):
+  1. [NOMBRE-NEGOCIO]     → nombre del negocio (3 sitios)
+  2. [EMAIL-DEL-DUEÑO]    → email que recibirá las quejas (1 sitio)
+  3. [LINK-RESEÑA-GOOGLE] → enlace directo de reseña (1 sitio)
+
+  CÓMO CONSEGUIR EL ENLACE DE RESEÑA DE GOOGLE (formato g.page):
+  Google Business Profile → "Pedir reseñas" / "Ask for reviews" →
+  copiar el enlace corto. El formato bueno es:
+      https://g.page/r/XXXXXXXX/review
+  Ese abre DIRECTO el cuadro de escribir reseña (pide iniciar sesión
+  de Google primero). No vale un enlace genérico a la ficha de Maps.
+
+  ACTIVACIÓN DE FORMSUBMIT (una sola vez, para siempre):
+  El primer envío del formulario NO llega: FormSubmit manda un email
+  "Activate Form" al correo del dueño. Hay que abrirlo y pulsar
+  "Activate Form". A partir de ahí, todos los envíos llegan solos.
+  ⚠️ Si no se hace ese clic, ninguna queja llega jamás.
+
+  NO TOCAR (trampas ya resueltas):
+  · window.open va EN EL MOMENTO DEL TOQUE: si se retrasa con
+    setTimeout, el navegador lo bloquea como popup.
+  · NO usar Formspree sin crear la cuenta y el formulario de verdad:
+    un ID inventado devuelve 404 "Form not found".
+  · El campo "empresa" es la trampa anti-robots (honeypot): invisible
+    para humanos; si un robot lo rellena, FormSubmit lo descarta.
+  ═══════════════════════════════════════════════════════════════════
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- ▶▶ 1/3: nombre del negocio -->
+  <title>Califica tu experiencia — [NOMBRE-NEGOCIO]</title>
+  <meta name="description" content="¿Cómo calificarías tu experiencia con [NOMBRE-NEGOCIO]?">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Autónoma: no depende del styles.css de la web.
+       Cambia --accent si quieres otro color de marca. */
+    :root {
+      --accent: #ffb800;
+      --accent-hi: #ffd34d;
+      --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    body {
+      margin: 0;
+      background: #0a0a0f;
+      color: #f5f5f7;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .cal-wrap { text-align: center; max-width: 560px; width: 100%; }
+
+    .cal-logo { width: 56px; height: 56px; margin-bottom: 2rem; }
+
+    .cal-kicker {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: #8a8aa0; margin-bottom: 1.2rem;
+    }
+
+    .cal-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.2rem; font-weight: 600; line-height: 1.25;
+      margin: 0 0 0.8rem; color: #fff;
+    }
+
+    .cal-sub {
+      font-size: 1.05rem; color: #a0a0b0;
+      margin: 0 0 2.5rem; line-height: 1.5;
+    }
+
+    /* Estrellas interactivas */
+    .cal-stars {
+      display: flex; justify-content: center; gap: 0.6rem;
+      margin-bottom: 2.5rem; user-select: none;
+    }
+
+    .cal-star {
+      width: 56px; height: 56px;
+      background: #1a1a24; border: 1px solid #2a2a38; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; color: #3a3a48; cursor: pointer;
+      transition: all 0.2s var(--ease-luxe);
+    }
+
+    .cal-star:hover { transform: translateY(-3px); border-color: var(--accent); }
+
+    .cal-star.active, .cal-star.selected {
+      color: #ffb800; border-color: #ffb800;
+      background: rgba(255, 184, 0, 0.08);
+    }
+
+    /* Formulario de queja */
+    .cal-form {
+      display: none; text-align: left;
+      background: #14141c; border: 1px solid #2a2a38; border-radius: 16px;
+      padding: 2rem; margin-top: 1.5rem;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .cal-form h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem; font-weight: 600; margin: 0 0 0.5rem; color: #fff;
+    }
+
+    .cal-form p {
+      font-size: 0.95rem; color: #a0a0b0; margin: 0 0 1.5rem; line-height: 1.5;
+    }
+
+    .cal-form label {
+      display: block; font-size: 0.85rem; color: #c0c0cc;
+      margin-bottom: 0.5rem; font-weight: 500;
+    }
+
+    .cal-form input[type="text"],
+    .cal-form textarea {
+      width: 100%; box-sizing: border-box;
+      background: #0f0f16; border: 1px solid #2a2a38; border-radius: 10px;
+      padding: 0.9rem 1rem; color: #f5f5f7;
+      font-family: 'Inter', sans-serif; font-size: 0.95rem;
+      margin-bottom: 1.2rem;
+      transition: border-color 0.2s var(--ease-luxe);
+    }
+
+    .cal-form textarea { resize: vertical; min-height: 120px; }
+
+    .cal-form input[type="text"]:focus,
+    .cal-form textarea:focus { outline: none; border-color: var(--accent); }
+
+    .cal-form .cal-btn-row { display: flex; gap: 0.8rem; justify-content: center; }
+
+    .cal-btn {
+      padding: 0.85rem 1.8rem; border-radius: 10px;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 0.95rem;
+      cursor: pointer; transition: all 0.2s var(--ease-luxe); border: none;
+    }
+
+    .cal-btn-primary { background: var(--accent); color: #0a0a0f; }
+    .cal-btn-primary:hover { background: var(--accent-hi); }
+    .cal-btn-primary:disabled { opacity: 0.6; cursor: wait; }
+
+    .cal-btn-ghost {
+      background: transparent; color: #a0a0b0; border: 1px solid #2a2a38;
+    }
+    .cal-btn-ghost:hover { background: #1a1a24; color: #fff; }
+
+    .cal-success { display: none; text-align: center; padding: 2rem 0; }
+    .cal-success h3 {
+      font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem;
+      color: #fff; margin-bottom: 0.8rem;
+    }
+    .cal-success p { color: #a0a0b0; font-size: 1rem; }
+    .cal-success .cal-btn { margin-top: 1.5rem; }
+
+    /* Pantalla intermedia: camino a Google (4-5 estrellas) */
+    .cal-redirect { display: none; text-align: center; padding: 2rem 0; }
+    .cal-redirect h3 {
+      font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem;
+      color: #fff; margin-bottom: 0.8rem;
+    }
+    .cal-redirect p { color: #a0a0b0; font-size: 1rem; }
+    .cal-redirect .cal-btn {
+      display: inline-block; margin-top: 1.5rem; text-decoration: none;
+    }
+
+    .cal-error {
+      display: none; color: #ff8a80; font-size: 0.9rem;
+      text-align: center; margin-top: -0.4rem; margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cal-wrap">
+    <!-- Logo genérico: cambia la letra y el color si quieres -->
+    <svg class="cal-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="48" height="48" rx="10" fill="#ffb800"/>
+      <text x="24" y="32" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="20" fill="#0a0a0f">★</text>
+    </svg>
+
+    <p class="cal-kicker">Califica tu experiencia</p>
+    <!-- ▶▶ 1/3: nombre del negocio -->
+    <h1 class="cal-title">¿Cómo calificarías tu experiencia con [NOMBRE-NEGOCIO]?</h1>
+    <p class="cal-sub">Tu opinión nos ayuda a mejorar y a que más personas confíen en nosotros.</p>
+
+    <!-- Estrellas interactivas -->
+    <div class="cal-stars" id="cal-stars">
+      <div class="cal-star" data-rating="1">★</div>
+      <div class="cal-star" data-rating="2">★</div>
+      <div class="cal-star" data-rating="3">★</div>
+      <div class="cal-star" data-rating="4">★</div>
+      <div class="cal-star" data-rating="5">★</div>
+    </div>
+
+    <!-- Formulario de queja (1-3 estrellas) -->
+    <div class="cal-form" id="cal-form">
+      <h3>Lamentamos no haber cumplido tus expectativas.</h3>
+      <p>Cuéntanos qué pasó para solucionarlo. Tu feedback es valioso y lo leemos personalmente.</p>
+      <!-- ▶▶ 2/3: email del dueño en la URL de FormSubmit -->
+      <form id="cal-form-element" action="https://formsubmit.co/ajax/[EMAIL-DEL-DUEÑO]" method="POST">
+        <label for="cal-rating">Calificación</label>
+        <input type="hidden" name="Calificación" id="cal-rating" value="">
+
+        <!-- Trampa anti-robots: invisible para humanos; si se rellena, se descarta -->
+        <input type="text" name="empresa" id="cal-empresa" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;">
+
+        <label for="cal-name">Nombre (opcional)</label>
+        <input type="text" id="cal-name" name="Nombre" placeholder="Tu nombre">
+
+        <label for="cal-message">Cuéntanos qué pasó *</label>
+        <textarea id="cal-message" name="Message" placeholder="Describe tu experiencia…" required></textarea>
+
+        <p class="cal-error" id="cal-error">No se pudo enviar tu mensaje. Inténtalo de nuevo en un momento.</p>
+
+        <div class="cal-btn-row">
+          <button type="submit" class="cal-btn cal-btn-primary">Enviar feedback</button>
+          <button type="button" class="cal-btn cal-btn-ghost" id="cal-cancel">Cancelar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Redirección a Google (4-5 estrellas): Google se abre en pestaña NUEVA,
+         esta página se queda abierta y el cliente vuelve al cerrar -->
+    <div class="cal-redirect" id="cal-redirect">
+      <h3>¡Mil gracias! ⭐</h3>
+      <p>Hemos abierto Google en una <strong>pestaña nueva</strong> para que dejes tu reseña. Al terminar, cierra esa pestaña y volverás aquí.</p>
+      <div style="display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap; margin-top:1.5rem;">
+        <a class="cal-btn cal-btn-primary" id="cal-redirect-link" href="#" target="_blank" rel="noopener" style="margin-top:0;">Abrir Google de nuevo</a>
+        <button class="cal-btn cal-btn-ghost" id="cal-back" type="button" style="margin-top:0;">Volver</button>
+      </div>
+    </div>
+
+    <!-- Éxito -->
+    <div class="cal-success" id="cal-success">
+      <h3>✅ Gracias por tu feedback</h3>
+      <p>Recibimos tu mensaje y lo revisamos con atención. Te responderemos pronto.</p>
+      <button class="cal-btn cal-btn-primary" onclick="window.location.href='index.html'">Volver al inicio</button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      /* ▶▶ 3/3: enlace directo de reseña de Google (formato g.page/r/…/review) */
+      var GOOGLE_MAPS_LINK = "[LINK-RESEÑA-GOOGLE]";
+
+      var stars = document.getElementById('cal-stars');
+      var form = document.getElementById('cal-form');
+      var formElement = document.getElementById('cal-form-element');
+      var success = document.getElementById('cal-success');
+      var ratingInput = document.getElementById('cal-rating');
+      var cancelBtn = document.getElementById('cal-cancel');
+      var redirectBox = document.getElementById('cal-redirect');
+      var redirectLink = document.getElementById('cal-redirect-link');
+      var errorMsg = document.getElementById('cal-error');
+
+      var selectedRating = 0;
+
+      stars.addEventListener('click', function (e) {
+        var star = e.target.closest('.cal-star');
+        if (!star) return;
+        var rating = parseInt(star.getAttribute('data-rating'), 10);
+        selectedRating = rating;
+
+        // Marcar las estrellas
+        var allStars = stars.querySelectorAll('.cal-star');
+        allStars.forEach(function (s, i) {
+          s.classList.toggle('selected', i < rating);
+        });
+
+        // 4 o 5 estrellas → abrir Google en pestaña NUEVA en el momento del
+        // toque (si se retrasa, el navegador la bloquea como popup). Esta
+        // página se queda abierta: el cliente vuelve al cerrar la pestaña.
+        if (rating >= 4) {
+          stars.style.display = 'none';
+          redirectLink.href = GOOGLE_MAPS_LINK;
+          redirectBox.style.display = 'block';
+          window.open(GOOGLE_MAPS_LINK, '_blank', 'noopener');
+          return;
+        }
+
+        // 1, 2 o 3 estrellas → mostrar formulario
+        ratingInput.value = rating;
+        form.style.display = 'block';
+        setTimeout(function () {
+          document.getElementById('cal-message').focus();
+        }, 300);
+      });
+
+      // Cancelar formulario
+      cancelBtn.addEventListener('click', function () {
+        form.style.display = 'none';
+        var allStars = stars.querySelectorAll('.cal-star');
+        allStars.forEach(function (s) { s.classList.remove('selected'); });
+        selectedRating = 0;
+      });
+
+      // Volver desde la pantalla de Google a las estrellas
+      document.getElementById('cal-back').addEventListener('click', function () {
+        redirectBox.style.display = 'none';
+        stars.style.display = '';
+        stars.querySelectorAll('.cal-star').forEach(function (s) { s.classList.remove('selected'); });
+        selectedRating = 0;
+      });
+
+      // Enviar la queja a FormSubmit DE VERDAD (sin salir de la página)
+      formElement.addEventListener('submit', function (e) {
+        e.preventDefault();
+        errorMsg.style.display = 'none';
+        var submitBtn = formElement.querySelector('.cal-btn-primary');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando…';
+        fetch(formElement.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            name: document.getElementById('cal-name').value || '(sin nombre)',
+            message: document.getElementById('cal-message').value,
+            'Calificación': ratingInput.value + '/5',
+            _subject: '⚠️ Queja recibida (' + ratingInput.value + '/5) — embudo de reseñas',
+            _captcha: 'false',
+            _template: 'table',
+            _honey: document.getElementById('cal-empresa').value
+          })
+        }).then(function (res) {
+          if (res.ok) {
+            form.style.display = 'none';
+            success.style.display = 'block';
+          } else {
+            errorMsg.style.display = 'block';
+          }
+        }).catch(function () {
+          errorMsg.style.display = 'block';
+        }).finally(function () {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Enviar feedback';
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
