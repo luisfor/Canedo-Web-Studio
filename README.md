@@ -2,7 +2,7 @@
 
 > ¿Primera vez? Abre **[`EMPIEZA-AQUI.md`](EMPIEZA-AQUI.md)**: Configura tus llaves gratuitas en 3 pasos y a trabajar.
 
-Convierte Claude Code en tu agencia de desarrollo automatizada. **Agencia TechFlow** te permite crear webs estáticas premium ($30,000 look) para negocios locales, gestionando todo el ciclo de vida: desde la prospección y rediseño, hasta la venta y el despliegue automático.
+Convierte Claude Code en tu agencia de desarrollo automatizada. **Agencia TechFlow es un kit público y de código abierto (open-source) que cualquiera puede usar y adaptar**. Te permite crear webs estáticas premium ($30,000 look) para negocios locales, gestionando todo el ciclo de vida: desde la prospección y rediseño, hasta la venta y el despliegue automático.
 
 ---
 
