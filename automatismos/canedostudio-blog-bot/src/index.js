@@ -393,7 +393,7 @@ async function sendEmailNotification(env, post, source) {
 
   const sourceLabel = source === "curado" ? "tema curado de la lista"
     : source === "rss" ? "inspirado en titulares reales (RSS)"
-    : "tema propuesto por IA";
+      : "tema propuesto por IA";
 
   const articleUrl = "https://canedostudio.com/post.html?slug=" + post.slug;
   const subject = "📝 Nuevo artículo publicado en Canedo Studio: " + post.title;

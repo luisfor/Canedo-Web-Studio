@@ -1,8 +1,8 @@
-# 🏛️ Agencia TechFlow v1 — para Claude Code
+# 🏛️ Canedo Web Studio v1 — para Claude Code
 
 > ¿Primera vez? Abre **[`EMPIEZA-AQUI.md`](EMPIEZA-AQUI.md)**: Configura tus llaves gratuitas en 3 pasos y a trabajar.
 
-Convierte Claude Code en tu agencia de desarrollo automatizada. **Agencia TechFlow es un kit público y de código abierto (open-source) que cualquiera puede usar y adaptar**. Te permite crear webs estáticas premium ($30,000 look) para negocios locales, gestionando todo el ciclo de vida: desde la prospección y rediseño, hasta la venta y el despliegue automático.
+Convierte Claude Code en tu agencia de desarrollo automatizada. **Canedo Web Studio es un kit público y de código abierto (open-source) que cualquiera puede usar y adaptar**. Te permite crear webs estáticas premium ($30,000 look) para negocios locales, gestionando todo el ciclo de vida: desde la prospección y rediseño, hasta la venta y el despliegue automático.
 
 ---
 
@@ -104,7 +104,7 @@ claude
   *(La IA te preguntará si en Local, Hostinger o Cloudflare).*
 
 ---
-*Desarrollado para la agencia Agencia TechFlow.*
+*Desarrollado para la agencia Canedo Web Studio.*
 
 ---
 
@@ -150,7 +150,7 @@ Para que el Kit entienda exactamente qué quieres hacer, aquí tienes las "órde
 
 ### 1. Crear una web desde cero (Ideal para tu propia Agencia)
 Si no tienes web ni redes sociales, dale toda la información tú mismo:
-> *"Créame una web premium desde cero para mi agencia. Se llama **Agencia TechFlow**. Ofrecemos diseño de ecosistemas automatizados con IA. Nuestros servicios son: 1. Webs premium de $30k, 2. Chatbots de Inteligencia Artificial, 3. Blogs Autogestionados, y 4. Embudos de Reseñas de Google Maps. Quiero un diseño oscuro, elegante y muy tecnológico. El teléfono es +34 600 000 000 y el email contacto@agenciatechflow.com. Haz que los textos suenen persuasivos y lujosos."*
+> *"Créame una web premium desde cero para mi agencia. Se llama **Canedo Web Studio**. Ofrecemos diseño de ecosistemas automatizados con IA. Nuestros servicios son: 1. Webs premium de $30k, 2. Chatbots de Inteligencia Artificial, 3. Blogs Autogestionados, y 4. Embudos de Reseñas de Google Maps. Quiero un diseño oscuro, elegante y muy tecnológico. El teléfono es +34 600 000 000 y el email contacto@canedostudio.com. Haz que los textos suenen persuasivos y lujosos."*
 
 ### 2. Cazar una web existente (El Rediseño)
 Si el cliente ya tiene una web pero es fea y vieja, la IA entrará, leerá todos sus servicios y le montará una versión premium:
