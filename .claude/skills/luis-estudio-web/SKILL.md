@@ -217,3 +217,29 @@ well, verify it, and stop. When they say *"conéctame Hostinger"* you hand them 
 working connection; when they say *"hazme la web"* you hand them a site; when
 they say *"ponle imágenes"* you hand them imagery; when they say *"publícala"*
 you hand them a live URL — each on its own, each finished, never forced together.
+
+
+### 👑 Reglas de Oro de Diseño y Ventas (High-Ticket)
+**Aplica siempre estas reglas en TODAS las webs y bots que construyas:**
+1. **Diseño (Cero Texto Justificado):** NUNCA uses `text-align: justify` en webs, blogs o landing pages. Los textos justificados rompen la legibilidad en móviles creando "ríos blancos". Usa SIEMPRE alineación a la izquierda (`text-align: left`).
+2. **Personalidad del Chatbot (Guardarraíles):** El bot debe comportarse estrictamente como un asesor de ventas de la agencia. Debe negarse educadamente a responder preguntas que no tengan relación con los servicios, el negocio o el contacto de la empresa.
+3. **Captación (Cualificar, no cotizar en automático):** El chatbot NO debe dar presupuestos cerrados automáticamente a cualquiera. Su función es cualificar al cliente (saber qué necesita y su presupuesto) y luego dirigirlo a un botón para **agendar una llamada de diagnóstico** (vía WhatsApp o Calendly).
+
+
+### 🛠️ Arquitectura Serverless (Sin n8n)
+**Cuando construyas los Ecosistemas de Ventas (Blog y Reseñas), implementa SIEMPRE esta arquitectura 100% nativa de Cloudflare y Frontend:**
+
+1. **La Fábrica de Artículos (Blog Cloudflare Workers):**
+   - Configura el Blog usando el Ecosistema Serverless de Cloudflare.
+   - **El Despertador:** Configura un Cron Trigger en Cloudflare (ej. lunes y jueves a las 8:00).
+   - **El Robot Redactor:** Escribe un Cloudflare Worker en JavaScript que llame a `env.AI.run`. Usa **Llama** para redactar el artículo (regla: prohibido inventar cifras/testimonios, tono ejecutivo, 650-900 palabras) y **Flux** para generar la imagen de portada (regla: prohibido estilo minimalista/abstracto). 
+   - **El Archivador (KV):** Guarda el JSON resultante y la imagen en un espacio de Cloudflare KV, y conecta la web del cliente para que lea desde allí (`/data/posts.json` y `/media/`).
+   - Define un array de **24 temas únicos** del sector del cliente para que el Worker itere sin repetir.
+   - Crea un "botón mágico" (URL secreta) para disparar el Worker manualmente para demos.
+
+2. **El Embudo de Reseñas Post-Servicio (Frontend JavaScript):**
+   - Crea una landing page oculta (ej. `/calificanos`) que el cliente enviará a sus usuarios por WhatsApp/Correo tras el servicio.
+   - La página debe mostrar **5 estrellas** interactivas.
+   - **Lógica JavaScript estricta:** 
+     - Si el usuario selecciona **1, 2 o 3 estrellas**: Oculta la opción de ir a Google. Muestra un formulario de texto ("¿Qué podemos mejorar?") e intégralo directamente con **Formspree** para que la queja llegue al correo del dueño silenciosamente.
+     - Si el usuario selecciona **4 o 5 estrellas**: Redirige automáticamente la pestaña al enlace oficial de **Google Maps** del negocio para que dejen la reseña pública.
