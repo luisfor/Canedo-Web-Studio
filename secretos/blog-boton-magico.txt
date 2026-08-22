@@ -1,0 +1,20 @@
+Robot del blog de Canedo Studio — accesos privados
+==================================================
+
+1) BOTÓN MÁGICO (publicar un artículo nuevo al momento)
+   Ábrelo en el navegador y en ~30-60 segundos hay un artículo nuevo en el blog,
+   con su portada generada. Ideal para demos a clientes:
+
+   https://canedostudio-blog-bot.lcanedo12.workers.dev/publicar-ahora?token=80ae86c9ec7a22bb3d2558e4ec8b7543d31219a4
+
+2) REPINTAR UNA PORTADA (si una imagen no te gusta)
+   https://canedostudio-blog-bot.lcanedo12.workers.dev/repintar?slug=SLUG-DEL-ARTICULO&escena=DESCRIPCION-EN-INGLES&token=80ae86c9ec7a22bb3d2558e4ec8b7543d31219a4
+
+   - slug: lo ves en la dirección del artículo (post.html?slug=ESTO)
+   - escena: describe la foto que quieres, en inglés, con %20 en vez de espacios
+
+3) Calendario automático: cada lunes y jueves a las 8:00 (hora de Colombia)
+   el robot publica solo, sin tocar nada.
+
+IMPORTANTE: no compartas estas direcciones. Quien tenga el token puede
+publicar en tu blog. Este archivo vive solo en tu ordenador.

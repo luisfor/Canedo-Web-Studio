@@ -1,8 +1,8 @@
-# 🏛️ Agencia TechFlow v1 — para Claude Code
+# 🏛️ Canedo Web Studio v1 — para Claude Code
 
 > ¿Primera vez? Abre **[`EMPIEZA-AQUI.md`](EMPIEZA-AQUI.md)**: Configura tus llaves gratuitas en 3 pasos y a trabajar.
 
-Convierte Claude Code en tu agencia de desarrollo automatizada. **Agencia TechFlow** te permite crear webs estáticas premium ($30,000 look) para negocios locales, gestionando todo el ciclo de vida: desde la prospección y rediseño, hasta la venta y el despliegue automático.
+Convierte Claude Code en tu agencia de desarrollo automatizada. **Canedo Web Studio es un kit público y de código abierto (open-source) que cualquiera puede usar y adaptar**. Te permite crear webs estáticas premium ($30,000 look) para negocios locales, gestionando todo el ciclo de vida: desde la prospección y rediseño, hasta la venta y el despliegue automático.
 
 ---
 
@@ -50,14 +50,17 @@ El asistente también es capaz de programar aplicaciones complejas desde cero co
 ### 7. 🤖 Componentes Nativos de IA (Gemini API)
 El estudio puede programar Chatbots de atención al cliente y Calculadoras con Visión Artificial (ej. leer facturas de luz para paneles solares) conectados 100% gratis a la API de Google Gemini.
 
-### 8. ✍️ Blog Autogestionado (el robot redactor) — PROBADO EN PRODUCCIÓN
+### 8. 📊 Auditoría SEO y Diagnóstico Digital
+El asistente incluye un auditor especializado capaz de revisar el SEO técnico de cualquier URL o el estado de perfiles de redes sociales. Genera un reporte profesional (listo para entregar al cliente) con puntos fuertes, errores críticos y un plan de acción a ejecutar. Ideal para usar como herramienta de preventa o consultoría.
+
+### 9. ✍️ Blog Autogestionado (el robot redactor) — PROBADO EN PRODUCCIÓN
 Un robot que **escribe y publica artículos solo** en el blog de la web: texto con IA, portada generada con IA, 2 publicaciones al día. Coste: **0 €/mes** (capas gratuitas de Cloudflare). Funciona en canedostudio.com desde agosto 2026.
 - **Sistema híbrido de temas:** 210 temas curados únicos → inspiración en prensa real de marketing (RSS, edición de la mañana) → temas propuestos por IA. Anti-duplicados en 3 capas: nunca repite un artículo.
 - **Sin servidores ni n8n:** un Cloudflare Worker + KV lo hace todo.
 - Receta completa para clonarlo a cualquier cliente en `automatismos/README.md`; robot de referencia en `automatismos/canedostudio-blog-bot/`.
 - Se vende dentro del mantenimiento de 99 €/mes.
 
-### 9. ⭐ Sistema de Reseñas (slider + embudo) — PROBADO EN PRODUCCIÓN
+### 10. ⭐ Sistema de Reseñas (slider + embudo) — PROBADO EN PRODUCCIÓN
 Las dos piezas de la reputación online, listas para copiar en cualquier web:
 - **Slider de testimonios estilo Google:** carrusel con autoplay (se pausa al interactuar), flechas que no tapan las tarjetas y puntos de posición. Patrón completo en `componente-resenas.md`, con la tabla de los 5 errores típicos ya resueltos.
 - **Embudo de calificación** (`plantilla-calificanos.html`): página oculta sin menú. **4-5 estrellas** → abre Google directo a escribir la reseña en pestaña nueva. **1-3 estrellas** → formulario de queja privado que llega al email del dueño (FormSubmit, sin cuentas ni claves). Las quejas se resuelven en privado y Google solo recibe clientes felices. Solo hay que rellenar 3 huecos: nombre del negocio, email del dueño y enlace de reseña de Google.
@@ -108,7 +111,7 @@ claude
   *(La IA te preguntará si en Local, Hostinger o Cloudflare).*
 
 ---
-*Desarrollado para la agencia Agencia TechFlow.*
+*Desarrollado para la agencia Canedo Web Studio.*
 
 ---
 
@@ -128,12 +131,13 @@ Para alcanzar facturaciones de +$10,000/mes de forma pasiva, debes combinar este
    - **El Embudo de Reseñas:** (La página `/calificanos` para filtrar las quejas privadas y mandar a Google Maps las reseñas de 5 estrellas).
 3. Aloja la web estática gratis en **Cloudflare Pages**.
 
-#### Paso 2: El Cerebro Automatizador (n8n / Make.com)
-> 💡 **Atajo real (2026):** el blog autogestionado ya NO necesita n8n — el robot de `automatismos/` (Cloudflare Worker, 0 €/mes) escribe y publica solo. n8n queda para los flujos extra: respuestas automáticas a quejas, filtrado de mensajes de Instagram, etc.
-1. Regístrate en **Make.com** o instala **n8n** en un VPS (ej. Hostinger o DigitalOcean de $5/mes). Solo necesitas **UN** servidor para todos tus clientes.
-2. Crea los flujos de trabajo (Workflows):
-   - **Flujo de Reseñas:** Si el cliente deja 2 estrellas en el formulario de la web, n8n intercepta el mensaje, la IA de OpenAI/Gemini redacta un email de disculpa con un descuento, y se envía automáticamente.
-   - **Flujo de Ventas (Instagram):** n8n lee los Mensajes Directos del cliente. La IA filtra a los curiosos y solo da el enlace de WhatsApp a los "Leads Calientes".
+#### Paso 2: La Arquitectura 100% Serverless (Cero Servidores) y Cerebro Automatizador
+¡Adiós a pagar servidores! El Kit está programado para usar exclusivamente la nube gratuita de Cloudflare.
+1. **La Fábrica de Artículos (Workers + IA):** El robot de `automatismos/` (Cloudflare Worker, 0 €/mes) escribe y publica solo los artículos y guarda en Cloudflare KV, actualizando la web del cliente en automático sin usar herramientas externas.
+2. **El Embudo de Reseñas (Frontend JS):** El Kit programa la lógica directamente en JavaScript. Si el cliente selecciona 4-5 estrellas, es redirigido a Google Maps; de 1-3 estrellas envía un formulario privado.
+3. **Flujos extra con Make.com / n8n:** Aunque la base es serverless, puedes registrarte en **Make.com** o instalar **n8n** en un VPS de $5/mes para flujos complejos:
+   - **Respuestas automáticas a quejas:** interceptar las reseñas de 2 estrellas y generar emails con OpenAI.
+   - **Flujo de Ventas en Instagram:** n8n lee Mensajes Directos y envía el enlace de WhatsApp a clientes potenciales.
 
 #### Paso 3: El "CMS Involuntario" (Actualización de Fotos y Blog)
 1. Créale a tu cliente un canal privado de Telegram o un número de WhatsApp (conectado a n8n).
@@ -155,7 +159,7 @@ Para que el Kit entienda exactamente qué quieres hacer, aquí tienes las "órde
 
 ### 1. Crear una web desde cero (Ideal para tu propia Agencia)
 Si no tienes web ni redes sociales, dale toda la información tú mismo:
-> *"Créame una web premium desde cero para mi agencia. Se llama **Agencia TechFlow**. Ofrecemos diseño de ecosistemas automatizados con IA. Nuestros servicios son: 1. Webs premium de $30k, 2. Chatbots de Inteligencia Artificial, 3. Blogs Autogestionados, y 4. Embudos de Reseñas de Google Maps. Quiero un diseño oscuro, elegante y muy tecnológico. El teléfono es +34 600 000 000 y el email contacto@agenciatechflow.com. Haz que los textos suenen persuasivos y lujosos."*
+> *"Créame una web premium desde cero para mi agencia. Se llama **Canedo Web Studio**. Ofrecemos diseño de ecosistemas automatizados con IA. Nuestros servicios son: 1. Webs premium de $30k, 2. Chatbots de Inteligencia Artificial, 3. Blogs Autogestionados, y 4. Embudos de Reseñas de Google Maps. Quiero un diseño oscuro, elegante y muy tecnológico. El teléfono es +34 600 000 000 y el email contacto@canedostudio.com. Haz que los textos suenen persuasivos y lujosos."*
 
 ### 2. Cazar una web existente (El Rediseño)
 Si el cliente ya tiene una web pero es fea y vieja, la IA entrará, leerá todos sus servicios y le montará una versión premium:
