@@ -1,0 +1,21 @@
+{
+  "name": "canedo-web-studio-v1-usandolo-actualmente",
+  "version": "1.0.0",
+  "description": "> ¿Primera vez? Abre **[`EMPIEZA-AQUI.md`](EMPIEZA-AQUI.md)**: Configura tus llaves gratuitas en 3 pasos y a trabajar.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luisfor/Canedo-Web-Studio.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/luisfor/Canedo-Web-Studio/issues"
+  },
+  "homepage": "https://github.com/luisfor/Canedo-Web-Studio#readme"
+}

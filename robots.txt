@@ -1,6 +1,0 @@
-User-agent: *
-Disallow: /calificanos.html
-Disallow: /admin
-Disallow: /api/
-
-Sitemap: https://canedostudio.com/sitemap.xml
