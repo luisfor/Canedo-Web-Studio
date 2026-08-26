@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/luisfor/Canedo-Web-Studio.git"
+    "url": "git+https://github.com/[TU-USUARIO]/[TU-REPO].git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/luisfor/Canedo-Web-Studio/issues"
+    "url": "https://github.com/[TU-USUARIO]/[TU-REPO]/issues"
   },
-  "homepage": "https://github.com/luisfor/Canedo-Web-Studio#readme"
+  "homepage": "https://github.com/[TU-USUARIO]/[TU-REPO]#readme"
 }
