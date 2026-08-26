@@ -224,7 +224,7 @@ Hemos introducido la nueva arquitectura **[TU AGENCIA WEB] Starter Kit**, un "mo
 - `npm run new-site`: Crea un proyecto nuevo interactivo para un cliente (clonando `starter-template/`). NUNCA sobrescribe clientes existentes.
 - `npm run design-to-web:analyze -- <referencia.png> <proyecto>`: (EXPERIMENTAL) Analiza un diseño con IA para convertirlo a código.
 - `npm run design-to-web:build -- <proyecto>`: (EXPERIMENTAL) Construye el código de la web a partir del diseño analizado.
-- `npm run validate <cazas/slug>`: Audita un sitio en busca de errores (SEO, H1 múltiples, imágenes sin alt, GSAP innecesario).
+- `npm run validate <cazas/slug>`: Audita un sitio en busca de errores (SEO, JSON-LD estructurado, H1 múltiples, imágenes sin alt, GSAP innecesario).
 - `npm run verify-production <url> <slug>`: Audita la caché en Cloudflare comparando el sitio vivo con los assets locales (Solo lectura).
 
 ### 🤖 Ejemplos: Design-to-Web (Automatización de Páginas)
