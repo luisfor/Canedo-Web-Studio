@@ -1,4 +1,4 @@
-/* Robot redactor del blog de Canedo Studio.
+/* Robot redactor del blog de [TU AGENCIA WEB].
    7:00 AM y 5:00 PM todos los días (hora Colombia): escribe un artículo
    con IA, le genera portada con IA, lo guarda en KV y avisa por email.
 
@@ -23,7 +23,7 @@ const MAX_HISTORY = 300;   // títulos generados recordados (anti-repetición)
 const MAX_HEADLINES = 60;  // titulares RSS recordados
 
 /* Carta editorial: quiénes somos, a quién le hablamos, qué vende el blog */
-const EDITORIAL_CHARTER = `Canedo Studio es una agencia que vende a negocios y pymes hispanohablantes: chatbots con IA, diseño web premium, blogs autogestionados, embudos de reseñas y automatización de procesos. El blog "Insights" habla al DUEÑO del negocio, no al técnico: lenguaje claro, euros y horas, ejemplos de negocios cotidianos. Cada artículo debe poder enlazarse con naturalidad a uno de esos servicios.`;
+const EDITORIAL_CHARTER = `[TU AGENCIA WEB] es una agencia que vende a negocios y pymes hispanohablantes: chatbots con IA, diseño web premium, blogs autogestionados, embudos de reseñas y automatización de procesos. El blog "Insights" habla al DUEÑO del negocio, no al técnico: lenguaje claro, euros y horas, ejemplos de negocios cotidianos. Cada artículo debe poder enlazarse con naturalidad a uno de esos servicios.`;
 
 /* Temas vetados: se filtran en titulares RSS y en propuestas de la IA */
 const BANNED = [
@@ -50,11 +50,11 @@ const RSS_FEEDS = [
   "https://marketingdirecto.com/feed/",
 ];
 
-const SYSTEM_PROMPT = `Eres el redactor jefe del blog "Insights" de Canedo Studio, una agencia de automatización con IA para empresas.
+const SYSTEM_PROMPT = `Eres el redactor jefe del blog "Insights" de [TU AGENCIA WEB], una agencia de automatización con IA para empresas.
 Estilo: español neutro, cercano y ejecutivo; tutea al lector; persuasivo pero honesto; frases claras, cero jerga técnica sin explicar.
 REGLAS DURAS:
 - NUNCA inventes cifras concretas, estadísticas, casos de clientes, testimonios ni empresas de ejemplo con nombre. Habla de tendencias generales y sentido común.
-- No menciones a Canedo Studio en primera persona todo el rato; como mucho una mención natural al final.
+- No menciones a [TU AGENCIA WEB] en primera persona todo el rato; como mucho una mención natural al final.
 - Extensión total: entre 650 y 900 palabras.
 - Devuelves ÚNICAMENTE un JSON válido, sin markdown, sin comentarios, con esta forma exacta:
 {"title":"...","tag":"...","excerpt":"...","content":[{"type":"p","text":"..."}]}
@@ -63,7 +63,7 @@ Donde "tag" es UNA de: Estrategia, Chatbots, Reseñas, Automatización, Diseño 
 "content" es una lista de 8 a 14 bloques. type puede ser "p" (párrafo), "h2" (subtítulo) o "quote" (una sola cita potente por artículo como máximo).
 Estructura recomendada: arranque con una verdad incómoda, desarrollo con 2-3 subtítulos, y cierre con una idea accionable. El último bloque puede sugerir con naturalidad que una llamada de diagnóstico aclara si encaja en el negocio del lector.`;
 
-const TOPIC_PROMPT = `Eres el estratega de contenidos del blog "Insights" de Canedo Studio.
+const TOPIC_PROMPT = `Eres el estratega de contenidos del blog "Insights" de [TU AGENCIA WEB].
 Respondes ÚNICAMENTE con JSON válido, sin markdown ni comentarios, con esta forma exacta:
 {"tema":"...","angulo":"...","img":"..."}
 - "tema": título tentativo del artículo (30-90 caracteres). Claro y con beneficio, sin clickbait vacío.
@@ -384,7 +384,7 @@ async function publish(env, hourUTC, modo) {
 async function sendEmailNotification(env, post, source) {
   const apiKey = env.SENDGRID_API_KEY;
   const fromEmail = env.FROM_EMAIL || "noreply@canedostudio.com";
-  const toEmail = env.TO_EMAIL || "lcanedo12@gmail.com";
+  const toEmail = env.TO_EMAIL || "admin@tuagencia.com";
 
   if (!apiKey) {
     console.log("SENDGRID_API_KEY no configurado, saltando notificación");
@@ -396,11 +396,11 @@ async function sendEmailNotification(env, post, source) {
       : "tema propuesto por IA";
 
   const articleUrl = "https://canedostudio.com/post.html?slug=" + post.slug;
-  const subject = "📝 Nuevo artículo publicado en Canedo Studio: " + post.title;
+  const subject = "📝 Nuevo artículo publicado en [TU AGENCIA WEB]: " + post.title;
   const html = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
       <h2 style="color: #1a1a1a;">📄 Nuevo artículo publicado</h2>
-      <p style="font-size: 16px; line-height: 1.6;">Se ha publicado automáticamente un nuevo artículo en el blog de Canedo Studio.</p>
+      <p style="font-size: 16px; line-height: 1.6;">Se ha publicado automáticamente un nuevo artículo en el blog de [TU AGENCIA WEB].</p>
 
       <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0; border-left: 4px solid #0d9488;">
         <h3 style="margin: 0 0 10px 0; color: #0d9488;">${post.title}</h3>
@@ -412,7 +412,7 @@ async function sendEmailNotification(env, post, source) {
       <a href="${articleUrl}" style="display: inline-block; background: #0d9488; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600;">Leer artículo completo →</a>
 
       <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
-      <p style="font-size: 12px; color: #999;">Este email fue enviado automáticamente por el bot del blog de Canedo Studio.</p>
+      <p style="font-size: 12px; color: #999;">Este email fue enviado automáticamente por el bot del blog de [TU AGENCIA WEB].</p>
     </div>
   `;
 
@@ -425,7 +425,7 @@ async function sendEmailNotification(env, post, source) {
       },
       body: JSON.stringify({
         personalizations: [{ to: [{ email: toEmail }], subject }],
-        from: { email: fromEmail, name: "Canedo Studio Blog" },
+        from: { email: fromEmail, name: "[TU AGENCIA WEB] Blog" },
         content: [{ type: "text/html", value: html }]
       })
     });
@@ -550,6 +550,6 @@ export default {
         return new Response("Error al repintar: " + e.message, { status: 500 });
       }
     }
-    return new Response("Robot del blog de Canedo Studio: activo. Publica a diario 7:00 (edición con inspiración de prensa) y 17:00 (hora Colombia). Temas: 210 curados + IA ilimitada.", { status: 200 });
+    return new Response("Robot del blog de [TU AGENCIA WEB]: activo. Publica a diario 7:00 (edición con inspiración de prensa) y 17:00 (hora Colombia). Temas: 210 curados + IA ilimitada.", { status: 200 });
   },
 };
