@@ -222,8 +222,26 @@ Hemos introducido la nueva arquitectura **[TU AGENCIA WEB] Starter Kit**, un "mo
 
 ### Comandos de Desarrollo
 - `npm run new-site`: Crea un proyecto nuevo interactivo para un cliente (clonando `starter-template/`). NUNCA sobrescribe clientes existentes.
+- `npm run design-to-web:analyze -- <referencia.png> <proyecto>`: (EXPERIMENTAL) Analiza un diseño con IA para convertirlo a código.
+- `npm run design-to-web:build -- <proyecto>`: (EXPERIMENTAL) Construye el código de la web a partir del diseño analizado.
 - `npm run validate <cazas/slug>`: Audita un sitio en busca de errores (SEO, H1 múltiples, imágenes sin alt, GSAP innecesario).
 - `npm run verify-production <url> <slug>`: Audita la caché en Cloudflare comparando el sitio vivo con los assets locales (Solo lectura).
+
+### 🤖 Ejemplos: Design-to-Web (Automatización de Páginas)
+Puedes generar automáticamente distintos tipos de páginas pasándole la referencia visual a la IA. El sistema extraerá colores, tipografías y secciones:
+
+**1. Landing Page (Venta de producto o embudo):**
+\`\`\`bash
+npm run design-to-web:analyze -- refs/landing-ventas.png mi-nuevo-funnel
+npm run design-to-web:build -- mi-nuevo-funnel
+npm run design-to-web:qa -- mi-nuevo-funnel
+\`\`\`
+
+**2. Web Multipágina o Dashboard:**
+\`\`\`bash
+npm run design-to-web:analyze -- refs/dashboard-ui.pdf mi-dashboard
+npm run design-to-web:build -- mi-dashboard
+\`\`\`
 
 ### Documentación Estándar
 Consulta el directorio `docs/` para leer nuestras estrategias formales de desarrollo:
