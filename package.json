@@ -9,8 +9,10 @@
     "verify-production": "node scripts/verify-production.js",
     "design-to-web:analyze": "node scripts/design-to-web/analyzer.js",
     "design-to-web:build": "node scripts/design-to-web/builder.js",
+    "design-to-web:qa": "node scripts/design-to-web/qa.js",
     "test:design-to-web": "node tests/design-to-web/test.js",
     "test:design-to-web-builder": "node tests/design-to-web/test-builder.js",
+    "test:design-to-web-qa": "node tests/design-to-web/test-qa.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -26,6 +28,10 @@
   },
   "homepage": "https://github.com/[TU-USUARIO]/[TU-REPO]#readme",
   "devDependencies": {
-    "ajv": "^8.20.0"
+    "ajv": "^8.20.0",
+    "pixelmatch": "^7.2.0",
+    "pngjs": "^7.0.0",
+    "puppeteer": "^25.9.0",
+    "serve-handler": "^6.1.7"
   }
 }
