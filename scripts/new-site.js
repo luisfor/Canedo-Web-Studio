@@ -88,7 +88,29 @@ async function main() {
   console.log(`\nCopiando starter-template a cazas/${slug}...`);
   copyAndReplace(starterDir, targetDir);
 
-  console.log('✅ Proyecto creado exitosamente.');
+  console.log('\n✅ Proyecto creado exitosamente.');
+  
+  console.log('\n========================================');
+  console.log('🔄 Ejecutando validación automática...');
+  console.log('========================================');
+  
+  const { execSync } = require('child_process');
+  try {
+    execSync(`npm run validate ${slug}`, { stdio: 'inherit' });
+    console.log('\n✅ SITE CREATED & VALIDATION PASS');
+  } catch (error) {
+    console.log('\n❌ VALIDATION ERROR/WARN');
+    console.log(`El proyecto se ha creado en: cazas/${slug} pero contiene advertencias o errores.`);
+    console.log('Revisa los logs de arriba y corrige los problemas antes de continuar.');
+  }
+
+  console.log(`\nPATH: cazas/${slug}`);
+  console.log('NEXT STEPS:');
+  console.log('1. Personaliza las imágenes en assets/img/');
+  console.log('2. Descarga fuentes opcionales en assets/fonts/ si lo deseas.');
+  console.log(`3. Previsualiza localmente la carpeta cazas/${slug}`);
+  console.log('4. Despliega a producción.');
+
   rl.close();
 }
 
