@@ -16,7 +16,7 @@ let passed = 0;
 for (const t of TESTS) {
   console.log(`\n> Test: ${t.file}`);
   try {
-    execSync(`npm run design-to-web:analyze -- ${t.file} ${t.project}`, { stdio: 'ignore' });
+    execSync(`DESIGN_AI_PROVIDER=mock npm run design-to-web:analyze -- ${t.file} ${t.project}`, { stdio: 'ignore' });
     if (t.expectSuccess) {
       console.log("  [PASS] Ejecución exitosa como se esperaba.");
       passed++;
