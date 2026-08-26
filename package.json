@@ -4,6 +4,9 @@
   "description": "> ¿Primera vez? Abre **[`EMPIEZA-AQUI.md`](EMPIEZA-AQUI.md)**: Configura tus llaves gratuitas en 3 pasos y a trabajar.",
   "main": "index.js",
   "scripts": {
+    "new-site": "node scripts/new-site.js",
+    "validate": "node scripts/validate.js",
+    "verify-production": "node scripts/verify-production.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
