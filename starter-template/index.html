@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{BUSINESS_NAME}} — {{HEADLINE}}</title>
+  <meta name="description" content="{{DESCRIPTION}}">
+  <link rel="canonical" href="https://{{DOMAIN}}/">
+
+  <meta property="og:title" content="{{BUSINESS_NAME}} — {{HEADLINE}}">
+  <meta property="og:description" content="{{DESCRIPTION}}">
+  <meta property="og:image" content="https://{{DOMAIN}}/assets/img/og-image.jpg">
+  <meta property="og:url" content="https://{{DOMAIN}}/">
+  <meta property="og:type" content="website">
+
+  <!-- Core Web Vitals: Preload critical assets -->
+  <link rel="preload" as="image" href="assets/img/hero-mobile.webp" media="(max-width: 768px)">
+  <link rel="preload" as="image" href="assets/img/hero-desktop.webp" media="(min-width: 769px)">
+  <!-- Solo precargar fuentes si son críticas para el LCP -->
+  <!-- <link rel="preload" href="assets/fonts/inter-variable.woff2" as="font" type="font/woff2" crossorigin> -->
+
+  <link rel="stylesheet" href="styles.css?v=1.0.0">
+</head>
+<body>
+
+  <!-- ============ HEADER ============ -->
+  <header class="header">
+    <div class="container header-inner">
+      <a href="/" class="logo">{{BUSINESS_NAME}}</a>
+      <nav class="nav" aria-label="Navegación Principal">
+        <ul class="nav-list">
+          <li><a href="#servicios">Servicios</a></li>
+          <li><a href="#proceso">Proceso</a></li>
+          <li><a href="#resenas">Opiniones</a></li>
+        </ul>
+      </nav>
+      <a href="https://wa.me/{{WHATSAPP}}" class="btn btn-primary btn-sm" aria-label="Contactar por WhatsApp">Contacto</a>
+    </div>
+  </header>
+
+  <!-- ============ MAIN CONTENT ============ -->
+  <main>
+    
+    <!-- HERO SECTION (Critical LCP, visible sin JS) -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero-container">
+        <div class="hero-content">
+          <!-- H1 visible inmediatamente, NUNCA opacity: 0 -->
+          <h1 id="hero-title" class="hero-title">{{HEADLINE}}</h1>
+          <p class="hero-description">{{DESCRIPTION}}</p>
+          <div class="hero-actions">
+            <a href="https://wa.me/{{WHATSAPP}}" class="btn btn-primary">Empieza Hoy</a>
+            <a href="#servicios" class="btn btn-secondary">Ver Servicios</a>
+          </div>
+        </div>
+        
+        <div class="hero-media">
+          <picture class="media-picture">
+            <source media="(max-width: 768px)" srcset="assets/img/hero-mobile.webp">
+            <img src="assets/img/hero-desktop.webp" alt="Trabajo principal de {{BUSINESS_NAME}}" width="1200" height="800" fetchpriority="high" loading="eager" decoding="sync">
+          </picture>
+        </div>
+      </div>
+    </section>
+
+    <!-- BENTO / SERVICIOS (IntersectionObserver Reveals) -->
+    <section id="servicios" class="section section-services bg-alt" aria-labelledby="services-title">
+      <div class="container">
+        <div class="section-header reveal">
+          <h2 id="services-title">Nuestros Servicios</h2>
+          <p>Especialistas en la zona de {{CITY}}.</p>
+        </div>
+        
+        <div class="bento-grid">
+          <!-- Item 1 -->
+          <article class="bento-card reveal">
+            <div class="bento-content">
+              <h3>Servicio Principal 1</h3>
+              <p>Descripción rápida del valor que aporta este servicio a los clientes de {{BUSINESS_NAME}}.</p>
+            </div>
+            <div class="bento-media">
+              <picture class="media-picture">
+                <source media="(max-width: 768px)" srcset="assets/img/service-1-mobile.webp">
+                <img src="assets/img/service-1-desktop.webp" alt="Servicio 1" loading="lazy" decoding="async" width="800" height="600">
+              </picture>
+            </div>
+          </article>
+          
+          <!-- Item 2 -->
+          <article class="bento-card reveal">
+            <div class="bento-content">
+              <h3>Servicio Secundario 2</h3>
+              <p>Solución complementaria en {{CITY}}.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS SLIDER (Vanilla JS) -->
+    <section id="resenas" class="section section-testimonials" aria-labelledby="reviews-title">
+      <div class="container">
+        <h2 id="reviews-title" class="section-title reveal">Lo que dicen en {{CITY}}</h2>
+        
+        <div class="slider-wrapper reveal" aria-roledescription="carousel">
+          <div class="slider-track" data-slider-track>
+            <!-- Card 1 -->
+            <div class="slider-card" aria-roledescription="slide">
+              <p class="review-text">"El mejor servicio de {{COUNTRY}}, altamente recomendado."</p>
+              <p class="review-author">— Cliente Satisfecho 1</p>
+            </div>
+            <!-- Card 2 -->
+            <div class="slider-card" aria-roledescription="slide">
+              <p class="review-text">"Atención increíble y resultados desde el primer día."</p>
+              <p class="review-author">— Cliente Satisfecho 2</p>
+            </div>
+          </div>
+          
+          <div class="slider-controls">
+            <button class="slider-btn prev" aria-label="Ver reseña anterior" data-slider-prev>←</button>
+            <div class="slider-dots" data-slider-dots></div>
+            <button class="slider-btn next" aria-label="Ver reseña siguiente" data-slider-next>→</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer bg-dark">
+    <div class="container footer-grid">
+      <div class="footer-col">
+        <p class="footer-logo">{{BUSINESS_NAME}}</p>
+        <p>Trabajando en {{CITY}}, {{COUNTRY}}.</p>
+      </div>
+      <div class="footer-col">
+        <p class="footer-title">Contacto</p>
+        <p><a href="mailto:{{EMAIL}}">{{EMAIL}}</a></p>
+        <p><a href="https://wa.me/{{WHATSAPP}}">WhatsApp</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script defer src="main.js?v=1.0.0"></script>
+</body>
+</html>

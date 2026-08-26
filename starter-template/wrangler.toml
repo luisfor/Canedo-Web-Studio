@@ -1,0 +1,8 @@
+name = "{{SLUG}}"
+compatibility_date = "2024-03-20"
+pages_build_output_dir = "."
+
+# Cloudflare Pages Configuration
+# La ofuscación de correos electrónicos debe configurarse manualmente
+# en el panel de Cloudflare (Scrape Shield) si es necesaria.
+# PRECAUCIÓN: Activarla sin cuidado puede bloquear el parseo del HTML (aumentar LCP).
