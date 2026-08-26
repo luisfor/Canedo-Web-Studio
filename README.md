@@ -248,4 +248,5 @@ Consulta el directorio `docs/` para leer nuestras estrategias formales de desarr
 1. `docs/PERFORMANCE.md` - Core Web Vitals, Imágenes y Scripts.
 2. `docs/NEW-SITE-CHECKLIST.md` - Pasos oficiales para crear un nuevo cliente.
 3. `docs/CLOUDFLARE.md` - Configuraciones óptimas y peligrosas.
-4. `docs/DEBUGGING.md` - Resolución de problemas en LCP y sliders.
+4. `docs/STRUCTURED-DATA.md` - Estrategia y plantillas de Schema.org / JSON-LD.
+5. `docs/DEBUGGING.md` - Resolución de problemas en LCP y sliders.
