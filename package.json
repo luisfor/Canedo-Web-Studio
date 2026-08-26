@@ -7,6 +7,8 @@
     "new-site": "node scripts/new-site.js",
     "validate": "node scripts/validate.js",
     "verify-production": "node scripts/verify-production.js",
+    "design-to-web:analyze": "node scripts/design-to-web/analyzer.js",
+    "test:design-to-web": "node tests/design-to-web/test.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/[TU-USUARIO]/[TU-REPO]/issues"
   },
-  "homepage": "https://github.com/[TU-USUARIO]/[TU-REPO]#readme"
+  "homepage": "https://github.com/[TU-USUARIO]/[TU-REPO]#readme",
+  "devDependencies": {
+    "ajv": "^8.20.0"
+  }
 }

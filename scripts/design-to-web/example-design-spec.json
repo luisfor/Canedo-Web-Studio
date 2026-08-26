@@ -1,0 +1,61 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "sourceType": "png",
+    "inferredMobile": true
+  },
+  "viewport": {
+    "referenceSize": "1440x900"
+  },
+  "designSystem": {
+    "colors": {
+      "primary": "#3B82F6",
+      "background": "#FFFFFF",
+      "text": "#1F2937"
+    },
+    "typography": {
+      "headings": { "family": "Inter", "weights": [700] },
+      "body": { "family": "Inter", "weights": [400, 500] }
+    },
+    "spacing": {
+      "base": "1rem",
+      "section": "4rem"
+    },
+    "breakpoints": {
+      "mobile": "390px",
+      "tablet": "768px",
+      "desktop": "1440px"
+    }
+  },
+  "assets": [
+    {
+      "id": "hero-image",
+      "type": "image",
+      "status": "PLACEHOLDER"
+    }
+  ],
+  "sections": [
+    {
+      "id": "hero-section",
+      "type": "hero",
+      "layout": { "display": "flex", "flexDirection": "row", "alignItems": "center" },
+      "style": { "backgroundColor": "background" },
+      "responsive": { "mobile": { "flexDirection": "column" } },
+      "components": [
+        {
+          "id": "hero-heading",
+          "type": "heading",
+          "content": "Transform Your Business",
+          "style": { "color": "text", "fontSize": "3rem", "fontWeight": 700 },
+          "layout": { "marginBottom": "base" }
+        },
+        {
+          "id": "hero-cta",
+          "type": "button",
+          "content": "Get Started",
+          "style": { "backgroundColor": "primary", "color": "#FFFFFF", "borderRadius": "8px" }
+        }
+      ]
+    }
+  ]
+}
