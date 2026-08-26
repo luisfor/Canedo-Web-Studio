@@ -13,6 +13,7 @@
     "test:design-to-web": "node tests/design-to-web/test.js",
     "test:design-to-web-builder": "node tests/design-to-web/test-builder.js",
     "test:design-to-web-qa": "node tests/design-to-web/test-qa.js",
+    "test:design-to-web-gemini": "node tests/design-to-web/test-gemini.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -28,7 +29,9 @@
   },
   "homepage": "https://github.com/[TU-USUARIO]/[TU-REPO]#readme",
   "devDependencies": {
+    "@google/genai": "^2.19.0",
     "ajv": "^8.20.0",
+    "dotenv": "^17.4.2",
     "pixelmatch": "^7.2.0",
     "pngjs": "^7.0.0",
     "puppeteer": "^25.9.0",
