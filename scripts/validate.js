@@ -41,36 +41,102 @@ function checkAsset(relPath, sourceFile) {
   }
 }
 
-// 1. Validar HTML
-const htmlPath = path.join(targetDir, 'index.html');
-if (fs.existsSync(htmlPath)) {
+// Validate JSON-LD
+function validateJsonLd(filePath, html) {
+  const regex = /<script\s+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+  let match;
+  let count = 0;
+  while ((match = regex.exec(html)) !== null) {
+    count++;
+    const jsonStr = match[1];
+    
+    // Check for www (specifically in URLs)
+    if (/https?:\/\/www\./i.test(jsonStr)) {
+      report('WARNING', `El JSON-LD en ${path.basename(filePath)} contiene URLs con 'www'. Se prefiere dominio desnudo.`);
+    }
+
+    try {
+      const data = JSON.parse(jsonStr);
+      report('PASS', `JSON-LD válido en ${path.basename(filePath)} (Bloque ${count})`);
+      
+      // Duplicate ID Check
+      if (data['@graph'] && Array.isArray(data['@graph'])) {
+        const ids = new Set();
+        let duplicate = false;
+        for (const item of data['@graph']) {
+          if (item['@id']) {
+            if (ids.has(item['@id'])) {
+              report('ERROR', `DUPLICATE @ID: ${item['@id']} en ${path.basename(filePath)}`);
+              duplicate = true;
+            }
+            ids.add(item['@id']);
+          }
+        }
+        if (!duplicate) report('PASS', `No hay @id duplicados en ${path.basename(filePath)}`);
+      }
+
+      // Simple checks
+      const strData = JSON.stringify(data);
+      if (strData.includes('{{') && strData.includes('}}')) {
+        report('WARNING', `Placeholders sin reemplazar en el JSON-LD de ${path.basename(filePath)}`);
+      }
+      
+      // Look for canonical vs mainEntity
+      const canonicalMatch = html.match(/<link\s+rel=["']canonical["']\s+href=["']([^"']+)["']/i);
+      if (canonicalMatch) {
+        const canonical = canonicalMatch[1];
+        if (strData.includes('mainEntityOfPage') && !strData.includes(canonical)) {
+           report('WARNING', `El canonical (${canonical}) no parece coincidir exactamente con mainEntityOfPage en ${path.basename(filePath)}`);
+        }
+      }
+
+    } catch (e) {
+      report('ERROR', `Error al parsear JSON-LD en ${path.basename(filePath)}: ${e.message}`);
+    }
+  }
+}
+
+
+// 1. Validar HTML (todos los archivos .html)
+const files = fs.readdirSync(targetDir);
+const htmlFiles = files.filter(f => f.endsWith('.html'));
+
+if (htmlFiles.length === 0) {
+  report('ERROR', 'No se encontraron archivos HTML en el directorio.');
+}
+
+htmlFiles.forEach(file => {
+  const htmlPath = path.join(targetDir, file);
   let html = fs.readFileSync(htmlPath, 'utf8');
+  
+  validateJsonLd(htmlPath, html);
+
   html = html.replace(/<!--[\s\S]*?-->/g, ''); // strip HTML comments
   
   checkPlaceholders(htmlPath, html);
   
   // H1 Check
-  const h1Matches = html.match(/<h1\b[^>]*>(.*?)<\/h1>/gi);
+  const h1Matches = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/gi);
   if (!h1Matches) {
-    report('ERROR', 'No se encontró ninguna etiqueta <h1>.');
+    report('ERROR', `No se encontró ninguna etiqueta <h1> en ${file}.`);
   } else if (h1Matches.length > 1) {
-    report('ERROR', `Se encontraron ${h1Matches.length} etiquetas <h1>. Solo debe haber 1.`);
+    report('ERROR', `Se encontraron ${h1Matches.length} etiquetas <h1> en ${file}. Solo debe haber 1.`);
   } else {
-    report('PASS', 'Existe exactamente 1 etiqueta <h1>.');
+    report('PASS', `Existe exactamente 1 etiqueta <h1> en ${file}.`);
   }
 
   // Google Fonts Check
   if (html.includes('fonts.googleapis.com')) {
-    report('ERROR', 'Se detectaron Google Fonts externos (fonts.googleapis.com). Usa fuentes locales.');
+    report('ERROR', `Se detectaron Google Fonts externos en ${file}. Usa fuentes locales.`);
   } else {
-    report('PASS', 'No hay Google Fonts externos en el HTML.');
+    report('PASS', `No hay Google Fonts externos en ${file}.`);
   }
 
   // ScrollTrigger Check
   if (html.includes('ScrollTrigger.min.js')) {
-    report('ERROR', 'Se detectó referencia a ScrollTrigger.min.js en el HTML. Prohibido por defecto.');
+    report('ERROR', `Se detectó referencia a ScrollTrigger.min.js en ${file}. Prohibido por defecto.`);
   } else {
-    report('PASS', 'No hay referencias a ScrollTrigger en el HTML.');
+    report('PASS', `No hay referencias a ScrollTrigger en ${file}.`);
   }
 
   // Check images
@@ -79,19 +145,19 @@ if (fs.existsSync(htmlPath)) {
   let missingAlt = 0;
   while ((imgMatch = imgRegex.exec(html)) !== null) {
     if (!imgMatch[0].includes('alt=')) missingAlt++;
-    checkAsset(imgMatch[1], 'index.html');
+    checkAsset(imgMatch[1], file);
   }
   
   const sourceRegex = /<source[^>]+srcset=["']([^"']+)["'][^>]*>/gi;
   let sourceMatch;
   while ((sourceMatch = sourceRegex.exec(html)) !== null) {
-    checkAsset(sourceMatch[1], 'index.html');
+    checkAsset(sourceMatch[1], file);
   }
 
   if (missingAlt > 0) {
-    report('ERROR', `${missingAlt} imágenes no tienen atributo alt.`);
+    report('ERROR', `${missingAlt} imágenes no tienen atributo alt en ${file}.`);
   } else {
-    report('PASS', 'Todas las imágenes tienen atributo alt.');
+    report('PASS', `Todas las imágenes tienen atributo alt en ${file}.`);
   }
 
   // Check external scripts/links
@@ -99,7 +165,7 @@ if (fs.existsSync(htmlPath)) {
   let linkMatch;
   while ((linkMatch = linkRegex.exec(html)) !== null) {
     if (!linkMatch[1].startsWith('http') && !linkMatch[1].startsWith('#')) {
-      checkAsset(linkMatch[1], 'index.html');
+      checkAsset(linkMatch[1], file);
     }
   }
 
@@ -107,13 +173,10 @@ if (fs.existsSync(htmlPath)) {
   let scriptMatch;
   while ((scriptMatch = scriptRegex.exec(html)) !== null) {
     if (!scriptMatch[1].startsWith('http')) {
-      checkAsset(scriptMatch[1], 'index.html');
+      checkAsset(scriptMatch[1], file);
     }
   }
-
-} else {
-  report('ERROR', 'Falta index.html');
-}
+});
 
 // 2. Validar CSS
 const cssPath = path.join(targetDir, 'styles.css');
