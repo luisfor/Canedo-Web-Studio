@@ -171,6 +171,18 @@ Si el cliente no tiene web, pero tiene un Instagram lleno de fotos y precios (ej
 
 *(Recuerda: Tras cualquiera de estos comandos, el Kit entrará en la **Fase de Briefing** y te preguntará qué módulos extra quieres activar antes de empezar a programar).*
 
+### 4. Automatizar la creación con el "Molde de Oro" (Starter Kit)
+Si ya tienes claro el cliente y no quieres clonar carpetas a mano, pídele a la IA que lo haga por ti usando tus scripts locales:
+> *"Voy a lanzar un nuevo cliente llamado 'Clínica Dental Madrid'. Ejecuta por mí el comando `npm run new-site` en la terminal, contesta a todos sus prompts con los datos de esta clínica y genérame la carpeta en cazas/clinica-madrid. Cuando termines, ejecútale un `npm run validate` para garantizarnos de que la calidad técnica está al 100%."*
+
+### 5. Auditar tu propio código antes de entregar
+Si hiciste cambios manuales (como meter imágenes nuevas o cambiar CSS) y quieres asegurarte de no haber roto el PageSpeed:
+> *"Acabo de meter cambios manuales en cazas/clinica-madrid. Ejecuta el validador oficial (`npm run validate cazas/clinica-madrid`) y dime si me he olvidado algún atributo ALT, si rompí el H1 o si hay recursos dando error 404."*
+
+### 6. Verificar el caché en Producción (Cloudflare)
+Si el cliente te dice que no ve los cambios que acabas de subir:
+> *"El cliente dice que la web sigue igual. Ejecuta `npm run verify-production https://clinica-madrid.com clinica-madrid` para comprobar si Cloudflare está sirviendo una versión antigua atrapada en el Edge Caché."*
+
 ---
 
 ## 🚀 QUICK START — DE CERO A NUEVA WEB
