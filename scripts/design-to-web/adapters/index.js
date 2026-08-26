@@ -10,7 +10,7 @@ function getAdapter() {
 
   switch (provider.toLowerCase()) {
     case 'gemini':
-      throw new Error('Gemini adapter no implementado todavía.');
+      return require('./gemini-adapter');
     case 'claude':
       throw new Error('Claude adapter no implementado todavía.');
     case 'mock':
