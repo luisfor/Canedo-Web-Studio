@@ -183,6 +183,10 @@ Si hiciste cambios manuales (como meter imágenes nuevas o cambiar CSS) y quiere
 Si el cliente te dice que no ve los cambios que acabas de subir:
 > *"El cliente dice que la web sigue igual. Ejecuta `npm run verify-production https://clinica-madrid.com clinica-madrid` para comprobar si Cloudflare está sirviendo una versión antigua atrapada en el Edge Caché."*
 
+### 7. Crear Embudos y Landing Pages de Venta (Funnels)
+El Starter Kit (estático y ultrarrápido) es tu mejor arma para Landings de conversión porque un tiempo de carga nulo abarata radicalmente tus anuncios (CPA) en Meta/Google Ads. Para vender productos o captar leads sin necesidad de plataformas caras como ClickFunnels, dale a la IA esta orden:
+> *"Crea un nuevo proyecto en cazas/funnel-ventas usando el starter-template. Esta será una Landing Page de Ventas (VSL). Necesito un diseño agresivo enfocado a la conversión. Enlaza todos los botones de 'Comprar Ahora' directamente a este enlace de pago de Stripe: [Tu Link de Stripe]. Además, crea una página 'gracias.html' para la redirección post-compra, e incluye un formulario (Opt-in) cuyo 'action' apunte a mi Webhook de Make.com/n8n para capturar los emails."*
+
 ---
 
 ## 🚀 QUICK START — DE CERO A NUEVA WEB
