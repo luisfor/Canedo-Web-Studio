@@ -173,6 +173,33 @@ Si el cliente no tiene web, pero tiene un Instagram lleno de fotos y precios (ej
 
 ---
 
+## 🚀 QUICK START — DE CERO A NUEVA WEB
+
+Ejemplo del flujo real de trabajo:
+
+```bash
+# 1. Crear el proyecto (te preguntará los datos)
+npm run new-site
+
+# 2. Personalizar assets (opcional)
+# - Reemplaza los placeholders en cazas/<slug>/assets/img/
+# - Añade WOFF2 a cazas/<slug>/assets/fonts/ si necesitas
+
+# 3. Validar
+npm run validate <slug>
+
+# 4. Preview local (usa tu servidor preferido, ej. Live Server o http-server)
+npx http-server cazas/<slug>
+
+# 5. Deploy
+# - Cloudflare Pages, Hostinger, Vercel...
+
+# 6. Verify production
+npm run verify-production https://cliente.com <slug>
+```
+
+---
+
 ## 🏗️ Starter Kit y Herramientas Automáticas
 
 Hemos introducido la nueva arquitectura **Canedo Web Studio Starter Kit**, un "molde de oro" diseñado para LCP bajo y cero deuda técnica.
