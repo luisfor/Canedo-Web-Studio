@@ -170,3 +170,21 @@ Si el cliente no tiene web, pero tiene un Instagram lleno de fotos y precios (ej
 > *"Créame una web premium para un negocio. No tienen web antigua, pero extrae toda la información de sus redes sociales aquí: **[Pega el link del Instagram]** y **[Link de su Facebook]**. Extrae de qué va su negocio, sus productos principales y su teléfono de contacto. Con toda esa información, génerame la web con colores corporativos que peguen con sus fotos y redacta una propuesta comercial para poder venderle la web."*
 
 *(Recuerda: Tras cualquiera de estos comandos, el Kit entrará en la **Fase de Briefing** y te preguntará qué módulos extra quieres activar antes de empezar a programar).*
+
+---
+
+## 🏗️ Starter Kit y Herramientas Automáticas
+
+Hemos introducido la nueva arquitectura **Canedo Web Studio Starter Kit**, un "molde de oro" diseñado para LCP bajo y cero deuda técnica.
+
+### Comandos de Desarrollo
+- `npm run new-site`: Crea un proyecto nuevo interactivo para un cliente (clonando `starter-template/`). NUNCA sobrescribe clientes existentes.
+- `npm run validate <cazas/slug>`: Audita un sitio en busca de errores (SEO, H1 múltiples, imágenes sin alt, GSAP innecesario).
+- `npm run verify-production <url> <slug>`: Audita la caché en Cloudflare comparando el sitio vivo con los assets locales (Solo lectura).
+
+### Documentación Estándar
+Consulta el directorio `docs/` para leer nuestras estrategias formales de desarrollo:
+1. `docs/PERFORMANCE.md` - Core Web Vitals, Imágenes y Scripts.
+2. `docs/NEW-SITE-CHECKLIST.md` - Pasos oficiales para crear un nuevo cliente.
+3. `docs/CLOUDFLARE.md` - Configuraciones óptimas y peligrosas.
+4. `docs/DEBUGGING.md` - Resolución de problemas en LCP y sliders.
