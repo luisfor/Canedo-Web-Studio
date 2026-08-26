@@ -1,6 +1,6 @@
 import json
 
-with open("cazas/canedostudio.com/n8n/video-shorts-agents.json", "r") as f:
+with open("cazas/[tu-dominio.com]/n8n/video-shorts-agents.json", "r") as f:
     data = json.load(f)
 
 # Shift all nodes after "Tomar Solo el Último" by +600 on the X axis
@@ -79,7 +79,7 @@ conns["Guardar en Sheets"] = {
     "main": [ [ {"node": "El Analizador", "type": "main", "index": 0} ] ]
 }
 
-with open("cazas/canedostudio.com/n8n/video-shorts-agents.json", "w") as f:
+with open("cazas/[tu-dominio.com]/n8n/video-shorts-agents.json", "w") as f:
     json.dump(data, f, indent=2)
 
 print("Injected Google Sheets nodes successfully.")

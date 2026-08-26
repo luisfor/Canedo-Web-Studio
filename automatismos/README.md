@@ -6,8 +6,8 @@ kit: texto con IA, portada generada con IA, aviso por email. Coste: **0 €/mes*
 99 €/mes.
 
 Implementación de referencia (funciona en producción desde 2026-08-16):
-- Robot: `automatismos/canedostudio-blog-bot/`
-- Funciones de la web: `cazas/canedostudio.com/functions/`
+- Robot: `automatismos/ejemplo-blog-bot/`
+- Funciones de la web: `cazas/[tu-dominio.com]/functions/`
 
 ---
 
@@ -29,7 +29,7 @@ Implementación de referencia (funciona en producción desde 2026-08-16):
 
 ## Cómo clonarlo para un cliente nuevo
 
-1. Copia la carpeta: `cp -r automatismos/canedostudio-blog-bot automatismos/[cliente]-blog-bot`.
+1. Copia la carpeta: `cp -r automatismos/ejemplo-blog-bot automatismos/[cliente]-blog-bot`.
 2. En su `wrangler.toml`: cambia `name` y crea un KV nuevo:
    `npx wrangler kv namespace create BLOG_POSTS` → pega el id que devuelve.
 3. Pon un token nuevo: `npx wrangler secret put BOT_TOKEN` (y guárdalo en

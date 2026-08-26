@@ -1,8 +1,8 @@
-# 🏛️ Canedo Web Studio v1 — para Claude Code
+# 🏛️ [TU AGENCIA WEB] v1 — para Claude Code
 
 > ¿Primera vez? Abre **[`EMPIEZA-AQUI.md`](EMPIEZA-AQUI.md)**: Configura tus llaves gratuitas en 3 pasos y a trabajar.
 
-Convierte Claude Code en tu agencia de desarrollo automatizada. **Canedo Web Studio es un kit público y de código abierto (open-source) que cualquiera puede usar y adaptar**. Te permite crear webs estáticas premium ($30,000 look) para negocios locales, gestionando todo el ciclo de vida: desde la prospección y rediseño, hasta la venta y el despliegue automático.
+Convierte Claude Code en tu agencia de desarrollo automatizada. **[TU AGENCIA WEB] es un kit público y de código abierto (open-source) que cualquiera puede usar y adaptar**. Te permite crear webs estáticas premium ($30,000 look) para negocios locales, gestionando todo el ciclo de vida: desde la prospección y rediseño, hasta la venta y el despliegue automático.
 
 ---
 
@@ -57,7 +57,7 @@ El asistente incluye un auditor especializado capaz de revisar el SEO técnico d
 Un robot que **escribe y publica artículos solo** en el blog de la web: texto con IA, portada generada con IA, 2 publicaciones al día. Coste: **0 €/mes** (capas gratuitas de Cloudflare). Funciona en canedostudio.com desde agosto 2026.
 - **Sistema híbrido de temas:** 210 temas curados únicos → inspiración en prensa real de marketing (RSS, edición de la mañana) → temas propuestos por IA. Anti-duplicados en 3 capas: nunca repite un artículo.
 - **Sin servidores ni n8n:** un Cloudflare Worker + KV lo hace todo.
-- Receta completa para clonarlo a cualquier cliente en `automatismos/README.md`; robot de referencia en `automatismos/canedostudio-blog-bot/`.
+- Receta completa para clonarlo a cualquier cliente en `automatismos/README.md`; robot de referencia en `automatismos/ejemplo-blog-bot/`.
 - Se vende dentro del mantenimiento de 99 €/mes.
 
 ### 10. ⭐ Sistema de Reseñas (slider + embudo) — PROBADO EN PRODUCCIÓN
@@ -73,7 +73,7 @@ Las dos piezas de la reputación online, listas para copiar en cualquier web:
 | `.claude/skills/luis-rediseño-premium/` | El motor especializado en "Cazar", rediseñar URLs e informes. |
 | `.claude/skills/luis-estudio-web/` | El motor para crear desde cero, generar imágenes y gestionar los despliegues. |
 | `automatismos/README.md` | La receta del blog autogestionado (robot redactor con IA, 0 €/mes). |
-| `automatismos/canedostudio-blog-bot/` | El robot de referencia, funcionando en producción. |
+| `automatismos/ejemplo-blog-bot/` | El robot de referencia, funcionando en producción. |
 | `componente-resenas.md` | El patrón del slider de reseñas estilo Google + el embudo de calificación. |
 | `plantilla-calificanos.html` | La página del embudo de reseñas lista para copiar a cualquier cliente. |
 | `.env` (Oculto) | Donde guardas de forma segura tus API Keys (OpenRouter). No se sube a GitHub. |
@@ -111,7 +111,7 @@ claude
   *(La IA te preguntará si en Local, Hostinger o Cloudflare).*
 
 ---
-*Desarrollado para la agencia Canedo Web Studio.*
+*Desarrollado para la agencia [TU AGENCIA WEB].*
 
 ---
 
@@ -159,7 +159,7 @@ Para que el Kit entienda exactamente qué quieres hacer, aquí tienes las "órde
 
 ### 1. Crear una web desde cero (Ideal para tu propia Agencia)
 Si no tienes web ni redes sociales, dale toda la información tú mismo:
-> *"Créame una web premium desde cero para mi agencia. Se llama **Canedo Web Studio**. Ofrecemos diseño de ecosistemas automatizados con IA. Nuestros servicios son: 1. Webs premium de $30k, 2. Chatbots de Inteligencia Artificial, 3. Blogs Autogestionados, y 4. Embudos de Reseñas de Google Maps. Quiero un diseño oscuro, elegante y muy tecnológico. El teléfono es +34 600 000 000 y el email contacto@canedostudio.com. Haz que los textos suenen persuasivos y lujosos."*
+> *"Créame una web premium desde cero para mi agencia. Se llama **[TU AGENCIA WEB]**. Ofrecemos diseño de ecosistemas automatizados con IA. Nuestros servicios son: 1. Webs premium de $30k, 2. Chatbots de Inteligencia Artificial, 3. Blogs Autogestionados, y 4. Embudos de Reseñas de Google Maps. Quiero un diseño oscuro, elegante y muy tecnológico. El teléfono es [TU TELEFONO] y el email hola@tuagencia.com. Haz que los textos suenen persuasivos y lujosos."*
 
 ### 2. Cazar una web existente (El Rediseño)
 Si el cliente ya tiene una web pero es fea y vieja, la IA entrará, leerá todos sus servicios y le montará una versión premium:
@@ -218,7 +218,7 @@ npm run verify-production https://cliente.com <slug>
 
 ## 🏗️ Starter Kit y Herramientas Automáticas
 
-Hemos introducido la nueva arquitectura **Canedo Web Studio Starter Kit**, un "molde de oro" diseñado para LCP bajo y cero deuda técnica.
+Hemos introducido la nueva arquitectura **[TU AGENCIA WEB] Starter Kit**, un "molde de oro" diseñado para LCP bajo y cero deuda técnica.
 
 ### Comandos de Desarrollo
 - `npm run new-site`: Crea un proyecto nuevo interactivo para un cliente (clonando `starter-template/`). NUNCA sobrescribe clientes existentes.
