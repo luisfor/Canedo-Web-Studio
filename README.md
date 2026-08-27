@@ -249,4 +249,5 @@ Consulta el directorio `docs/` para leer nuestras estrategias formales de desarr
 2. `docs/NEW-SITE-CHECKLIST.md` - Pasos oficiales para crear un nuevo cliente.
 3. `docs/CLOUDFLARE.md` - Configuraciones óptimas y peligrosas.
 4. `docs/STRUCTURED-DATA.md` - Estrategia y plantillas de Schema.org / JSON-LD.
-5. `docs/DEBUGGING.md` - Resolución de problemas en LCP y sliders.
+5. `docs/PREMIUM-DESIGN-SYSTEM.md` - Reglas maestras de diseño y arquetipos visuales.
+6. `docs/DEBUGGING.md` - Resolución de problemas en LCP y sliders.
