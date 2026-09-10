@@ -1,0 +1,31 @@
+name = "social-media-bot"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[[rules]]
+type = "CompiledWasm"
+globs = ["**/*.wasm"]
+fallthrough = true
+
+[[rules]]
+type = "Data"
+globs = ["**/*.ttf"]
+fallthrough = true
+# Habilitar Workers AI (gratuito)
+[ai]
+binding = "AI"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "canedo-content"
+
+# Base de datos D1 local para la memoria permanente y los fingerprints
+[[d1_databases]]
+binding = "DB"
+database_name = "social-media-history"
+database_id = "9a3e12c8-27e8-4fc8-b1b2-bd8d20d67941" # Se sobreescribe al crear la DB real
+
+# Configuración de Cron Jobs
+[triggers]
+crons = ["0 14 * * *"] # 10:00 AM hora del este (UTC-4) / 9:00 AM CDMX (UTC-6)

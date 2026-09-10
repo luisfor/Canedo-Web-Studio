@@ -1,0 +1,21 @@
+{
+  "name": "social-media-bot",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "private": true,
+  "scripts": {
+    "start": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:init": "wrangler d1 execute social-media-history --local --file=./schema.sql"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "@resvg/resvg-wasm": "^2.6.2",
+    "satori": "^0.33.4",
+    "yoga-wasm-web": "^0.3.3"
+  }
+}

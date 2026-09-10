@@ -1,0 +1,8 @@
+name = "social-media-bot-test-standalone"
+main = "test_worker_standalone.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[[rules]]
+type = "CompiledWasm"
+globs = ["**/*.wasm", "**/*.wasm?module"]
