@@ -1,0 +1,5 @@
+
+.dev.vars
+test_*.js
+test_*.mjs
+test_*.cjs

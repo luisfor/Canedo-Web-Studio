@@ -1,0 +1,1 @@
+This folder contains the built output assets for the worker "compositor-test" generated at 2026-09-10T12:53:20.294Z.
