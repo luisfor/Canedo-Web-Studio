@@ -63,6 +63,66 @@ Donde "tag" es UNA de: Estrategia, Chatbots, Reseñas, Automatización, Diseño 
 "content" es una lista de 8 a 14 bloques. type puede ser "p" (párrafo), "h2" (subtítulo) o "quote" (una sola cita potente por artículo como máximo).
 Estructura recomendada: arranque con una verdad incómoda, desarrollo con 2-3 subtítulos, y cierre con una idea accionable. El último bloque puede sugerir con naturalidad que una llamada de diagnóstico aclara si encaja en el negocio del lector.`;
 
+
+const BRIEF_PROMPT = `Eres el Director Editorial del blog "Insights" de [TU AGENCIA WEB].
+Tu objetivo es crear un Brief Editorial Premium para un nuevo artículo. 
+El Brief NO puede ser un cliché. Debe contener ideas contraintuitivas, trade-offs técnicos reales y evitar promesas genéricas B2B.
+
+Devuelve ÚNICAMENTE un JSON válido con la siguiente estructura:
+{
+  "audience": "...",
+  "businessProblem": "Debe ser muy específico, no 'falta de ventas'.",
+  "canedoRelevance": "...",
+  "primaryService": "...",
+  "ctaIntent": "...",
+  "funnelStage": "...",
+  "uniqueThesis": "Tesis única y fuerte (no debe ser igual al tema).",
+  "nonObviousInsight": "Idea contraintuitiva, no obvia.",
+  "tradeoff": "Dilema real (ej: costo de abstracción vs riesgo de lock-in).",
+  "whenNotApplicable": "...",
+  "recommendedStructure": "...",
+  "readerShouldLearn": ["...", "..."],
+  "requiredExamples": ["...", "..."],
+  "answerableQuestions": ["...", "..."],
+  "evaluation": {
+    "thesisSpecificity": {"score": 0-100, "reason": "..."},
+    "insightOriginality": {"score": 0-100, "reason": "..."},
+    "businessProblemSpecificity": {"score": 0-100, "reason": "..."},
+    "tradeoffQuality": {"score": 0-100, "reason": "..."},
+    "practicalPotential": {"score": 0-100, "reason": "..."},
+    "canedoRelevance": {"score": 0-100, "reason": "..."}
+  }
+}
+Solo JSON, sin markdown.`;
+
+const AUDIT_PROMPT = `Eres el Critical Editor (Auditor Premium) del blog "Insights".
+Tu tarea es auditar un artículo contra su Brief. Eres EXTREMADAMENTE SEVERO.
+Si el artículo usa clichés ("lleva tu negocio al siguiente nivel", "en el mundo digital de hoy"), o inventa datos/estadísticas falsas, penalízalo fuertemente.
+Evalúa las siguientes métricas (0 a 100):
+originality, usefulness, searchIntentMatch, technicalAccuracy, trust, depth, specificity, nonObviousness, thesisStrength, practicalValue, nuance, humanness, geoAnswerability, ctaRelevance, brandRelevance, commercialRelevance, languageConsistency, promiseFulfillment.
+
+Para CADA métrica, devuelve un objeto con: { "score": 0-100, "evidence": "...", "problem": "...", "correction": "..." }
+
+Devuelve ÚNICAMENTE un JSON válido con esta estructura:
+{
+  "approved": boolean,
+  "metrics": {
+    "originality": { "score": 90, "evidence": "...", "problem": "...", "correction": "..." },
+    // (repite para TODAS las métricas)
+  },
+  "risks": {
+    "genericAiRisk": 0-100,
+    "duplicationRisk": 0-100,
+    "cannibalizationRisk": 0-100,
+    "claimCertaintyRisk": 0-100
+  },
+  "reasons": [
+    // Lista de los peores fallos que justifican el rechazo (si approved=false)
+    { "metric": "...", "score": 0, "evidence": "...", "problem": "...", "correction": "..." }
+  ]
+}
+Solo JSON, sin markdown.`;
+
 const TOPIC_PROMPT = `Eres el estratega de contenidos del blog "Insights" de [TU AGENCIA WEB].
 Respondes ÚNICAMENTE con JSON válido, sin markdown ni comentarios, con esta forma exacta:
 {"tema":"...","angulo":"...","img":"..."}
@@ -116,18 +176,26 @@ function readTextResponse(res) {
   return raw;
 }
 
-async function generateArticle(topic) {
-  const userPrompt = `Escribe el artículo del blog con este tema y enfoque.
-Tema: ${topic.tema}
-Enfoque: ${topic.angulo}
-Recuerda: SOLO el JSON, sin nada más.`;
-  const res = await this.AI.run(MODEL_TEXT, {
+async function generateArticle(env, brief, topic, attempt = 1, feedback = null, stats = null) {
+  if (stats) stats.writerCalls = (stats.writerCalls || 0) + 1;
+  let userPrompt = `Escribe el artículo del blog. NO inventes cifras, estadísticas, casos ni testimonios. Basate estrictamente en este Brief Editorial:
+${JSON.stringify(brief, null, 2)}`;
+  
+  if (attempt > 1 && feedback) {
+    userPrompt += `\n\nINTENTO ANTERIOR FALLIDO. FEEDBACK DEL AUDITOR:\n`;
+    userPrompt += JSON.stringify(feedback.reasons, null, 2);
+    userPrompt += `\n\nDebes corregir estos problemas estructurales y de profundidad en esta nueva versión.`;
+  }
+
+  userPrompt += `\n\nRecuerda: SOLO el JSON, sin nada más.`;
+
+  const res = await env.AI.run(MODEL_TEXT, {
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: userPrompt },
     ],
     max_tokens: 2800,
-    temperature: 0.72,
+    temperature: 0.75,
   });
   const data = extractJson(readTextResponse(res));
 
@@ -147,6 +215,94 @@ Recuerda: SOLO el JSON, sin nada más.`;
   };
 }
 
+
+async function createEditorialBrief(env, topic, stats = null) {
+  const failedBriefs = [];
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    if (stats) stats.briefCalls = (stats.briefCalls || 0) + 1;
+    let brief = null;
+    try {
+      const userPrompt = `Crea un Brief Editorial Premium para:\nTema: "${topic.tema}"\nEnfoque: "${topic.angulo}"`;
+      const res = await env.AI.run(MODEL_TEXT, {
+        messages: [
+          { role: "system", content: BRIEF_PROMPT },
+          { role: "user", content: userPrompt }
+        ],
+        max_tokens: 1500,
+        temperature: 0.8
+      });
+      brief = extractJson(readTextResponse(res));
+      
+      try {
+        // BRIEF GATE: Validaciones determinísticas estructurales
+        if (!brief.businessProblem || brief.businessProblem.split(" ").length < 5) throw new Error("businessProblem muy corto o vacío");
+        if (!brief.uniqueThesis || brief.uniqueThesis.trim().toLowerCase() === topic.tema.trim().toLowerCase()) throw new Error("uniqueThesis idéntica al tema");
+        if (!brief.nonObviousInsight || !brief.tradeoff || !brief.requiredExamples || brief.requiredExamples.length === 0) throw new Error("Faltan campos críticos obligatorios");
+        
+        // BRIEF GATE: Autoevaluación semántica (todos los scores deben ser >= 80)
+        if (!brief.evaluation) throw new Error("Falta nodo de evaluación");
+        const ev = brief.evaluation;
+        if ((ev.thesisSpecificity?.score || 0) < 80) throw new Error(`Tesis poco específica: ${ev.thesisSpecificity?.reason}`);
+        if ((ev.insightOriginality?.score || 0) < 80) throw new Error(`Insight no original: ${ev.insightOriginality?.reason}`);
+        if ((ev.businessProblemSpecificity?.score || 0) < 80) throw new Error(`Problema muy genérico: ${ev.businessProblemSpecificity?.reason}`);
+        if ((ev.tradeoffQuality?.score || 0) < 80) throw new Error(`Trade-off débil: ${ev.tradeoffQuality?.reason}`);
+        
+        brief.approved = true;
+        brief._failedBriefs = failedBriefs;
+        return brief;
+      } catch (validationErr) {
+        failedBriefs.push({ attempt, brief, error: validationErr.message });
+        validationErr.lastBrief = brief;
+        throw validationErr;
+      }
+    } catch(e) {
+      console.log(`Brief Gate falló (intento ${attempt}):`, e.message);
+      if (e.message.indexOf("Falta nodo") === -1 && !e.lastBrief) {
+         failedBriefs.push({ attempt, brief: null, error: e.message });
+      }
+      if (attempt === 3) {
+         const err = new Error("SKIP TOPIC: Brief no superó el umbral en 3 intentos.");
+         err.lastBrief = e.lastBrief || brief;
+         err._failedBriefs = failedBriefs;
+         throw err;
+      }
+    }
+  }
+}
+
+async function auditArticle(env, article, brief, stats = null) {
+  if (stats) stats.auditCalls = (stats.auditCalls || 0) + 1;
+  const userPrompt = `Audita el siguiente artículo generado contra su Brief Editorial.\n\nBRIEF:\n${JSON.stringify(brief, null, 2)}\n\nARTÍCULO:\n${JSON.stringify(article, null, 2)}`;
+  const res = await env.AI.run(MODEL_TEXT, {
+    messages: [
+      { role: "system", content: AUDIT_PROMPT },
+      { role: "user", content: userPrompt }
+    ],
+    max_tokens: 1800,
+    temperature: 0.4
+  });
+  const audit = extractJson(readTextResponse(res));
+  
+  // Deterministic checks override LLM approval
+  const text = JSON.stringify(article).toLowerCase();
+  if (text.includes("siguiente nivel") || text.includes("hoy en día") || text.includes("en el mundo digital")) {
+     audit.approved = false;
+     audit.reasons = audit.reasons || [];
+     audit.reasons.push({
+       metric: "languageConsistency", score: 0, evidence: "Uso de clichés de marketing", problem: "Cliché", correction: "Eliminar frases trilladas."
+     });
+  }
+  
+  // Check critical thresholds dynamically
+  const criticalMetrics = ["nonObviousness", "nuance", "humanness", "specificity"];
+  for (const m of criticalMetrics) {
+    if (audit.metrics && audit.metrics[m] && audit.metrics[m].score < 80) {
+      audit.approved = false;
+    }
+  }
+
+  return audit;
+}
 async function generateCover(topic) {
   const prompt =
     "Premium editorial photograph for a business blog, dark luxurious style, deep black background, " +
@@ -332,10 +488,30 @@ async function publish(env, hourUTC, modo) {
 
   const { topic, source } = await pickTopic(env, existingTitles, existingSlugs, state, hourUTC, modo);
 
-  const [article, imgBytes] = await Promise.all([
-    generateArticle.call(env, topic),
-    generateCover.call(env, topic),
-  ]);
+  const brief = await createEditorialBrief(env, topic);
+  
+  let article = null;
+  let auditResult = null;
+  let feedback = null;
+  
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      article = await generateArticle(env, brief, topic, attempt, feedback);
+      auditResult = await auditArticle(env, article, brief);
+      if (auditResult.approved) break;
+      feedback = auditResult;
+      article = null; // force retry
+    } catch(e) {
+      feedback = { reasons: [{ metric: "error", score: 0, evidence: "Exception", problem: e.message, correction: "Retry" }] };
+      article = null;
+    }
+  }
+  
+  if (!article) {
+     throw new Error("SKIP PUBLICATION: Quality Gate falló 3 veces.");
+  }
+  
+  const imgBytes = await generateCover.call(env, topic);
 
   let slug = slugify(article.title);
   if (existingSlugs.has(slug)) slug = slug + "-" + String(Date.now()).slice(-4);
@@ -460,6 +636,79 @@ export default {
         return new Response("Publicado [" + source + "]: " + post.title + " (/post.html?slug=" + post.slug + ")", { status: 200 });
       } catch (e) {
         return new Response("Error al publicar: " + e.message, { status: 500 });
+      }
+    }
+    if (url.pathname === "/test-benchmark") {
+      if (env.BENCHMARK_ENABLED !== "true") {
+        return new Response("Not Found", { status: 404 });
+      }
+      if (!env.BOT_TOKEN || url.searchParams.get("token") !== env.BOT_TOKEN) {
+        return new Response("Forbidden", { status: 403 });
+      }
+      
+      try {
+        const payload = await request.json();
+        const stats = { briefCalls: 0, writerCalls: 0, auditCalls: 0 };
+        
+        let brief = null;
+        let briefError = null;
+        let failedBriefs = [];
+        let lastBrief = null;
+        try {
+          brief = await createEditorialBrief(env, payload.topic, stats);
+          failedBriefs = brief._failedBriefs || [];
+        } catch(e) {
+          briefError = e.message;
+          lastBrief = e.lastBrief;
+          failedBriefs = e._failedBriefs || [];
+        }
+
+        const attempts = [];
+        let article = null;
+        let auditResult = null;
+        let feedback = null;
+        
+        if (brief) {
+          for (let attempt = 1; attempt <= 3; attempt++) {
+            let attemptArticle = null;
+            let attemptAudit = null;
+            try {
+              attemptArticle = await generateArticle(env, brief, payload.topic, attempt, feedback, stats);
+              attemptAudit = await auditArticle(env, attemptArticle, brief, stats);
+              
+              attempts.push({
+                attempt,
+                article: attemptArticle,
+                audit: attemptAudit,
+                feedbackSent: feedback
+              });
+              
+              if (attemptAudit.approved) {
+                 article = attemptArticle;
+                 break;
+              }
+              feedback = attemptAudit;
+            } catch (e) {
+              attempts.push({ attempt, error: e.message, feedbackSent: feedback });
+              feedback = { reasons: [{ metric: "error", score: 0, evidence: "Exception", problem: e.message, correction: "Retry" }] };
+            }
+          }
+        }
+        
+        stats.totalCalls = stats.briefCalls + stats.writerCalls + stats.auditCalls;
+        
+        return new Response(JSON.stringify({ 
+           topic: payload.topic,
+           brief, 
+           briefError,
+           lastBrief,
+           failedBriefs,
+           attempts, 
+           skipped: !article,
+           stats
+        }), { headers: { "content-type": "application/json" }});
+      } catch(e) {
+         return new Response(e.message, {status: 500});
       }
     }
     if (url.pathname === "/feed-check") {

@@ -1,0 +1,21 @@
+name = "canedostudio-sales-agent"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+TELEGRAM_ADMIN_CHAT_ID = "YOUR_CHAT_ID" # Configurar valor real vía entorno o dashboard
+
+[[d1_databases]]
+binding = "DB"
+database_name = "canedostudio_sales_agent_db"
+database_id = "c3b0039f-0bb9-46a4-8abe-4c7ce3f1c3f0"
+
+# SECRETS ESPERADOS (Configurar vía `wrangler secret put <NOMBRE>`):
+# GEMINI_API_KEY
+# TELEGRAM_SALES_BOT_TOKEN
+# TEST_API_SECRET
+# META_ACCESS_TOKEN
+# META_APP_SECRET
+# META_VERIFY_TOKEN
+# INSTAGRAM_ACCOUNT_ID
