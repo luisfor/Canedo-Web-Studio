@@ -1,0 +1,15 @@
+{
+  "name": "canedostudio-sales-agent",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:init": "wrangler d1 create canedostudio_sales_agent_db",
+    "db:migrate:local": "wrangler d1 execute canedostudio_sales_agent_db --local --file=./migrations/0000_initial_schema.sql",
+    "db:migrate:remote": "wrangler d1 execute canedostudio_sales_agent_db --remote --file=./migrations/0000_initial_schema.sql"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}

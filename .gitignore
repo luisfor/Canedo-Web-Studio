@@ -12,6 +12,7 @@ cazas/*
 .env.*
 !.env.example
 *.local.json
+.dev.vars
 
 # Secretos del kit (tokens del robot del blog, etc.) — NUNCA se suben
 secretos/
