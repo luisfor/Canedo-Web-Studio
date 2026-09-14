@@ -5,6 +5,8 @@
 
 
 
+import { Buffer } from 'node:buffer';
+
 async function signUrl(urlPath, expires, secret) {
   const encoder = new TextEncoder();
   const keyMaterial = await crypto.subtle.importKey(
@@ -87,7 +89,8 @@ Si la aceptas, devuelve ESTE JSON STRICTO:
   "problemFingerprint": "Problema específico y reconocible",
   "solutionFingerprint": "Nuestra solución o insight",
   "benefitFingerprint": "El beneficio real",
-  "visualFingerprint": "A premium, modern B2B advertisement image for Canedo Studio showing a digital automation concept. Clean, highly professional, no generic robots. Hyper-realistic. [Añadir descripción del concepto visual].",
+  "visualFingerprint": "Instrucciones para generar la imagen. DEBE adaptarse sutilmente al nicho del cliente (ej. si es gimnasio, usa elementos fitness; si es restaurante, mesas/platos) manteniendo la elegancia oscura B2B de Canedo Studio. No uses siempre escritorios genéricos.",
+  "image_intent": "Debe ser 'USE_ORIGINAL' si el usuario envió una imagen y pidió explícitamente usarla o no pidió cambiarla. 'RECREATE' si envió imagen y pide mejorarla. 'NEW' si no hay imagen enviada.",
   "image_headline": "Titular de 3 a 8 palabras, concreto y comprensible. Se renderizará en la imagen.",
   "image_supporting_text": "Texto secundario breve para apoyar el titular. Se renderizará en la imagen.",
   "primary_cta": "CTA principal acorde al content_intent",
@@ -111,16 +114,22 @@ REGLAS ABSOLUTAS:
 4. NO INVENTAR ESTADÍSTICAS: Prohibido incluir porcentajes, estudios, rankings o datos cuantitativos si no tienes una fuente real verificable. No inventar clientes ni premios.
 5. NO REPETIR: Cada párrafo aporta información nueva.
 6. SEO NATURAL: Integra la keyword principal orgánicamente. SIN KEYWORD STUFFING.
+7. FORMATO VISUAL OBLIGATORIO: Usa saltos de línea (espacio en blanco) entre cada sección (Gancho, Problema, Solución, CTA, Hashtags). NUNCA escribas bloques densos de texto. Usa separadores invisibles o saltos de línea dobles en tu JSON de respuesta (\n\n) para dar "aire" a la lectura.
 
 ESTILO POR RED (SEGÚN PLATAFORMA INDICADA):
-- INSTAGRAM: Visual, fácil de escanear, párrafos cortos, CTA sencillo, 3-6 hashtags precisos (no genéricos).
-- FACEBOOK: Conversacional, problema reconocible, utilidad, CTA natural, ligeramente más explicativo.
-- LINKEDIN: B2B, profesional, técnico si aplica, basado en insight, pocos emojis, invitar a pensar.
+- INSTAGRAM: Visual, fácil de escanear, párrafos cortos separados por líneas en blanco, CTA sencillo, 3-6 hashtags precisos (no genéricos).
+- FACEBOOK: Conversacional, problema reconocible, utilidad, CTA natural, ligeramente más explicativo, siempre con saltos de línea.
+- LINKEDIN: B2B, profesional, técnico si aplica, basado en insight, pocos emojis, párrafos de 1 a 2 líneas separados por saltos de línea, invitar a pensar.
 
 ESTRUCTURA CONCEPTUAL:
 Gancho (Hook) -> Problema -> Valor -> Solución/Insight -> CTA.
 
-Escribe el texto FINAL de la publicación. No incluyas notas adicionales.`;
+Escribe el texto FINAL de la publicación.
+Devuelve ÚNICAMENTE un JSON con este formato exacto:
+{
+  "caption": "El texto final de la publicación aquí"
+}
+No incluyas texto fuera del JSON.`;
 
 const SYSTEM_PROMPT_QUALITY_GATE = `Eres un auditor estricto de calidad de Canedo Studio.
 Evalúa la NUEVA publicación (Idea + Copy) contra el historial para evitar clones, y evalúa su calidad técnica.
@@ -252,38 +261,35 @@ async function runOpenAITextFallback(env, messages, contextName) {
   return normalizeAIResponse(content);
 }
 
-async function runTextAI(env, messages, contextName = "Text") {
-  if (!env.GEMINI_API_KEY) {
-    throw new Error(`[TEXT_AI] GEMINI_API_KEY no está configurada (${contextName})`);
+async function runTextAI(env, messages, contextName = "Text", imageBase64 = null) {
+  if (!env.OPENROUTER_API_KEY) {
+    throw new Error(`[TEXT_AI] OPENROUTER_API_KEY no está configurada (${contextName})`);
   }
-
-  const systemMsg = messages.find(m => m.role === "system");
-  const userMsgs = messages.filter(m => m.role !== "system").map(m => ({
-    role: m.role === "assistant" ? "model" : "user",
-    parts: [{ text: m.content }]
-  }));
 
   const payload = {
-    contents: userMsgs,
-    generationConfig: {
-      responseMimeType: "application/json",
-    }
+    model: "openai/gpt-4o-mini",
+    messages: messages.map(m => {
+       if (imageBase64 && m === messages[messages.length - 1]) {
+           return {
+               role: m.role,
+               content: [
+                   { type: "text", text: m.content },
+                   { type: "image_url", image_url: { url: `data:image/jpeg;base64,${imageBase64}` } }
+               ]
+           };
+       }
+       return { role: m.role, content: m.content };
+    })
   };
 
-  if (systemMsg) {
-    payload.systemInstruction = { parts: [{ text: systemMsg.content }] };
-  }
-
   try {
-    const res = await withRetry(`Gemini Primary (${contextName})`, async () => {
-      let url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${env.GEMINI_API_KEY}`;
-      // Allow forced failure for testing
-      if (env.FORCE_GEMINI_FAIL === "true") {
-         url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=FAKE_KEY`;
-      }
-      return await fetch(url, {
+    const res = await withRetry(`OpenRouter Primary (${contextName})`, async () => {
+      return await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+            "Authorization": `Bearer ${env.OPENROUTER_API_KEY}`,
+            "Content-Type": "application/json" 
+        },
         body: JSON.stringify(payload)
       });
     });
@@ -291,42 +297,18 @@ async function runTextAI(env, messages, contextName = "Text") {
     const data = await res.json();
     if (data.error) throw new Error(data.error.message);
 
-    const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!content) throw new Error("Respuesta de Gemini vacía o formato desconocido.");
+    const content = data.choices?.[0]?.message?.content;
+    if (!content) throw new Error("Respuesta de OpenRouter vacía o formato desconocido.");
 
-    console.log(`[TEXT_AI] PROVIDER: Gemini Primary - PASS (${contextName})`);
+    console.log(`[TEXT_AI] PROVIDER: OpenRouter - PASS (${contextName})`);
     return normalizeAIResponse(content);
   } catch (error) {
-    console.warn(`[TEXT_AI] Gemini Primary falló (${contextName}): ${error.message}. Intentando Gemini Fallback...`);
+    console.warn(`[TEXT_AI] OpenRouter falló (${contextName}): ${error.message}. Intentando fallback OpenAI...`);
     try {
-      const fallbackRes = await withRetry(`Gemini Fallback (${contextName})`, async () => {
-        let url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${env.GEMINI_API_KEY}`;
-        if (env.FORCE_GEMINI_FAIL === "true") {
-           url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=FAKE_KEY`;
-        }
-        return await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-      });
-
-      const fallbackData = await fallbackRes.json();
-      if (fallbackData.error) throw new Error(fallbackData.error.message);
-
-      const fallbackContent = fallbackData.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (!fallbackContent) throw new Error("Respuesta de Gemini Fallback vacía o formato desconocido.");
-
-      console.log(`[TEXT_AI] PROVIDER: Gemini Fallback - PASS (${contextName})`);
-      return normalizeAIResponse(fallbackContent);
-    } catch (fallbackGeminiError) {
-      console.warn(`[TEXT_AI] Gemini Fallback también falló (${contextName}): ${fallbackGeminiError.message}. Intentando fallback OpenAI...`);
-      try {
-        return await runOpenAITextFallback(env, messages, contextName);
-      } catch (fallbackOpenAIError) {
-        console.error(`[TEXT_AI] OpenAI Fallback también falló (${contextName}): ${fallbackOpenAIError.message}`);
-        throw new Error(`Todos los proveedores de texto fallaron (Gemini Primary, Gemini Fallback, OpenAI). Último error: ${fallbackOpenAIError.message}`);
-      }
+      return await runOpenAITextFallback(env, messages, contextName);
+    } catch (fallbackOpenAIError) {
+      console.error(`[TEXT_AI] OpenAI Fallback también falló (${contextName}): ${fallbackOpenAIError.message}`);
+      throw new Error(`Todos los proveedores de texto fallaron. Error OpenRouter: ${error.message} | Error OpenAI (Fallback): ${fallbackOpenAIError.message}`);
     }
   }
 }
@@ -392,7 +374,7 @@ function deterministicChecks(caption, platform) {
   return { pass: true };
 }
 
-async function generateAndValidateIdeaAndCopy(env, history, userSeed = null, hasPhoto = false) {
+async function generateAndValidateIdeaAndCopy(env, history, userSeed = null, hasPhoto = false, photoBase64 = null, requestCtx = null) {
   let isUniqueAndQuality = false;
   let finalFingerprint = null;
   let finalCaption = null;
@@ -405,12 +387,15 @@ async function generateAndValidateIdeaAndCopy(env, history, userSeed = null, has
     let promptText = "Genera un nuevo concepto para un post de redes sociales.";
     if (userSeed) {
       promptText = `Contexto o instrucción del usuario: "${userSeed}". Genera el JSON considerando esto.`;
+      if (hasPhoto) {
+          promptText += " [ADJUNTO IMAGEN DEL USUARIO. Analízala para dar contexto preciso a tu redacción y evalúa si el usuario quiere 'USE_ORIGINAL', 'RECREATE', o 'NEW'].";
+      }
     }
 
     const raw = await runTextAI(env, [
       { role: "system", content: SYSTEM_PROMPT_FINGERPRINT },
       { role: "user", content: promptText }
-    ], "Idea");
+    ], "Idea", photoBase64);
     let idea = parseJSONSafely(raw);
     
     if (idea.isRelevant === false) {
@@ -452,32 +437,45 @@ Keyword: ${idea.primaryKeyword}
 
     if (
       scores.BRAND_ACCURACY === 100 &&
-      scores.HOOK_STRENGTH >= 80 &&
-      scores.USEFULNESS >= 80 &&
-      scores.HUMANNESS >= 80 &&
-      scores.SPECIFICITY >= 80 &&
-      scores.PLATFORM_FIT >= 85 &&
-      scores.VISUAL_RELEVANCE >= 85 &&
-      scores.COMMERCIAL_RELEVANCE >= 65 &&
-      scores.SEO_RELEVANCE >= 75 &&
-      scores.CTA_QUALITY >= 75 &&
-      scores.REPETITION_RISK <= 25 &&
-      scores.GENERIC_AI_RISK <= 25 &&
-      scores.SPAM_RISK <= 20 &&
-      scores.similarityScore < 65
+      scores.HOOK_STRENGTH >= 50 &&
+      scores.USEFULNESS >= 50 &&
+      scores.HUMANNESS >= 50 &&
+      scores.SPECIFICITY >= 50 &&
+      scores.PLATFORM_FIT >= 60 &&
+      scores.VISUAL_RELEVANCE >= 60 &&
+      scores.COMMERCIAL_RELEVANCE >= 50 &&
+      scores.SEO_RELEVANCE >= 40 &&
+      scores.CTA_QUALITY >= 60 &&
+      scores.REPETITION_RISK <= 40 &&
+      scores.GENERIC_AI_RISK <= 40 &&
+      scores.SPAM_RISK <= 40 &&
+      scores.similarityScore < 80
     ) {
       isUniqueAndQuality = true;
       finalFingerprint = idea;
       finalCaption = captionText;
     } else {
-      lastError = `Quality Gate no superado (Similarity: ${scores.similarityScore}, Brand: ${scores.BRAND_ACCURACY}, Spam: ${scores.SPAM_RISK}, Generic: ${scores.GENERIC_AI_RISK})`;
+      lastError = `Quality Gate no superado. Puntuaciones: ${JSON.stringify(scores)}`;
+      if (attempts === 2) {
+         await sendErrorAlert(env, {
+            severity: "WARNING", module: "Quality Gate", stage: "Generación de Copy",
+            message: lastError, provider: "Gemini", attempt: `${attempts}/3`, 
+            jobId: requestCtx?.requestId, extra: "Se realizará un último intento."
+         });
+      }
     }
   }
 
   if (isUniqueAndQuality) {
     return { success: true, fingerprint: finalFingerprint, caption: finalCaption };
   } else {
-    return { success: false, error: lastError || "No superó el Quality Gate tras 3 intentos." };
+    const errorMsg = lastError || "No superó el Quality Gate tras 3 intentos.";
+    await sendErrorAlert(env, {
+       severity: "CRITICAL", module: "Quality Gate", stage: "Generación de Copy",
+       message: errorMsg, provider: "Gemini", attempt: `3/3`, 
+       jobId: requestCtx?.requestId, extra: "Generación abortada por fallos continuos de calidad."
+    });
+    return { success: false, error: errorMsg };
   }
 }
 
@@ -614,9 +612,12 @@ El texto permitido debe ser perfectamente legible y seguir un esquema de colores
     contentType = imageRes.headers.get("content-type") || "image/jpeg";
     buffer = await imageRes.arrayBuffer();
     const bytes = new Uint8Array(buffer);
+    
+    // Convert to base64 safely without CPU loops
     let binary = '';
-    for (let i = 0; i < bytes.byteLength; i++) {
-        binary += String.fromCharCode(bytes[i]);
+    const chunkSize = 8192;
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
     }
     base64 = btoa(binary);
   }
@@ -701,22 +702,32 @@ Devuelve UNICAMENTE un JSON estricto con el siguiente formato (las puntuaciones 
 }`;
 
     try {
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${env.GEMINI_API_KEY}`, {
-            method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [
-                        { text: prompt },
-                        { inline_data: { mime_type: mimeType, data: base64Image } }
+        const payload = {
+            model: "openai/gpt-4o-mini",
+            messages: [
+                {
+                    role: "user",
+                    content: [
+                        { type: "text", text: prompt },
+                        { type: "image_url", image_url: { url: `data:${mimeType};base64,${base64Image}` } }
                     ]
-                }]
-            })
+                }
+            ]
+        };
+
+        const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+            method: "POST", 
+            headers: { 
+                "Authorization": `Bearer ${env.OPENROUTER_API_KEY}`,
+                "Content-Type": "application/json" 
+            },
+            body: JSON.stringify(payload)
         });
         
         const data = await res.json();
         if (data.error) throw new Error(data.error.message);
         
-        let content = data.candidates[0].content.parts[0].text;
+        let content = data.choices[0].message.content;
         content = content.replace(/^```json/im, '').replace(/```$/im, '').trim();
         const parsed = JSON.parse(content);
         
@@ -735,7 +746,7 @@ Devuelve UNICAMENTE un JSON estricto con el siguiente formato (las puntuaciones 
         return parsed;
     } catch (e) {
         console.error(`[QUALITY_GATE_VISUAL] Error al verificar imagen: ${e.message}`);
-        return { is_approved: false, reason: "Error en validación de API" };
+        return { is_approved: false, reason: "Error: " + e.message };
     }
 }
 
@@ -758,7 +769,66 @@ async function generateVideoOpenRouter(env, prompt, seedRaw) {
   return await videoRes.arrayBuffer();
 }
 
-async function sendToTelegram(env, finalPost, mediaBytes, mediaType = "photo", seedRaw = "", r2Key = null) {
+function arrayBufferToBase64(buffer) {
+  return Buffer.from(buffer).toString('base64');
+}
+
+async function downloadTelegramFile(fileId, token) {
+  const fileRes = await fetch(`https://api.telegram.org/bot${token}/getFile?file_id=${fileId}`);
+  if (!fileRes.ok) throw new Error("Failed to getFile from Telegram");
+  const fileData = await fileRes.json();
+  if (!fileData.ok) throw new Error(fileData.description);
+  
+  const filePath = fileData.result.file_path;
+  const downloadRes = await fetch(`https://api.telegram.org/file/bot${token}/${filePath}`);
+  if (!downloadRes.ok) throw new Error("Failed to download file from Telegram");
+  
+  return await downloadRes.arrayBuffer();
+}
+
+const spamCache = new Map();
+
+function sanitizeError(errorStr) {
+  if (typeof errorStr !== 'string') errorStr = String(errorStr);
+  return errorStr
+    .replace(/(Bearer\s+)[A-Za-z0-9\-\._~+\/]+=*/g, "$1[REDACTED]")
+    .replace(/(key=)[A-Za-z0-9\-\._~+\/]+=*/g, "$1[REDACTED]")
+    .replace(/(bot)[0-9]+:[A-Za-z0-9\-_]+/g, "$1[REDACTED]");
+}
+
+async function sendErrorAlert(env, { severity, module, stage, message, provider, attempt, jobId, extra }) {
+  if (!env.TELEGRAM_ADMIN_GROUP_ID) return;
+  
+  const cacheKey = `${severity}_${stage}_${message}`;
+  const now = Date.now();
+  const lastSeen = spamCache.get(cacheKey) || 0;
+  
+  if (now - lastSeen < 5 * 60 * 1000) {
+     return;
+  }
+  spamCache.set(cacheKey, now);
+
+  const safeMessage = sanitizeError(message);
+  const dateStr = new Date().toISOString().replace('T', ' ').substring(0, 16);
+  
+  let emoji = "ℹ️";
+  if (severity === "WARNING") emoji = "🟡";
+  if (severity === "ERROR") emoji = "🔴";
+  if (severity === "CRITICAL") emoji = "🚨";
+  
+  const text = `${emoji} CANEDO BOT — ${severity}\n\nSeveridad: ${severity}\nMódulo: ${module || "Social Media Bot"}\nEtapa: ${stage || "Desconocida"}\nProveedor: ${provider || "N/A"}\nJob ID: ${jobId || "N/A"}\nIntento: ${attempt || "1/1"}\nFecha: ${dateStr}\n\nError:\n${safeMessage}\n\nAcción:\n${extra || "Se requiere revisión."}`;
+
+  try {
+    await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: env.TELEGRAM_ADMIN_GROUP_ID, text: text })
+    });
+  } catch (e) {
+    console.error("Failed to send error alert to Telegram", e);
+  }
+}
+
+async function sendToTelegram(env, chatId, finalPost, mediaBytes, mediaType = "photo", seedRaw = "", r2Key = null) {
   if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) return;
   
   let cleanCaption = finalPost.Texto;
@@ -785,10 +855,16 @@ async function sendToTelegram(env, finalPost, mediaBytes, mediaType = "photo", s
     cleanCaption = cleanCaption.replace(/\\n/g, '\n');
   }
 
+  const MAX_CAPTION_LENGTH = 1000;
+  let overflowText = null;
+  if (mediaBytes && cleanCaption.length > MAX_CAPTION_LENGTH) {
+      overflowText = cleanCaption;
+      cleanCaption = "📸 (El texto de la publicación es largo. Lo adjunto en el siguiente mensaje 👇)";
+  }
 
   let url;
   let formData = new FormData();
-  formData.append("chat_id", env.TELEGRAM_CHAT_ID);
+  formData.append("chat_id", chatId || env.TELEGRAM_CHAT_ID);
 
   if (mediaBytes) {
     if (mediaType === "video") {
@@ -810,11 +886,7 @@ async function sendToTelegram(env, finalPost, mediaBytes, mediaType = "photo", s
 
   const rawPlatformValue = finalPost.ADN?.platform || finalPost.Plataforma || "instagram";
   const remakePayload = {
-    hook: finalPost.ADN?.hook || "",
-    visualFingerprint: finalPost.ADN?.visualFingerprint || "",
-    angle: finalPost.ADN?.angle || "",
-    topic: finalPost.ADN?.topicFingerprint || "",
-    service: finalPost.ADN?.servicePromoted || "",
+    ...(finalPost.ADN || {}),
     platform: normalizePlatform(rawPlatformValue),
     r2Key: r2Key,
     caption: cleanCaption
@@ -834,12 +906,28 @@ async function sendToTelegram(env, finalPost, mediaBytes, mediaType = "photo", s
     inline_keyboard: [
       [{ text: "✅ Publicar", callback_data: `action_publish:${remakeId}` }],
       [{ text: "🔄 Rehacer", callback_data: `action_remake:${remakeId}` }],
-      [{ text: "📝 Editar", callback_data: "action_edit" }],
-      [{ text: "🔴 Cancelar", callback_data: "action_cancel" }]
+      [{ text: "📝 Editar", callback_data: `action_edit:${remakeId}` }],
+      [{ text: "🔴 Cancelar", callback_data: `action_cancel:${remakeId}` }]
     ]
   };
   formData.append("reply_markup", JSON.stringify(replyMarkup));
-  await fetch(url, { method: "POST", body: formData });
+  const res = await fetch(url, { method: "POST", body: formData });
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Telegram API devolvió error: ${errText}`);
+  }
+  
+  // Send overflow text if it exceeded the 1024 limit
+  if (overflowText) {
+      const textRes = await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: chatId || env.TELEGRAM_CHAT_ID, text: overflowText })
+      });
+      if (!textRes.ok) {
+          console.error("Failed to send overflow text:", await textRes.text());
+      }
+  }
 }
 
 async function updateProgress(env, chatId, messageId, text) {
@@ -1002,7 +1090,11 @@ export default {
                   statePayload = JSON.parse(stateRow.payload);
                   rawPlatform = statePayload.platform;
                   platform = normalizePlatform(statePayload.platform);
+                } else {
+                  throw new Error("⚠️ No se encontró la publicación en la base de datos (posiblemente expiró o el ID es inválido). Por favor, genera un post nuevo.");
                 }
+              } else {
+                throw new Error("⚠️ No se proporcionó un ID válido en el botón de publicar.");
               }
 
               if (statePayload && statePayload.publish_status === "PUBLISHED") {
@@ -1059,6 +1151,12 @@ export default {
               
               await publishToMeta(env, caption, imageUrl, stateId, statePayload);
               
+              try {
+                  await saveToHistory(env, statePayload);
+              } catch (e) {
+                  console.error("Error saving to history after publish", e);
+              }
+              
               const objData = await env.BUCKET.get(r2Key);
               if (objData) {
                   await env.BUCKET.put(r2Key, objData.body, {
@@ -1110,9 +1208,10 @@ export default {
             }
           }
           else if (action === "action_edit") {
+            const stateText = stateId ? ` [STATE:${stateId}]` : "";
             await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
               method: "POST", headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ chat_id: chatId, text: `✏️ Responde a este mensaje con el NUEVO TEXTO para la publicación [ID:${cq.message.message_id}]`, reply_markup: { force_reply: true, selective: true } })
+              body: JSON.stringify({ chat_id: chatId, text: `✏️ Responde a este mensaje con el NUEVO TEXTO para la publicación [ID:${cq.message.message_id}]${stateText}`, reply_markup: { force_reply: true, selective: true } })
             });
             responseText = "✏️ Revisa el chat para editar.";
           }
@@ -1203,7 +1302,12 @@ Mantén:
             const sendData = await sendRes.json();
             const progressMessageId = sendData.ok ? sendData.result.message_id : null;
             
-            ctx.waitUntil(fetch(`${url.origin}/test-full-post?seed=${encodeURIComponent(instruct)}&progressMessageId=${progressMessageId}&requestId=remake_${stateId}_${now}&source=REMAKE&reason=USER_APPROVED_REMAKE&stateId=${stateId}`).catch(e => console.error(e)));
+            const requestCtx = { requestId: `remake_${stateId}_${now}`, source: "REMAKE", reason: "USER_APPROVED_REMAKE", stateId: stateId };
+            ctx.waitUntil((async () => {
+              try {
+                await runFullPostGeneration(env, chatId, instruct, false, null, false, progressMessageId, requestCtx);
+              } catch (e) { console.error(e); }
+            })());
           }
           
           await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/answerCallbackQuery`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ callback_query_id: cq.id, text: responseText }) });
@@ -1212,35 +1316,61 @@ Mantén:
         if (update.message) {
           const message = update.message;
           const chatId = message.chat.id;
+          
+          if (message.text && message.text.trim() === '/id') {
+             await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+               method: "POST", headers: { "Content-Type": "application/json" },
+               body: JSON.stringify({ chat_id: chatId, text: `El ID de este chat/grupo es: ${chatId}` })
+             });
+             return new Response("OK", { status: 200 });
+          }
+
           if (chatId.toString() === env.TELEGRAM_CHAT_ID) {
             if (message.reply_to_message && message.reply_to_message.text && message.reply_to_message.text.includes("[ID:")) {
               const match = message.reply_to_message.text.match(/\[ID:(\d+)\]/);
+              const stateMatch = message.reply_to_message.text.match(/\[STATE:([a-zA-Z0-9-]+)\]/);
               if (match) {
                  const originalMessageId = match[1];
+                 const stateIdToKeep = stateMatch ? stateMatch[1] : null;
+                 const pData = stateIdToKeep ? `action_publish:${stateIdToKeep}` : "action_publish";
+                 const cData = stateIdToKeep ? `action_cancel:${stateIdToKeep}` : "action_cancel";
                  const newCaption = message.text;
                  await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/editMessageCaption`, {
                     method: "POST", headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ 
                        chat_id: chatId, message_id: originalMessageId, caption: newCaption,
-                       reply_markup: { inline_keyboard: [ [{ text: "✅ Publicar", callback_data: "action_publish" }], [{ text: "🔴 Cancelar", callback_data: "action_cancel" }] ] }
+                       reply_markup: { inline_keyboard: [ [{ text: "✅ Publicar", callback_data: pData }], [{ text: "🔴 Cancelar", callback_data: cData }] ] }
                     })
                  });
                  return new Response("OK", { status: 200 });
               }
             }
-            let seed = message.text;
+            let seed = message.text || message.caption || "";
             let hasPhoto = false;
             let photoFileId = null;
             let wantsEnhancement = false;
             
-            if (seed) {
+            if (message.photo && message.photo.length > 0) {
+              hasPhoto = true;
+              photoFileId = message.photo[message.photo.length - 1].file_id;
+            } else if (message.document && message.document.mime_type && message.document.mime_type.startsWith('image/')) {
+              hasPhoto = true;
+              photoFileId = message.document.file_id;
+            }
+            
+            if (seed || hasPhoto) {
               const sendRes = await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
                 method: "POST", headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ chat_id: chatId, text: "⏳ [1/4] Analizando tu idea..." })
               });
               const sendData = await sendRes.json();
               const progressMessageId = sendData.ok ? sendData.result.message_id : null;
-              ctx.waitUntil(fetch(`${url.origin}/test-full-post?seed=${encodeURIComponent(seed)}&chatId=${chatId}&progressMessageId=${progressMessageId}&requestId=tg_${message.message_id}&source=TELEGRAM_TEXT&reason=INITIAL_GENERATION`).catch(e => console.error(e)));
+              const requestCtx = { requestId: `tg_${message.message_id}`, source: "TELEGRAM_TEXT", reason: "INITIAL_GENERATION", stateId: "" };
+              ctx.waitUntil((async () => {
+                try {
+                  await runFullPostGeneration(env, chatId, seed, false, null, false, progressMessageId, requestCtx);
+                } catch (e) { console.error(e); }
+              })());
             }
           }
         }
@@ -1461,11 +1591,30 @@ async function runFullPostGeneration(env, chatId, seed, hasPhoto, photoFileId, e
     // Force strict 8 words instruction in prompt dynamically or trust the system prompt
     const enhancedSeed = seed + " IMPORTANTE: El visual_hook DEBE tener MÁXIMO 8 palabras, sin excepción.";
     
+    // Download user photo if provided
+    let photoBase64 = null;
+    let rawPhotoBytes = null;
+    if (hasPhoto && photoFileId) {
+       await updateProgress(env, chatId, progressMessageId, "⏳ [1.5/4] Descargando tu imagen para análisis...");
+       try {
+           rawPhotoBytes = await downloadTelegramFile(photoFileId, env.TELEGRAM_BOT_TOKEN);
+           photoBase64 = arrayBufferToBase64(rawPhotoBytes);
+       } catch (e) {
+           console.error("Failed to download photo:", e);
+           // Proceed without photo if download fails
+       }
+    }
+    
     let result;
     try {
-      result = await generateAndValidateIdeaAndCopy(env, history, enhancedSeed, hasPhoto);
+      result = await generateAndValidateIdeaAndCopy(env, history, enhancedSeed, hasPhoto, photoBase64, requestCtx);
     } catch (e) {
       console.error(`[ERROR] Etapa: GEMINI - ${e.message}`);
+      await sendErrorAlert(env, {
+         severity: "ERROR", module: "Social Media Bot", stage: "Generación de Copy",
+         message: e.message, provider: "Gemini", attempt: "1/1", jobId: requestCtx.requestId,
+         extra: "Fallo crítico en la generación de texto."
+      });
       await updateProgress(env, chatId, progressMessageId, `⚠️ Generación de texto fallida: ${e.message}`);
       return { status: "Error", message: e.message };
     }
@@ -1486,11 +1635,7 @@ async function runFullPostGeneration(env, chatId, seed, hasPhoto, photoFileId, e
     }
     result.caption = cleanedCaption;
     
-    try {
-      await saveToHistory(env, result.fingerprint);
-    } catch (e) {
-      console.error(`[ERROR] Etapa: DB_SAVE - ${e.message}`);
-    }
+    // El historial ahora solo se guarda cuando el usuario confirma la publicación.
     
     let finalPost = {
       Status: "Éxito",
@@ -1516,11 +1661,28 @@ async function runFullPostGeneration(env, chatId, seed, hasPhoto, photoFileId, e
     let r2Key = null;
     let qualityResult = null;
     try {
-      if (wantsVideo && env.OPENROUTER_API_KEY) {
+      if (hasPhoto && rawPhotoBytes && result.fingerprint.image_intent === "USE_ORIGINAL") {
+         await updateProgress(env, chatId, progressMessageId, "⏳ [3/4] Utilizando tu imagen original...");
+         mediaBytes = rawPhotoBytes;
+         mediaType = "photo";
+         qualityResult = { is_approved: true, reason: "✅ Imagen original del usuario aprobada" };
+         
+         const genId = crypto.randomUUID();
+         r2Key = `img_${genId}.jpg`;
+         await env.BUCKET.put(r2Key, mediaBytes, {
+           httpMetadata: { contentType: "image/jpeg" }
+         });
+      } else if (wantsVideo && env.OPENROUTER_API_KEY) {
         try {
           mediaBytes = await generateVideoOpenRouter(env, result.fingerprint.visualFingerprint, seed);
           mediaType = "video";
         } catch (error) {
+          console.error(`[ERROR] Etapa: GENERATE_VIDEO_OPENROUTER - ${error.message}`);
+          await sendErrorAlert(env, {
+             severity: "ERROR", module: "Social Media Bot", stage: "Generación de Video OpenRouter",
+             message: error.message, provider: "OpenRouter", attempt: "1/1", jobId: requestCtx.requestId,
+             extra: "Fallo en OpenRouter video. Intentando fallback a imagen."
+          });
           const imgGen = await generateImage(env, result.fingerprint, requestCtx);
           if (imgGen.r2Key) {
             r2Key = imgGen.r2Key;
@@ -1533,30 +1695,38 @@ async function runFullPostGeneration(env, chatId, seed, hasPhoto, photoFileId, e
           }
         }
       } else {
-        const imgGen = await generateImage(env, result.fingerprint, requestCtx);
-        
-        if (imgGen.r2Key) {
-            r2Key = imgGen.r2Key;
-            const existingObj = await env.BUCKET.get(r2Key);
-            mediaBytes = await existingObj.arrayBuffer();
-            qualityResult = { is_approved: true, reason: "Idempotency Reuse" };
-        } else {
-            mediaBytes = imgGen.buffer;
-            
-            // Quality Gate Visual
-            await updateProgress(env, chatId, progressMessageId, "⏳ [4/5] Ejecutando Quality Gate Visual (Gemini)...");
-            qualityResult = await verifyVisualQualityGate(env, imgGen.base64, imgGen.contentType, result.fingerprint);
-        // Fallback for tests if api fails
-        if (qualityResult === true || qualityResult === false) {
-           qualityResult = { is_approved: qualityResult, reason: "N/A" };
-        }
-
-            const genId = imgGen.generationId || crypto.randomUUID();
-            r2Key = `img_${genId}${imgGen.ext}`;
-            await env.BUCKET.put(r2Key, mediaBytes, {
-               httpMetadata: { contentType: imgGen.contentType },
-               customMetadata: { status: 'PENDING_APPROVAL', date: Date.now().toString(), model: 'nano-banana-2-native' }
-            });
+        try {
+          const imgGen = await generateImage(env, result.fingerprint, requestCtx);
+          
+          if (imgGen.r2Key) {
+              r2Key = imgGen.r2Key;
+              const existingObj = await env.BUCKET.get(r2Key);
+              mediaBytes = await existingObj.arrayBuffer();
+              qualityResult = { is_approved: true, reason: "Idempotency Reuse" };
+          } else {
+              mediaBytes = imgGen.buffer;
+              
+              await updateProgress(env, chatId, progressMessageId, "⏳ [4/5] Ejecutando Quality Gate Visual (Gemini)...");
+              qualityResult = await verifyVisualQualityGate(env, imgGen.base64, imgGen.contentType, result.fingerprint);
+              if (qualityResult === true || qualityResult === false) {
+                 qualityResult = { is_approved: qualityResult, reason: "N/A" };
+              }
+  
+              const genId = imgGen.generationId || crypto.randomUUID();
+              r2Key = `img_${genId}${imgGen.ext}`;
+              await env.BUCKET.put(r2Key, mediaBytes, {
+                 httpMetadata: { contentType: imgGen.contentType },
+                 customMetadata: { status: 'PENDING_APPROVAL', date: Date.now().toString(), model: 'nano-banana-2-native' }
+              });
+          }
+        } catch (e) {
+          console.error(`[ERROR] Etapa: GENERATE_IMAGE - ${e.message}`);
+          await sendErrorAlert(env, {
+             severity: "ERROR", module: "Social Media Bot", stage: "Generación de Imagen",
+             message: e.message, provider: "OpenRouter", attempt: "1/1", jobId: requestCtx.requestId,
+             extra: "Fallo en el pipeline visual. Se cancela el post."
+          });
+          throw e;
         }
       }
     } catch (e) {
@@ -1581,7 +1751,7 @@ Overall: ${qualityResult.overall_score || 0}/10 | 5s-Pass: ${qualityResult.five_
     await updateProgress(env, chatId, progressMessageId, "✅ [5/5] ¡Enviando resultados!");
     
     try {
-      await sendToTelegram(env, finalPost, mediaBytes, mediaType, seed, r2Key);
+      await sendToTelegram(env, chatId, finalPost, mediaBytes, mediaType, seed, r2Key);
     } catch (e) {
       console.error(`[ERROR] Etapa: TELEGRAM - ${e.message}`);
       throw new Error(`Error enviando a Telegram: ${e.message}`);
