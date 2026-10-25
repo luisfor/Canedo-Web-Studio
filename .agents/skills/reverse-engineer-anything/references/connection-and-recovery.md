@@ -218,4 +218,3 @@ one just for this recipe. Inspect a module page or item using the same inline
 source and the [JavaScript recipes](javascript-applications.md). Preserve graph
 coverage, limitations and unknowns. Native CLI analysis still requires its
 selected engine, and all CLI operations retain the host's execution permissions.
-

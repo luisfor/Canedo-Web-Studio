@@ -40,4 +40,3 @@ policy enforcement. Incoming references are recovered static relationships;
 reflection, dynamic loading, and unresolved calls remain unknown. Preserve
 artifact digests, locations, diagnostics, and incomplete coverage. For archive
 members rather than code analysis, use `open_binary` and `inspect_artifact`.
-

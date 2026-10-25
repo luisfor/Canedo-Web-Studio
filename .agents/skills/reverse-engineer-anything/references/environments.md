@@ -214,4 +214,3 @@ See
 [agent environments](https://github.com/morluto/rea/blob/main/docs/agent-environments.md)
 for what the state, replay and the bundle establish, and
 [evidence workflows](evidence-workflows.md) for the manifest and state views.
-

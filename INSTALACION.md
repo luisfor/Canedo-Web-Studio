@@ -29,7 +29,7 @@ cada bot. El kit no incluye cuentas, credenciales ni bases de datos del autor.
 
 ## Opción 2: instalar solamente la skill REA
 
-Con Node.js y npm, desde la carpeta de tu proyecto:
+Con Node.js 22.20 o posterior y npm, desde la carpeta de tu proyecto:
 
 ```bash
 npx skills add https://github.com/luisfor/Canedo-Web-Studio --skill reverse-engineer-anything

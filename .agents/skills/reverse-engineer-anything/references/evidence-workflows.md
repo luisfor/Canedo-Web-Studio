@@ -124,4 +124,3 @@ coverage describes selected retained rows; `summary.coverage` or `exports.covera
 still describes the source table, so an empty partial page does not prove absence.
 CLI `inspect-native-exports --detail summary --evidence_output PATH` saves the
 complete bundle for later `inspect-analysis-view --evidence-bundle PATH` requests.
-

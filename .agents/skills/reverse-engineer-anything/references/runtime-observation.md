@@ -132,4 +132,3 @@ advertised session tools with an explicit `sessionsSource` (`LiveTraffic` or
 `AgentCalls`). Preserve existing sessions and filters when inspecting a
 recorded run. See the [capture and MCP guide](https://github.com/morluto/rea/blob/main/docs/web-network-captures.md)
 for the workflow and Telerik's public setup and traffic-debugging skills.
-

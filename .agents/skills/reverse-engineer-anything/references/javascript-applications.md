@@ -243,4 +243,3 @@ the original keys per returned observation without unselected values. Keep each
 row's node/observation identity paired when composing facts.
 These rows select application-graph observations; semantic relationships and
 semantic unknown records remain in the complete parent Evidence and trace tools.
-
