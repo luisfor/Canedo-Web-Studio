@@ -27,3 +27,12 @@ node_modules/
 
 # Scratch AI scripts
 scratch/
+
+# Archivos personales del sistema y resultados locales
+.DS_Store
+**/.DS_Store
+*.pem
+*.key
+*.p12
+*.pfx
+prototype_satori.png

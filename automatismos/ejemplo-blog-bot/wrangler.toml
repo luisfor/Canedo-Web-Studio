@@ -8,7 +8,7 @@ binding = "AI"
 
 [[kv_namespaces]]
 binding = "BLOG_POSTS"
-id = "1a3b08427d144d51af218578387e09b5"
+id = "YOUR_KV_NAMESPACE_ID"
 
 [triggers]
 crons = ["0 12,22 * * *"]

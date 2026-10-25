@@ -18,17 +18,17 @@ binding = "AI"
 
 [[r2_buckets]]
 binding = "BUCKET"
-bucket_name = "canedo-content"
+bucket_name = "YOUR_R2_BUCKET_NAME"
 
 # Base de datos D1 local para la memoria permanente y los fingerprints
 [[d1_databases]]
 binding = "DB"
 database_name = "social-media-history"
-database_id = "9a3e12c8-27e8-4fc8-b1b2-bd8d20d67941" # Se sobreescribe al crear la DB real
+database_id = "YOUR_D1_DATABASE_ID" # Se sobreescribe al crear la DB real
 
 # Configuración de Cron Jobs
 [triggers]
 crons = ["0 14 * * *"] # 10:00 AM hora del este (UTC-4) / 9:00 AM CDMX (UTC-6)
 
 [vars]
-TELEGRAM_ADMIN_GROUP_ID = "-5295421981"
+TELEGRAM_ADMIN_GROUP_ID = "YOUR_TELEGRAM_GROUP_ID"

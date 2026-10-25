@@ -46,7 +46,7 @@ async function generate() {
   const pngData = resvg.render();
   const pngBuffer = pngData.asPng();
 
-  fs.writeFileSync('/Users/luis/.gemini/antigravity-ide/brain/deee64a1-5684-4b88-96bd-68374af886fe/scratch/prototype_satori.png', pngBuffer);
+  fs.writeFileSync('./prototype_satori.png', pngBuffer);
   console.log("SUCCESS: prototype_satori.png generated!");
 }
 

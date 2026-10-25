@@ -1,5 +1,8 @@
 # 🏛️ [TU AGENCIA WEB] v1 — para Claude Code
 
+**Descarga e instalación:** consulta [INSTALACION.md](INSTALACION.md) para
+descargar el kit completo, instalar solo la skill REA o conectar sus herramientas.
+
 > ¿Primera vez? Abre **[`EMPIEZA-AQUI.md`](EMPIEZA-AQUI.md)**: Configura tus llaves gratuitas en 3 pasos y a trabajar.
 
 Convierte Claude Code en tu agencia de desarrollo automatizada. **[TU AGENCIA WEB] es un kit público y de código abierto (open-source) que cualquiera puede usar y adaptar**. Te permite crear webs estáticas premium ($30,000 look) para negocios locales, gestionando todo el ciclo de vida: desde la prospección y rediseño, hasta la venta y el despliegue automático.
@@ -66,6 +69,23 @@ Las dos piezas de la reputación online, listas para copiar en cualquier web:
 - **Embudo de calificación** (`plantilla-calificanos.html`): página oculta sin menú. **4-5 estrellas** → abre Google directo a escribir la reseña en pestaña nueva. **1-3 estrellas** → formulario de queja privado que llega al email del dueño (FormSubmit, sin cuentas ni claves). Las quejas se resuelven en privado y Google solo recibe clientes felices. Solo hay que rellenar 3 huecos: nombre del negocio, email del dueño y enlace de reseña de Google.
 
 ## 🗂️ Qué hay en tu Estudio
+
+### Skill REA — Reverse Engineer Anything
+
+Instalada para Codex en `.agents/skills/reverse-engineer-anything/`, desde
+[morluto/rea](https://github.com/morluto/rea). Incluye las instrucciones y sus
+guías de referencia para investigar webs, aplicaciones y paquetes, explicar
+su funcionamiento con evidencias y orientar una implementación propia.
+
+Ejemplo: «Usa la skill reverse-engineer-anything para investigar cómo funciona
+esta característica de una web pública y ayudarme a implementarla en mi proyecto».
+
+La instalación de la skill aporta instrucciones; no instala el servidor MCP
+de REA ni motores de análisis. Las funciones que necesiten esas herramientas
+requieren configurarlas siguiendo la guía
+`.agents/skills/reverse-engineer-anything/references/connection-and-recovery.md`.
+Para analizar el código fuente de este repositorio se usan las herramientas
+normales del proyecto.
 
 | Pieza | Qué es |
 |---|---|

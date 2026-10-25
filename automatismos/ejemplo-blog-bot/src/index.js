@@ -559,7 +559,7 @@ async function publish(env, hourUTC, modo) {
 
 async function sendEmailNotification(env, post, source) {
   const apiKey = env.SENDGRID_API_KEY;
-  const fromEmail = env.FROM_EMAIL || "noreply@canedostudio.com";
+  const fromEmail = env.FROM_EMAIL || "noreply@example.com";
   const toEmail = env.TO_EMAIL || "admin@tuagencia.com";
 
   if (!apiKey) {
