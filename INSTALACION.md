@@ -40,6 +40,40 @@ y el alcance de instalación. La skill original procede de
 [morluto/rea](https://github.com/morluto/rea) y conserva su licencia MIT.
 Las otras skills del kit no se instalan con este comando.
 
+## Instalar las skills ampliadas en otro proyecto
+
+Desde la carpeta de destino, usa el [instalador de skills](https://github.com/vercel-labs/skills) con Node.js 22.20 o posterior. La selección interactiva permite elegir skills y agente:
+
+```bash
+npx skills add https://github.com/luisfor/Canedo-Web-Studio
+```
+
+Para instalar una skill concreta en Claude Code:
+
+```bash
+npx skills add https://github.com/luisfor/Canedo-Web-Studio --skill desarrollo-frontend -a claude-code
+```
+
+Para Codex:
+
+```bash
+npx skills add https://github.com/luisfor/Canedo-Web-Studio --skill bases-datos -a codex
+```
+
+Consulta los nombres en [CAPACIDADES.md](docs/CAPACIDADES.md). Selecciona solo las skills que necesites. El índice Clone Wars y la aplicación AppFlowy no se instalan mediante esos comandos; se usan como fuentes en las skills referencias-producto y workspace-colaborativo.
+
+Dentro de este kit también puedes consultar y detectar requisitos:
+
+```bash
+npm run kit:catalog
+npm run kit:doctor -- --profile react
+npm run kit:doctor -- --profile postgresql
+npm run kit:validate
+npm run test:kit
+```
+
+Los lenguajes y plataformas se implementan con sus herramientas oficiales. Cada skill enlaza documentación; el kit no descarga todos los compiladores, SDKs ni motores de datos. Para AppFlowy sigue su [instalación oficial](https://github.com/AppFlowy-IO/AppFlowy#user-installation) únicamente si vas a usar esa aplicación.
+
 ## Opción 3: REA con herramientas de análisis
 
 Instalar la skill solo agrega instrucciones. Para conectar el servidor MCP

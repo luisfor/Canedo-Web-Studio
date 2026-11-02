@@ -1,273 +1,103 @@
-# 🏛️ [TU AGENCIA WEB] v1 — para Claude Code
+# Canedo Web Studio — kit de desarrollo asistido por IA
 
-**Descarga e instalación:** consulta [INSTALACION.md](INSTALACION.md) para
-descargar el kit completo, instalar solo la skill REA o conectar sus herramientas.
+Kit reutilizable para crear y rediseñar webs, desarrollar aplicaciones y preparar automatizaciones con un asistente de programación. Incluye skills, plantillas HTML/CSS/JS, scripts de validación y ejemplos de Cloudflare Workers.
 
-> ¿Primera vez? Abre **[`EMPIEZA-AQUI.md`](EMPIEZA-AQUI.md)**: Configura tus llaves gratuitas en 3 pasos y a trabajar.
+**[Instalación](INSTALACION.md) · [Primeros pasos](EMPIEZA-AQUI.md) · [Capacidades y límites](docs/CAPACIDADES.md) · [REA, Clone Wars y AppFlowy](docs/REFERENCIAS-PRODUCTO.md)**
 
-Convierte Claude Code en tu agencia de desarrollo automatizada. **[TU AGENCIA WEB] es un kit público y de código abierto (open-source) que cualquiera puede usar y adaptar**. Te permite crear webs estáticas premium ($30,000 look) para negocios locales, gestionando todo el ciclo de vida: desde la prospección y rediseño, hasta la venta y el despliegue automático.
+## Descargar y empezar
 
----
+```bash
+git clone https://github.com/luisfor/Canedo-Web-Studio.git
+cd Canedo-Web-Studio
+npm ci
+npm run kit:catalog
+npm run kit:validate
+```
 
-## 🌟 Todo lo que este Estudio es capaz de hacer por ti
+Abre la carpeta en tu asistente. Codex descubre las skills de `.agents/skills/`; Claude Code dispone de las skills originales de `.claude/skills/` y del enrutamiento de `CLAUDE.md`. Para instalar las skills nuevas como skills nativas de otro agente, usa las opciones de [INSTALACION.md](INSTALACION.md).
 
-Este kit no es solo un generador de código, es tu equipo completo de agencia (Programador, Diseñador y Vendedor). Aquí tienes el listado completo de sus súper-poderes:
+El kit aporta instrucciones y herramientas de desarrollo: **no instala automáticamente SDKs, bases de datos, brokers, AppFlowy ni el servidor MCP de REA**. Cada proyecto requiere sus dependencias y pruebas. No se promete que todas las plataformas estén verificadas por instalar una skill.
 
-### 1. 🎯 Cazar Webs (Auditoría y Rediseño)
-Le pasas la URL de una web antigua de un negocio local y la IA se encarga de:
-- Analizar a fondo todos los problemas de diseño y conversión actuales.
-- Extraer el branding real del cliente (colores corporativos, logo, textos, menú de servicios).
-- Reconstruir la web entera desde cero con un diseño premium moderno (HTML/CSS/JS).
+## Qué puede ayudarte a construir
 
-### 2. 📝 Generación Automática de Propuestas de Venta
-Junto con cada web que rediseña (o "caza"), el sistema te redacta automáticamente un **Informe y Propuesta Comercial**:
-- Utiliza la `plantilla-propuesta.md` para crear un documento personalizado para el cliente.
-- Te detalla qué fallaba en su web anterior y le argumenta por qué el nuevo diseño que le has hecho le generará más ventas. ¡Listo para enviar por correo y cobrar!
-
-### 3. 🚀 Crear Webs desde Cero (Ideas o Redes Sociales)
-No necesitas tener una URL antigua para trabajar. Puedes decirle:
-- *"Crea una web para una peluquería desde cero"*.
-- *"Analiza este perfil de TikTok/Instagram, deduce los servicios que ofrecen y créales una landing page"*.
-La IA inventará la estructura, redactará el copywriting (los textos de venta) y la programará.
-
-### 4. 🖼️ El Genio de las Imágenes
-Olvídate de buscar fotos en Google. El estudio gestiona las imágenes por ti:
-- **Gratis:** Busca y descarga automáticamente fotografías profesionales sin derechos de autor desde *Openverse*.
-- **Premium (Opcional):** Si configuras OpenAI, puede generar imágenes completamente a medida con IA (DALL-E) que encajen perfectamente con el diseño de tu cliente.
-
-### 5. ☁️ Despliegue Multi-Cloud Interactivo
-No más complicaciones de servidores FTP. Al terminar la web, la IA te preguntará: *"¿Dónde quieres que la publique?"* y con tu respuesta hará todo el trabajo sucio:
-- **Servidor Local:** Para que pruebes la web en tu navegador.
-- **Hostinger:** Se conecta por debajo a tu panel de Hostinger y sube los archivos directamente a tu dominio.
-- **Cloudflare Pages:** Usa Wrangler para subir la web a la infraestructura ultrarrápida de Cloudflare y te devuelve un enlace público (perfecto y gratuito para mostrarle el demo al cliente).
-
-
-### 6. 🛠️ Aplicaciones Web Complejas (Full-Stack)
-¿El cliente necesita un panel de usuarios, Login o Base de Datos (PostgreSQL, Node.js, Next.js)? 
-El asistente también es capaz de programar aplicaciones complejas desde cero como un proyecto de software tradicional. 
-*(Nota: El despliegue automático One-Click de este kit está optimizado para páginas web estáticas ultrarrápidas. Las aplicaciones Full-Stack con bases de datos requerirán un despliegue manual en plataformas como Vercel, Supabase o un VPS).*
-
----
-
-
-### 7. 🤖 Componentes Nativos de IA (Gemini API)
-El estudio puede programar Chatbots de atención al cliente y Calculadoras con Visión Artificial (ej. leer facturas de luz para paneles solares) conectados 100% gratis a la API de Google Gemini.
-
-### 8. 📊 Auditoría SEO y Diagnóstico Digital
-El asistente incluye un auditor especializado capaz de revisar el SEO técnico de cualquier URL o el estado de perfiles de redes sociales. Genera un reporte profesional (listo para entregar al cliente) con puntos fuertes, errores críticos y un plan de acción a ejecutar. Ideal para usar como herramienta de preventa o consultoría.
-
-### 9. ✍️ Blog Autogestionado (el robot redactor) — PROBADO EN PRODUCCIÓN
-Un robot que **escribe y publica artículos solo** en el blog de la web: texto con IA, portada generada con IA, 2 publicaciones al día. Coste: **0 €/mes** (capas gratuitas de Cloudflare). Funciona en canedostudio.com desde agosto 2026.
-- **Sistema híbrido de temas:** 210 temas curados únicos → inspiración en prensa real de marketing (RSS, edición de la mañana) → temas propuestos por IA. Anti-duplicados en 3 capas: nunca repite un artículo.
-- **Sin servidores ni n8n:** un Cloudflare Worker + KV lo hace todo.
-- Receta completa para clonarlo a cualquier cliente en `automatismos/README.md`; robot de referencia en `automatismos/ejemplo-blog-bot/`.
-- Se vende dentro del mantenimiento de 99 €/mes.
-
-### 10. ⭐ Sistema de Reseñas (slider + embudo) — PROBADO EN PRODUCCIÓN
-Las dos piezas de la reputación online, listas para copiar en cualquier web:
-- **Slider de testimonios estilo Google:** carrusel con autoplay (se pausa al interactuar), flechas que no tapan las tarjetas y puntos de posición. Patrón completo en `componente-resenas.md`, con la tabla de los 5 errores típicos ya resueltos.
-- **Embudo de calificación** (`plantilla-calificanos.html`): página oculta sin menú. **4-5 estrellas** → abre Google directo a escribir la reseña en pestaña nueva. **1-3 estrellas** → formulario de queja privado que llega al email del dueño (FormSubmit, sin cuentas ni claves). Las quejas se resuelven en privado y Google solo recibe clientes felices. Solo hay que rellenar 3 huecos: nombre del negocio, email del dueño y enlace de reseña de Google.
-
-## 🗂️ Qué hay en tu Estudio
-
-### Skill REA — Reverse Engineer Anything
-
-Instalada para Codex en `.agents/skills/reverse-engineer-anything/`, desde
-[morluto/rea](https://github.com/morluto/rea). Incluye las instrucciones y sus
-guías de referencia para investigar webs, aplicaciones y paquetes, explicar
-su funcionamiento con evidencias y orientar una implementación propia.
-
-Ejemplo: «Usa la skill reverse-engineer-anything para investigar cómo funciona
-esta característica de una web pública y ayudarme a implementarla en mi proyecto».
-
-La instalación de la skill aporta instrucciones; no instala el servidor MCP
-de REA ni motores de análisis. Las funciones que necesiten esas herramientas
-requieren configurarlas siguiendo la guía
-`.agents/skills/reverse-engineer-anything/references/connection-and-recovery.md`.
-Para analizar el código fuente de este repositorio se usan las herramientas
-normales del proyecto.
-
-| Pieza | Qué es |
+| Área | Recursos incluidos |
 |---|---|
-| `EMPIEZA-AQUI.md` | Los 3 pasos para dejarlo funcionando a coste $0. |
-| `.claude/skills/luis-rediseño-premium/` | El motor especializado en "Cazar", rediseñar URLs e informes. |
-| `.claude/skills/luis-estudio-web/` | El motor para crear desde cero, generar imágenes y gestionar los despliegues. |
-| `automatismos/README.md` | La receta del blog autogestionado (robot redactor con IA, 0 €/mes). |
-| `automatismos/ejemplo-blog-bot/` | El robot de referencia, funcionando en producción. |
-| `componente-resenas.md` | El patrón del slider de reseñas estilo Google + el embudo de calificación. |
-| `plantilla-calificanos.html` | La página del embudo de reseñas lista para copiar a cualquier cliente. |
-| `.env` (Oculto) | Donde guardas de forma segura tus API Keys (OpenRouter). No se sube a GitHub. |
-| `plantilla-propuesta.md` | La propuesta comercial que se rellena sola para venderle la web al cliente. |
+| Webs de negocios | Rediseño, branding, landing pages, propuestas comerciales y plantilla estática |
+| Frontend | Skill para React, Vue y Angular: componentes, formularios, rutas, estado y APIs |
+| Backend | Skill para Java, C#/.NET y Python: APIs, persistencia, trabajos y autenticación |
+| Móvil | Skill para Android Java/Kotlin, React Native y Flutter; guía para componentes Rust de AppFlowy |
+| Sistemas y hardware | Skill para C, C++, Arduino, memoria, protocolos y validación de firmware |
+| Datos | Skill para SQL, SQL Server, SQLite, PostgreSQL, MySQL y Oracle |
+| Arquitectura y CRM | Modelado, permisos, organizaciones, pipeline comercial, auditoría y contratos |
+| Workspace | Procedimientos para documentos por bloques, wikis, tablas, kanban, offline y colaboración |
+| DevOps | Skill de CI/CD, contenedores, observabilidad, Terraform y Pulumi |
+| Trading cuantitativo | Investigación, backtesting, costes, simulación y controles de riesgo; sin promesas de rentabilidad |
+| Referencias | Evaluación de proyectos de Clone Wars y de AppFlowy; ruta para complementarlos con REA |
+| Ingeniería inversa | Skill original REA con siete referencias y licencia MIT; herramientas externas opcionales |
+| IA y diseño | Generación/búsqueda de imágenes según proveedor y pipeline Design-to-Web; integración de chatbots con backend privado |
+| Publicación | Guías para Cloudflare Pages/Workers y Hostinger; infraestructura full-stack y móvil separada |
+| Marketing | Skills de SEO, blog automático y reseñas; ejemplos de bots sociales y agente comercial |
 
-## 💻 Cómo usar el Asistente en tu día a día
+Son **14 skills en `.agents/skills/` y 24 perfiles de herramientas**. Los perfiles son rutas de trabajo y detección de CLIs; no son 24 aplicaciones ya implementadas. El catálogo en `config/kit-capabilities.json` identifica sus nombres y requisitos.
 
-### 1. Activar la IA gratuita (OpenRouter)
-Abre la terminal en esta carpeta. Para que Claude Code use tu conexión gratuita, ejecuta siempre este comando antes de arrancar:
+## Cómo se complementan los repositorios
+
+- **REA:** mejor para investigar paquetes, binarios y comportamiento en ejecución que no esté explicado por fuentes completas.
+- **Clone Wars:** mejor como índice para encontrar ejemplos y alternativas con código; hay demos educativas y proyectos más completos. Revisa cada candidato.
+- **AppFlowy:** mejor referencia de los tres para documentos, tablas y colaboración; es una aplicación Flutter/Rust con licencia AGPLv3, no un plugin REA.
+
+Esta comparación describe para qué usar cada uno; no existe un ganador para todas las tareas. El kit añade procedimientos propios de selección y construcción. No incluye una copia del catálogo de Clone Wars ni del código de AppFlowy. Consulta [fuentes y alcance](docs/REFERENCIAS-PRODUCTO.md).
+
+## Comandos del kit
+
 ```bash
-export ANTHROPIC_API_KEY=$OPENROUTER_API_KEY
-export ANTHROPIC_BASE_URL="https://openrouter.ai/api/v1"
+npm run kit:catalog
+npm run kit:catalog -- --profile react --json
+npm run kit:doctor -- --profile react
+npm run kit:doctor -- --profile dotnet --strict
+npm run kit:validate
+npm run test:kit
 ```
 
-### 2. Llamar al Asistente
-Escribe el comando oficial para despertar a la IA:
-```bash
-claude
-```
+`doctor` ejecuta comprobaciones de versión/ayuda de las CLIs del perfil. No descarga herramientas ni comprueba credenciales, servidores, SDKs, versiones compatibles o hardware. Sin `--strict`, los programas ausentes son informativos. Sin perfil revisa todas las CLIs del catálogo y puede tardar.
 
-### 3. ¡Dale órdenes! (Ejemplos Reales)
-* **Para Cazar y generar Propuesta:**
-  > *"Analiza y caza esta web: http://www.ejemplo-taller-antiguo.com. Extrae toda su información, reconstrúyela desde cero para que tenga un aspecto premium de 30.000 dólares y redáctame la propuesta de venta para presentarle al cliente."*
-
-* **Para Crear desde Cero:**
-  > *"Crea una landing page para una clínica dental. Diseño limpio, usa fotos gratis."*
-
-
-* **Para Modificar una web ya terminada:**
-  > *"Añade un mapa de Google con la dirección X al final de la página."*
-  > *"Cambia el color principal a un azul más oscuro."*
-
-* **Para Desplegar:**
-  > *"Está perfecta, publícala."*
-  *(La IA te preguntará si en Local, Hostinger o Cloudflare).*
-
----
-*Desarrollado para la agencia [TU AGENCIA WEB].*
-
----
-
-## 🚀 El Modelo de Negocio (Agencia de Automatización con IA)
-
-Este kit no es solo para hacer webs, es el motor principal para crear un **SaaS (Software as a Service)** o una **Agencia de Automatización (AIAA)** escalable a miles de clientes con un mínimo esfuerzo.
-
-### ¿Cómo Implementar el Sistema Paso a Paso?
-
-Para alcanzar facturaciones de +$10,000/mes de forma pasiva, debes combinar este Kit Cazador con la automatización. Aquí tienes la hoja de ruta:
-
-#### Paso 1: Generación de la Web Base (Con este Kit)
-1. Usa el comando para **Cazar una web** o **Crearla desde cero**.
-2. En la *Fase de Briefing*, dile a la IA que active:
-   - **El Blog Automatizado (JSON):** Para poder inyectar artículos remotamente.
-   - **El Chatbot de IA:** (Requerirá que pegues la API Key gratuita de Google Gemini).
-   - **El Embudo de Reseñas:** (La página `/calificanos` para filtrar las quejas privadas y mandar a Google Maps las reseñas de 5 estrellas).
-3. Aloja la web estática gratis en **Cloudflare Pages**.
-
-#### Paso 2: La Arquitectura 100% Serverless (Cero Servidores) y Cerebro Automatizador
-¡Adiós a pagar servidores! El Kit está programado para usar exclusivamente la nube gratuita de Cloudflare.
-1. **La Fábrica de Artículos (Workers + IA):** El robot de `automatismos/` (Cloudflare Worker, 0 €/mes) escribe y publica solo los artículos y guarda en Cloudflare KV, actualizando la web del cliente en automático sin usar herramientas externas.
-2. **El Embudo de Reseñas (Frontend JS):** El Kit programa la lógica directamente en JavaScript. Si el cliente selecciona 4-5 estrellas, es redirigido a Google Maps; de 1-3 estrellas envía un formulario privado.
-3. **Flujos extra con Make.com / n8n:** Aunque la base es serverless, puedes registrarte en **Make.com** o instalar **n8n** en un VPS de $5/mes para flujos complejos:
-   - **Respuestas automáticas a quejas:** interceptar las reseñas de 2 estrellas y generar emails con OpenAI.
-   - **Flujo de Ventas en Instagram:** n8n lee Mensajes Directos y envía el enlace de WhatsApp a clientes potenciales.
-
-#### Paso 3: El "CMS Involuntario" (Actualización de Fotos y Blog)
-1. Créale a tu cliente un canal privado de Telegram o un número de WhatsApp (conectado a n8n).
-2. El cliente (ej. un mecánico) manda una foto y un audio rápido (*"Arreglé esta caja de cambios"*).
-3. n8n recibe el mensaje:
-   - Sube la **Foto** a tu cuenta maestra de **Cloudflare R2** (Servidor de medios ultra barato, sin costos ocultos).
-   - Sube los **Videos pesados** automáticamente como "Ocultos" al canal de YouTube del cliente (Coste $0).
-   - Transcribe el audio con IA (Whisper) y redacta un artículo SEO profesional.
-   - Inyecta el texto y el enlace de la imagen en el archivo `posts.json` del repositorio de GitHub de la web.
-   - Cloudflare Pages detecta el cambio en GitHub y actualiza la web al instante.
-
-> 💡 **Resultado:** Tú cobras una suscripción mensual de $300 a $800 dólares por cliente, mientras el robot hace todo el mantenimiento, redacta el blog y filtra los mensajes de redes sociales.
-
----
-
-## 🗣️ Ejemplos de Comandos (Prompts)
-
-Para que el Kit entienda exactamente qué quieres hacer, aquí tienes las "órdenes maestras" (Prompts) que puedes usar copiándolas y pegándolas en tu terminal de VS Code:
-
-### 1. Crear una web desde cero (Ideal para tu propia Agencia)
-Si no tienes web ni redes sociales, dale toda la información tú mismo:
-> *"Créame una web premium desde cero para mi agencia. Se llama **[TU AGENCIA WEB]**. Ofrecemos diseño de ecosistemas automatizados con IA. Nuestros servicios son: 1. Webs premium de $30k, 2. Chatbots de Inteligencia Artificial, 3. Blogs Autogestionados, y 4. Embudos de Reseñas de Google Maps. Quiero un diseño oscuro, elegante y muy tecnológico. El teléfono es [TU TELEFONO] y el email hola@tuagencia.com. Haz que los textos suenen persuasivos y lujosos."*
-
-### 2. Cazar una web existente (El Rediseño)
-Si el cliente ya tiene una web pero es fea y vieja, la IA entrará, leerá todos sus servicios y le montará una versión premium:
-> *"Caza esta web: **http://www.ejemplo-taller-antiguo.com**. Extrae todos sus textos, especialidades, historia y horarios. Reconstruye la web desde cero con un diseño premium moderno orientado a la salud. Quiero que uses colores de confianza (azules/blancos) y que la estructura parezca de una clínica de alto nivel. Entrégame el ZIP y la propuesta en PDF."*
-
-### 3. Crear web a partir de Redes Sociales (El Cliente de Instagram)
-Si el cliente no tiene web, pero tiene un Instagram lleno de fotos y precios (ej. un mecánico, un pastelero):
-> *"Créame una web premium para un negocio. No tienen web antigua, pero extrae toda la información de sus redes sociales aquí: **[Pega el link del Instagram]** y **[Link de su Facebook]**. Extrae de qué va su negocio, sus productos principales y su teléfono de contacto. Con toda esa información, génerame la web con colores corporativos que peguen con sus fotos y redacta una propuesta comercial para poder venderle la web."*
-
-*(Recuerda: Tras cualquiera de estos comandos, el Kit entrará en la **Fase de Briefing** y te preguntará qué módulos extra quieres activar antes de empezar a programar).*
-
-### 4. Automatizar la creación con el "Molde de Oro" (Starter Kit)
-Si ya tienes claro el cliente y no quieres clonar carpetas a mano, pídele a la IA que lo haga por ti usando tus scripts locales:
-> *"Voy a lanzar un nuevo cliente llamado 'Clínica Dental Madrid'. Ejecuta por mí el comando `npm run new-site` en la terminal, contesta a todos sus prompts con los datos de esta clínica y genérame la carpeta en cazas/clinica-madrid. Cuando termines, ejecútale un `npm run validate` para garantizarnos de que la calidad técnica está al 100%."*
-
-### 5. Auditar tu propio código antes de entregar
-Si hiciste cambios manuales (como meter imágenes nuevas o cambiar CSS) y quieres asegurarte de no haber roto el PageSpeed:
-> *"Acabo de meter cambios manuales en cazas/clinica-madrid. Ejecuta el validador oficial (`npm run validate cazas/clinica-madrid`) y dime si me he olvidado algún atributo ALT, si rompí el H1 o si hay recursos dando error 404."*
-
-### 6. Verificar el caché en Producción (Cloudflare)
-Si el cliente te dice que no ve los cambios que acabas de subir:
-> *"El cliente dice que la web sigue igual. Ejecuta `npm run verify-production https://clinica-madrid.com clinica-madrid` para comprobar si Cloudflare está sirviendo una versión antigua atrapada en el Edge Caché."*
-
-### 7. Crear Embudos y Landing Pages de Venta (Funnels)
-El Starter Kit (estático y ultrarrápido) es tu mejor arma para Landings de conversión porque un tiempo de carga nulo abarata radicalmente tus anuncios (CPA) en Meta/Google Ads. Para vender productos o captar leads sin necesidad de plataformas caras como ClickFunnels, dale a la IA esta orden:
-> *"Crea un nuevo proyecto en cazas/funnel-ventas usando el starter-template. Esta será una Landing Page de Ventas (VSL). Necesito un diseño agresivo enfocado a la conversión. Enlaza todos los botones de 'Comprar Ahora' directamente a este enlace de pago de Stripe: [Tu Link de Stripe]. Además, crea una página 'gracias.html' para la redirección post-compra, e incluye un formulario (Opt-in) cuyo 'action' apunte a mi Webhook de Make.com/n8n para capturar los emails."*
-
----
-
-## 🚀 QUICK START — DE CERO A NUEVA WEB
-
-Ejemplo del flujo real de trabajo:
+### Herramientas existentes para webs
 
 ```bash
-# 1. Crear el proyecto (te preguntará los datos)
 npm run new-site
-
-# 2. Personalizar assets (opcional)
-# - Reemplaza los placeholders en cazas/<slug>/assets/img/
-# - Añade WOFF2 a cazas/<slug>/assets/fonts/ si necesitas
-
-# 3. Validar
-npm run validate <slug>
-
-# 4. Preview local (usa tu servidor preferido, ej. Live Server o http-server)
-npx http-server cazas/<slug>
-
-# 5. Deploy
-# - Cloudflare Pages, Hostinger, Vercel...
-
-# 6. Verify production
-npm run verify-production https://cliente.com <slug>
+npm run validate -- mi-cliente
+npm run verify-production -- https://example.com
+npm run design-to-web:analyze -- tests/design-to-web/simple-landing.png mi-proyecto
 ```
 
----
+Consulta el contrato exacto de los scripts en [Design-to-Web](docs/DESIGN-TO-WEB.md), [lista de entrega](docs/NEW-SITE-CHECKLIST.md) y [depuración](docs/DEBUGGING.md). La plantilla estática y su despliegue no sustituyen un servidor para Java, .NET o Python ni un build móvil.
 
-## 🏗️ Starter Kit y Herramientas Automáticas
+## Ejemplos de peticiones
 
-Hemos introducido la nueva arquitectura **[TU AGENCIA WEB] Starter Kit**, un "molde de oro" diseñado para LCP bajo y cero deuda técnica.
+- «Crea una web para una clínica con sus datos reales y prepara una propuesta».
+- «Construye un CRM en Vue, Java y PostgreSQL con aislamiento entre empresas».
+- «Añade una API en C#/.NET con SQL Server al proyecto existente».
+- «Compara referencias de Clone Wars para un marketplace en React».
+- «Diseña un workspace con documentos y kanban tomando AppFlowy como referencia».
+- «Implementa una app Android o React Native que funcione sin conexión».
+- «Programa este sensor Arduino; indica qué necesitas saber de la placa».
+- «Prepara Terraform o Pulumi para este entorno y muestra el plan».
+- «Evalúa una estrategia en Python con datos históricos, costes y periodo fuera de muestra».
 
-### Comandos de Desarrollo
-- `npm run new-site`: Crea un proyecto nuevo interactivo para un cliente (clonando `starter-template/`). NUNCA sobrescribe clientes existentes.
-- `npm run design-to-web:analyze -- <referencia.png> <proyecto>`: (EXPERIMENTAL) Analiza un diseño con IA para convertirlo a código.
-- `npm run design-to-web:build -- <proyecto>`: (EXPERIMENTAL) Construye el código de la web a partir del diseño analizado.
-- `npm run validate <cazas/slug>`: Audita un sitio en busca de errores (SEO, JSON-LD estructurado, H1 múltiples, imágenes sin alt, GSAP innecesario).
-- `npm run verify-production <url> <slug>`: Audita la caché en Cloudflare comparando el sitio vivo con los assets locales (Solo lectura).
+La skill de trading ayuda a desarrollar software y estudiar hipótesis. No instala un broker, no garantiza resultados y no envía órdenes reales por defecto.
 
-### 🤖 Ejemplos: Design-to-Web (Automatización de Páginas)
-Puedes generar automáticamente distintos tipos de páginas pasándole la referencia visual a la IA. El sistema extraerá colores, tipografías y secciones:
+## Automatismos y recursos existentes
 
-**1. Landing Page (Venta de producto o embudo):**
-\`\`\`bash
-npm run design-to-web:analyze -- refs/landing-ventas.png mi-nuevo-funnel
-npm run design-to-web:build -- mi-nuevo-funnel
-npm run design-to-web:qa -- mi-nuevo-funnel
-\`\`\`
+- [Blog automático](automatismos/README.md): Worker, KV, generación de artículos/portadas y notificaciones opcionales; requiere recursos propios.
+- [Bot social](automatismos/social-media-bot/README.md): código de generación de contenido y revisión con Telegram; configura proveedores y almacenamiento.
+- [Agente comercial](automatismos/canedostudio-sales-agent/README.md): ejemplo con D1 y conversaciones; su README documenta adaptadores y pasos pendientes. No se considera producción lista por copiarlo.
+- [Reseñas](componente-resenas.md): carrusel de testimonios y formulario de valoración; usa reseñas reales y verifica políticas vigentes del proveedor antes de publicar flujos de solicitud.
+- [Propuesta](plantilla-propuesta.md), [plantilla de valoración](plantilla-calificanos.html), [despliegue](despliegue.md), [rendimiento](docs/PERFORMANCE.md), [diseño](docs/PREMIUM-DESIGN-SYSTEM.md), [datos estructurados](docs/STRUCTURED-DATA.md).
 
-**2. Web Multipágina o Dashboard:**
-\`\`\`bash
-npm run design-to-web:analyze -- refs/dashboard-ui.pdf mi-dashboard
-npm run design-to-web:build -- mi-dashboard
-\`\`\`
+## Privacidad, costes y licencias
 
-### Documentación Estándar
-Consulta el directorio `docs/` para leer nuestras estrategias formales de desarrollo:
-1. `docs/PERFORMANCE.md` - Core Web Vitals, Imágenes y Scripts.
-2. `docs/NEW-SITE-CHECKLIST.md` - Pasos oficiales para crear un nuevo cliente.
-3. `docs/CLOUDFLARE.md` - Configuraciones óptimas y peligrosas.
-4. `docs/STRUCTURED-DATA.md` - Estrategia y plantillas de Schema.org / JSON-LD.
-5. `docs/PREMIUM-DESIGN-SYSTEM.md` - Reglas maestras de diseño y arquetipos visuales.
-6. `docs/DEBUGGING.md` - Resolución de problemas en LCP y sliders.
+Usa tus propias cuentas y claves. Guarda secretos en variables privadas o un gestor de secretos, nunca en código que se entregue al navegador. `.env`, `secretos/`, configuraciones locales y trabajos en `cazas/` están excluidos; revisa Git antes de publicar.
+
+Los precios y cuotas dependen del proveedor y cambian. El kit no garantiza coste cero, facturación ni resultados comerciales. Cada SDK/servicio requiere verificar requisitos actuales y la autorización del entorno de destino.
+
+REA conserva su [licencia MIT](.agents/skills/reverse-engineer-anything/LICENSE). Otros componentes conservan sus avisos; [referencias y procedencia](docs/REFERENCIAS-PRODUCTO.md). No supongas que todos los proyectos enlazados por un catálogo comparten una licencia.

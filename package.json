@@ -14,7 +14,11 @@
     "test:design-to-web-builder": "node tests/design-to-web/test-builder.js",
     "test:design-to-web-qa": "node tests/design-to-web/test-qa.js",
     "test:design-to-web-gemini": "node tests/design-to-web/test-gemini.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "kit:catalog": "node scripts/kit.js catalog",
+    "kit:doctor": "node scripts/kit.js doctor",
+    "kit:validate": "node scripts/kit.js validate",
+    "test:kit": "node --test tests/kit/cli.test.js"
   },
   "repository": {
     "type": "git",
