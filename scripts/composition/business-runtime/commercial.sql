@@ -1,0 +1,3 @@
+CREATE TABLE IF NOT EXISTS commercial_draft(tenant_id TEXT NOT NULL,id TEXT NOT NULL,kind TEXT NOT NULL,sale_id TEXT NOT NULL,total_cents INTEGER NOT NULL,status TEXT NOT NULL,PRIMARY KEY(tenant_id,id));
+CREATE TABLE IF NOT EXISTS campaign(tenant_id TEXT NOT NULL,id TEXT NOT NULL,name TEXT NOT NULL,tag_id TEXT NOT NULL,body TEXT NOT NULL,status TEXT NOT NULL,PRIMARY KEY(tenant_id,id),FOREIGN KEY(tenant_id,tag_id) REFERENCES tag(tenant_id,id));
+CREATE TABLE IF NOT EXISTS content_draft(tenant_id TEXT NOT NULL,id TEXT NOT NULL,title TEXT NOT NULL,body TEXT NOT NULL,status TEXT NOT NULL,PRIMARY KEY(tenant_id,id));

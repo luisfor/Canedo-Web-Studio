@@ -1,0 +1,8 @@
+# Ejemplo revisable; no se copia automáticamente a ninguna configuración.
+# Sustituye rutas por las del kit y un ámbito propio autorizado.
+[mcp_servers.canedo_devkit]
+command = "node"
+args = ["/ruta/kit/scripts/agents/mcp-server.js", "--root", "/ruta/proyectos-propios"]
+# Solo lectura/planificación por defecto. El operador puede añadir
+# "--allow-generate" a args para crear destinos nuevos dentro de ese ámbito.
+# Mantén la aprobación de herramientas de escritura del cliente.

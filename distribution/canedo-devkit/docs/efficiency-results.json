@@ -1,0 +1,46 @@
+{
+  "kind": "local-efficiency-benchmark",
+  "host": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "v25.2.1"
+  },
+  "equivalent": true,
+  "cold": {
+    "filesRead": 3,
+    "bytesRead": 96,
+    "filesAnalyzed": 3,
+    "analysisReused": 0,
+    "excludedEntries": 1,
+    "full": false
+  },
+  "warm": {
+    "filesRead": 3,
+    "bytesRead": 96,
+    "filesAnalyzed": 0,
+    "analysisReused": 3,
+    "excludedEntries": 2,
+    "full": false
+  },
+  "full": {
+    "filesRead": 3,
+    "bytesRead": 96,
+    "filesAnalyzed": 3,
+    "analysisReused": 0,
+    "excludedEntries": 2,
+    "full": true
+  },
+  "output": {
+    "fullEvidenceBytes": 55369,
+    "summaryBytes": 616
+  },
+  "modelCalls": 0,
+  "modelTokens": {
+    "state": "unknown",
+    "reason": "No provider invoked; external agent consumption unavailable."
+  },
+  "measuredScope": "synthetic-three-file-project; derived parsing and JSON output bytes",
+  "savingsPercent": "not-asserted",
+  "securityReadsPreserved": true,
+  "temporaryDataRemoved": true
+}

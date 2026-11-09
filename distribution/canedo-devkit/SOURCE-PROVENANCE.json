@@ -1,0 +1,2119 @@
+{
+  "schemaVersion": 1,
+  "status": "documented-distribution-not-published",
+  "originalRepository": "https://github.com/luisfor/Canedo-Web-Studio.git",
+  "originalHead": "3ebb378",
+  "originalFilesVerifiedUnchanged": 565,
+  "originalFilesChanged": [],
+  "originalIgnoredPrivateFiles": "Not copied or enumerated by customer identity",
+  "includedSourceProvenance": [
+    {
+      "path": ".agents/skills/arquitecto-fullstack/SKILL.md",
+      "sourcePath": ".agents/skills/arquitecto-fullstack/SKILL.md",
+      "sourceSha256": "c2c4542e17b19b4d4b33536f73b79d9eb15192ac83b1946b06c162687e58dc9a",
+      "preparedSha256": "c2c4542e17b19b4d4b33536f73b79d9eb15192ac83b1946b06c162687e58dc9a",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": ".agents/skills/bases-datos/SKILL.md",
+      "sourcePath": ".agents/skills/bases-datos/SKILL.md",
+      "sourceSha256": "faf653180cda8000bde70f0e80983530cfdf7a36579b6a2f67b755ff818736b3",
+      "preparedSha256": "faf653180cda8000bde70f0e80983530cfdf7a36579b6a2f67b755ff818736b3",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": ".agents/skills/desarrollo-backend/SKILL.md",
+      "sourcePath": ".agents/skills/desarrollo-backend/SKILL.md",
+      "sourceSha256": "6c479c600e7f92a41e43369db141cc10b0e5591af633daa97047713b59cf7802",
+      "preparedSha256": "6c479c600e7f92a41e43369db141cc10b0e5591af633daa97047713b59cf7802",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": ".agents/skills/desarrollo-frontend/SKILL.md",
+      "sourcePath": ".agents/skills/desarrollo-frontend/SKILL.md",
+      "sourceSha256": "c0b38bd33c01a238075e92ec850871352ca45a2f10e05cd2eea07288b4ad6579",
+      "preparedSha256": "c0b38bd33c01a238075e92ec850871352ca45a2f10e05cd2eea07288b4ad6579",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": ".agents/skills/desarrollo-movil/SKILL.md",
+      "sourcePath": ".agents/skills/desarrollo-movil/SKILL.md",
+      "sourceSha256": "459777d36ebe9d762878ff3fa03106bbc4179621e008aba49cf8a147d3e6b178",
+      "preparedSha256": "459777d36ebe9d762878ff3fa03106bbc4179621e008aba49cf8a147d3e6b178",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": ".agents/skills/devops-iac/SKILL.md",
+      "sourcePath": ".agents/skills/devops-iac/SKILL.md",
+      "sourceSha256": "78653b453a1f8db718632ac9e6ef45ada41d99b70e8a6bd905951b6094b32a94",
+      "preparedSha256": "78653b453a1f8db718632ac9e6ef45ada41d99b70e8a6bd905951b6094b32a94",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": ".agents/skills/referencias-producto/SKILL.md",
+      "sourcePath": ".agents/skills/referencias-producto/SKILL.md",
+      "sourceSha256": "adfa271317f6e560b1f3caef4ed52439d0e7448ae8c44c217c28666eafe59150",
+      "preparedSha256": "adfa271317f6e560b1f3caef4ed52439d0e7448ae8c44c217c28666eafe59150",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": ".agents/skills/reverse-engineer-anything/LICENSE",
+      "sourcePath": ".agents/skills/reverse-engineer-anything/LICENSE",
+      "sourceSha256": "798f9e4d18e49b30bf2f12696c8ced73dc4e1413da375a333d01281543a1ea8b",
+      "preparedSha256": "798f9e4d18e49b30bf2f12696c8ced73dc4e1413da375a333d01281543a1ea8b",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "MIT-see-retained-REA-LICENSE"
+    },
+    {
+      "path": ".agents/skills/reverse-engineer-anything/SKILL.md",
+      "sourcePath": ".agents/skills/reverse-engineer-anything/SKILL.md",
+      "sourceSha256": "8866a9102de4ca5d6110e280a5d53fa67f0600d26b75cfaff4e9b252af631bcf",
+      "preparedSha256": "8866a9102de4ca5d6110e280a5d53fa67f0600d26b75cfaff4e9b252af631bcf",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "MIT-see-retained-REA-LICENSE"
+    },
+    {
+      "path": ".agents/skills/reverse-engineer-anything/references/android-applications.md",
+      "sourcePath": ".agents/skills/reverse-engineer-anything/references/android-applications.md",
+      "sourceSha256": "24ecaa1798eb4f28591884a7deb68df31e90313865515a23e3b466403f1abc39",
+      "preparedSha256": "24ecaa1798eb4f28591884a7deb68df31e90313865515a23e3b466403f1abc39",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "MIT-see-retained-REA-LICENSE"
+    },
+    {
+      "path": ".agents/skills/reverse-engineer-anything/references/connection-and-recovery.md",
+      "sourcePath": ".agents/skills/reverse-engineer-anything/references/connection-and-recovery.md",
+      "sourceSha256": "3c2049047f2e9c01a224d71c1b54fbf429a98cdf8e691e9058d67ec4bc1df616",
+      "preparedSha256": "3c2049047f2e9c01a224d71c1b54fbf429a98cdf8e691e9058d67ec4bc1df616",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "MIT-see-retained-REA-LICENSE"
+    },
+    {
+      "path": ".agents/skills/reverse-engineer-anything/references/environments.md",
+      "sourcePath": ".agents/skills/reverse-engineer-anything/references/environments.md",
+      "sourceSha256": "83e041f0a5243172af69eaadf62da0699617add3ff1d46b294e4bba7ece9d95f",
+      "preparedSha256": "83e041f0a5243172af69eaadf62da0699617add3ff1d46b294e4bba7ece9d95f",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "MIT-see-retained-REA-LICENSE"
+    },
+    {
+      "path": ".agents/skills/reverse-engineer-anything/references/evidence-workflows.md",
+      "sourcePath": ".agents/skills/reverse-engineer-anything/references/evidence-workflows.md",
+      "sourceSha256": "f44b68acc6ebaa60c1f5d0670e4f9ff7212d351a0ecc6e6ca77ce38b9177ea57",
+      "preparedSha256": "f44b68acc6ebaa60c1f5d0670e4f9ff7212d351a0ecc6e6ca77ce38b9177ea57",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "MIT-see-retained-REA-LICENSE"
+    },
+    {
+      "path": ".agents/skills/reverse-engineer-anything/references/javascript-applications.md",
+      "sourcePath": ".agents/skills/reverse-engineer-anything/references/javascript-applications.md",
+      "sourceSha256": "619cfd15ffdf466452cc32002ae357fefec59d5dcad4c9dfc27630138f0f719d",
+      "preparedSha256": "619cfd15ffdf466452cc32002ae357fefec59d5dcad4c9dfc27630138f0f719d",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "MIT-see-retained-REA-LICENSE"
+    },
+    {
+      "path": ".agents/skills/reverse-engineer-anything/references/native-and-artifacts.md",
+      "sourcePath": ".agents/skills/reverse-engineer-anything/references/native-and-artifacts.md",
+      "sourceSha256": "a81155e23cd30c2da5dae02c3bb0304e8f43b0ec2d8b53948ae84c11dcfc6d9a",
+      "preparedSha256": "a81155e23cd30c2da5dae02c3bb0304e8f43b0ec2d8b53948ae84c11dcfc6d9a",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "MIT-see-retained-REA-LICENSE"
+    },
+    {
+      "path": ".agents/skills/reverse-engineer-anything/references/runtime-observation.md",
+      "sourcePath": ".agents/skills/reverse-engineer-anything/references/runtime-observation.md",
+      "sourceSha256": "e207a912470a1a56dc02316eb7b040ac50b4d763f2273e97a6811863d9051d74",
+      "preparedSha256": "e207a912470a1a56dc02316eb7b040ac50b4d763f2273e97a6811863d9051d74",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "MIT-see-retained-REA-LICENSE"
+    },
+    {
+      "path": ".agents/skills/sistemas-embebidos/SKILL.md",
+      "sourcePath": ".agents/skills/sistemas-embebidos/SKILL.md",
+      "sourceSha256": "cf788ce404e6040b7360d9a18d1e3328263f5082c53972f22d3ac9b23091e475",
+      "preparedSha256": "cf788ce404e6040b7360d9a18d1e3328263f5082c53972f22d3ac9b23091e475",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": ".agents/skills/trading-cuantitativo/SKILL.md",
+      "sourcePath": ".agents/skills/trading-cuantitativo/SKILL.md",
+      "sourceSha256": "38704fe4c73314464c53922d875fdf1d772bcf486f107b05f90023bfb8078460",
+      "preparedSha256": "38704fe4c73314464c53922d875fdf1d772bcf486f107b05f90023bfb8078460",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": ".agents/skills/workspace-colaborativo/SKILL.md",
+      "sourcePath": ".agents/skills/workspace-colaborativo/SKILL.md",
+      "sourceSha256": "6bf90f16c58a70f924642454b5aa6294b7ad94974bedea66902a6bc83fdf904f",
+      "preparedSha256": "6bf90f16c58a70f924642454b5aa6294b7ad94974bedea66902a6bc83fdf904f",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": ".gitignore",
+      "sourcePath": ".gitignore",
+      "sourceSha256": "4d3c434bdb764b135acd8a17eb911d189757231e5d56a9ce003e0e1f9e4a734c",
+      "preparedSha256": "fa9993ae15a39d1ca06b77f0fe1ea77b0ef34b5added6ebfc07c89532626833d",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "AGENTS.md",
+      "sourcePath": "AGENTS.md",
+      "sourceSha256": "490aa0cd75fc58818087973abf818da1cc75f480750968a950005180d35dc054",
+      "preparedSha256": "45ac58435e238738dcd1a521ebcc3f87740c04041fbfa5389ed83604f77db355",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "CLAUDE.md",
+      "sourcePath": "CLAUDE.md",
+      "sourceSha256": "0fdea5ee16b6b3fee183056ba06864ada2ee6914b04df8166c293bed7a98a863",
+      "preparedSha256": "40a91c0eca8f23de4c910e7b4bf1be86b7b1f4d135b82d8a765497224eb1f639",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "GEMINI.md",
+      "sourcePath": null,
+      "sourceSha256": null,
+      "preparedSha256": "40a91c0eca8f23de4c910e7b4bf1be86b7b1f4d135b82d8a765497224eb1f639",
+      "transformation": "new-distribution-document-or-verification",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "LICENSE",
+      "sourcePath": null,
+      "sourceSha256": null,
+      "transformation": "new-prepublication-document",
+      "preparedSha256": "3ceb8ead4682709a49ccbafe3af0e34e74a51cac1bba05f3c4f01fde09dbb31f",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "LICENSE-PROPOSAL.md",
+      "sourcePath": null,
+      "sourceSha256": null,
+      "preparedSha256": "5873e439a34f75f57d13fdca06447c05f67277adb93ffffc7294ba99ae3d04f9",
+      "transformation": "new-distribution-document-or-verification",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "PREPARATION-REPORT.md",
+      "sourcePath": null,
+      "sourceSha256": null,
+      "preparedSha256": "11f7d722ffeea2bf199d4ebac86aabff8b72c9fb600fbfcbf610c2be4f06382b",
+      "transformation": "new-distribution-document-or-verification",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "PREPUBLICATION-CLOSURE.md",
+      "sourcePath": null,
+      "sourceSha256": null,
+      "transformation": "new-prepublication-document",
+      "preparedSha256": "2e80c28cf75f095f7e256c6b45a42c6eb5ca47f8c61280fb668a24a267deb540",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "PUBLICATION-FILES.txt",
+      "sourcePath": null,
+      "sourceSha256": null,
+      "transformation": "new-prepublication-document",
+      "preparedSha256": "8d75918f333ad12948c55d06e8f76562a15b86051acf3ff260c882bc72ea3802",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "README.md",
+      "sourcePath": "README.md",
+      "sourceSha256": "7befa82969b0ade2bd36edb433a915bd751fa5cdb2b6ec62d32dd7e9c8c4bdfa",
+      "preparedSha256": "be5afda27c6101658ca2853d08ed7d0bf9a815dd8ad6f917285339d748e5148b",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "SECURITY.md",
+      "sourcePath": null,
+      "sourceSha256": null,
+      "preparedSha256": "d3cfe74512da179312b823cab8de97cd2eaa83639009a428fe40ce4799f627ca",
+      "transformation": "new-distribution-document-or-verification",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "THIRD-PARTY-NOTICES.md",
+      "sourcePath": null,
+      "sourceSha256": null,
+      "preparedSha256": "c325cb5b3ef9a22ab538801ced4778459981c28f02a7b1de0c3cd20124a8d437",
+      "transformation": "new-distribution-document-or-verification",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "catalog/commercial/combinations.json",
+      "sourcePath": "catalog/commercial/combinations.json",
+      "sourceSha256": "c27fcdccb2f348a141651ca6e8641c4bc1f3b23a804f20a5b069908ee66890e1",
+      "preparedSha256": "c27fcdccb2f348a141651ca6e8641c4bc1f3b23a804f20a5b069908ee66890e1",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "catalog/commercial/registry.json",
+      "sourcePath": "catalog/commercial/registry.json",
+      "sourceSha256": "1358ef3a4a707f24833720a4389e7d80dcfe22d80d63f738e49ed3fa75e09ccd",
+      "preparedSha256": "1358ef3a4a707f24833720a4389e7d80dcfe22d80d63f738e49ed3fa75e09ccd",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "catalog/composition/registry.json",
+      "sourcePath": "catalog/composition/registry.json",
+      "sourceSha256": "0edbaab151fc1728917a9d5dfc5b82893af4155dbd2a959bc72e65973521ad68",
+      "preparedSha256": "0edbaab151fc1728917a9d5dfc5b82893af4155dbd2a959bc72e65973521ad68",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "catalog/install-recipes/manifest.json",
+      "sourcePath": "catalog/install-recipes/manifest.json",
+      "sourceSha256": "4d99f1cc17f25f279e707721c0d2ae9fe899636e564a5c02a564e4f80ffc9e84",
+      "preparedSha256": "4d99f1cc17f25f279e707721c0d2ae9fe899636e564a5c02a564e4f80ffc9e84",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "catalog/profiles/manifest.json",
+      "sourcePath": "catalog/profiles/manifest.json",
+      "sourceSha256": "b8e53b2e7eeb3b716466200a67b8662184faf59cd6aa33574bb9b15ce03825c4",
+      "preparedSha256": "b8e53b2e7eeb3b716466200a67b8662184faf59cd6aa33574bb9b15ce03825c4",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "catalog/terminal/vocabulary.json",
+      "sourcePath": "catalog/terminal/vocabulary.json",
+      "sourceSha256": "3b610a0ed9efcd3e0a6279b8ae2bdb80e1cace60ba670df87206d6b03da82ab6",
+      "preparedSha256": "3b610a0ed9efcd3e0a6279b8ae2bdb80e1cace60ba670df87206d6b03da82ab6",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "catalog/tools/manifest.json",
+      "sourcePath": "catalog/tools/manifest.json",
+      "sourceSha256": "bbec1ac72d7dc39abc1e41aa275a39a3054ed79a35d8d8580d284c55a362e5bb",
+      "preparedSha256": "bbec1ac72d7dc39abc1e41aa275a39a3054ed79a35d8d8580d284c55a362e5bb",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "config/kit-capabilities.json",
+      "sourcePath": "config/kit-capabilities.json",
+      "sourceSha256": "47a1112df2cbe6399fe7e1bfd16e922b3809fe9c77824346f2559c81c0f7c5c4",
+      "preparedSha256": "3ccdf78ddde953a1c9d26a3c20d9a6dc042594a74c77188b84fe13f8326a973d",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/CAPACIDADES.md",
+      "sourcePath": "docs/CAPACIDADES.md",
+      "sourceSha256": "163cc21228ddf2eb32408c05899395df43c07db555ea7d9855cc5525753fc0d8",
+      "preparedSha256": "7199635173db2e27114dee201d236c6fbac668aac4c42f3935d146232172ebfd",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/COMMAND-INSTALLATION.md",
+      "sourcePath": "docs/COMMAND-INSTALLATION.md",
+      "sourceSha256": "dd80f5ac1414ad07fa007975ce1ea08cbc6ac0f0b6716387632640c4bb64f793",
+      "preparedSha256": "dd80f5ac1414ad07fa007975ce1ea08cbc6ac0f0b6716387632640c4bb64f793",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/ENVIRONMENT-DOCTOR.md",
+      "sourcePath": "docs/ENVIRONMENT-DOCTOR.md",
+      "sourceSha256": "33bef4952858cf2e472dfde6a29c974f3b5e4bf89b1466f98db30fbfc14b3676",
+      "preparedSha256": "33bef4952858cf2e472dfde6a29c974f3b5e4bf89b1466f98db30fbfc14b3676",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/INSTALLATION-PLANNER.md",
+      "sourcePath": "docs/INSTALLATION-PLANNER.md",
+      "sourceSha256": "e90e051019f8ca53b9db49a78028056bbee26f8f438ecc7fad0a41fe8ff89dc3",
+      "preparedSha256": "f72e15477881390bce08f06703432977d23ea7456e70bcd10125e5b4cc9f6d9e",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/PROJECT-COMPOSITION.md",
+      "sourcePath": "docs/PROJECT-COMPOSITION.md",
+      "sourceSha256": "ac5129a2a821e01644b75712acfe9998b24bf1027b0c2639ab7da2978adf270d",
+      "preparedSha256": "ac5129a2a821e01644b75712acfe9998b24bf1027b0c2639ab7da2978adf270d",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/REFERENCIAS-PRODUCTO.md",
+      "sourcePath": "docs/REFERENCIAS-PRODUCTO.md",
+      "sourceSha256": "2cb53d7621e19a671a9afbb15becd7d6d9e6f3a80d974eb5935589f382370da0",
+      "preparedSha256": "2cb53d7621e19a671a9afbb15becd7d6d9e6f3a80d974eb5935589f382370da0",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/TOOL-CATALOG.md",
+      "sourcePath": "docs/TOOL-CATALOG.md",
+      "sourceSha256": "a2fc0ae2aee6aa76993a407e0210c381788a3bfca5a15269e341d22b98333f41",
+      "preparedSha256": "eb7a2e77c5d80d1cc0a6357ac9990a7caa6728476ea02c630eca8fa40e269a61",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/TOOL-INSTALLERS.md",
+      "sourcePath": "docs/TOOL-INSTALLERS.md",
+      "sourceSha256": "c82e049eaeb043f80f55da1758a2130661ec6e2b227419036dc85d040fe58e8b",
+      "preparedSha256": "4396c44b3d9e72e8e91e007e67ca4b460d87124a009c702591b8ff48e91baa36",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/WORKSPACE-OPERATIONS.md",
+      "sourcePath": "docs/WORKSPACE-OPERATIONS.md",
+      "sourceSha256": "002c65d96264f729f444f81f3115117914cb3ccd7c9f961141467da089f9e64d",
+      "preparedSha256": "e2dbc9d7fc11bfc1ea749831b8f1c66fca742597735b09185267ec84f2c71665",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/architecture/README.md",
+      "sourcePath": "docs/architecture/README.md",
+      "sourceSha256": "48e66510f942e29250711d893af8739cf9039bd45c465dcc763922b7c2ec6d1a",
+      "preparedSha256": "48e66510f942e29250711d893af8739cf9039bd45c465dcc763922b7c2ec6d1a",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/cli/README.md",
+      "sourcePath": "docs/cli/README.md",
+      "sourceSha256": "dd1d81d88a0165be3ce368f9c77f1e78677424d8cbdfb6bb6a395f674762c343",
+      "preparedSha256": "dd1d81d88a0165be3ce368f9c77f1e78677424d8cbdfb6bb6a395f674762c343",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/cli/resource-efficiency.md",
+      "sourcePath": "docs/cli/resource-efficiency.md",
+      "sourceSha256": "ea9c412528cea098fe8dd17ad847ccaad25e022f39d7c25df645c2d94032571d",
+      "preparedSha256": "d65ec50910eedc8e3ce939b5fb2857bef59914c3f238edd67ab3bcf6e6abc517",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/cli/universal-planning.md",
+      "sourcePath": "docs/cli/universal-planning.md",
+      "sourceSha256": "7a9055365d3d3462700c12f3ea28393b2c9424e4dcd3329d4c3d4450c330d15c",
+      "preparedSha256": "de2a5e4a5d07d0f0f8bab8b6bdc379e1f096967a13d84281ee31a6e48e46e6fd",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/commercial-packages/README.md",
+      "sourcePath": "docs/commercial-packages/README.md",
+      "sourceSha256": "2438850d2823d0b8b0cf3c48af3ecb3f1a937ed297265b2abcee932e6e678c02",
+      "preparedSha256": "2438850d2823d0b8b0cf3c48af3ecb3f1a937ed297265b2abcee932e6e678c02",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/composition/README.md",
+      "sourcePath": "docs/composition/README.md",
+      "sourceSha256": "dab837a06e9a77116a063fd2f185aaee06a2feba5d60963a6d8d5b5ab53796b3",
+      "preparedSha256": "dab837a06e9a77116a063fd2f185aaee06a2feba5d60963a6d8d5b5ab53796b3",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/continuity/README.md",
+      "sourcePath": "docs/continuity/README.md",
+      "sourceSha256": "66fc169f6ba24a279686ec7e201225a5bcdb01da27a60d4fe96445aa4099b730",
+      "preparedSha256": "66fc169f6ba24a279686ec7e201225a5bcdb01da27a60d4fe96445aa4099b730",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/efficiency-results.json",
+      "sourcePath": null,
+      "sourceSha256": null,
+      "preparedSha256": "599e6ef80fd7474fbb2b936b691ac6d79738fe71d832bf3815652876edacab29",
+      "transformation": "new-distribution-document-or-verification",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/integrations/agents.md",
+      "sourcePath": "docs/integrations/agents.md",
+      "sourceSha256": "92f03fd8fd8938dfe1cc42436b10362a87729e5886230998cd4643b05979b9d3",
+      "preparedSha256": "92f03fd8fd8938dfe1cc42436b10362a87729e5886230998cd4643b05979b9d3",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/integrations/clients.md",
+      "sourcePath": null,
+      "sourceSha256": null,
+      "preparedSha256": "b818a06a00f43a947733a810790b0c3bf52234f7b10cf034411704eb5e977ebd",
+      "transformation": "new-distribution-document-or-verification",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/integrations/omnichannel.md",
+      "sourcePath": "docs/integrations/omnichannel.md",
+      "sourceSha256": "9d81d53acdb13728d1ac36ebd0fd4ae706d6719f038035281741b0a494172e9b",
+      "preparedSha256": "9d81d53acdb13728d1ac36ebd0fd4ae706d6719f038035281741b0a494172e9b",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/kit-first/README.md",
+      "sourcePath": "docs/kit-first/README.md",
+      "sourceSha256": "d12b5fe7838e8791917de8f5f6a57a3cf701480f65ad7c9d186e2facf33051a2",
+      "preparedSha256": "cbb879b60c87156bc40eb24ea316efb07d72a28faa4d5cc5f8bb721181eded7e",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/monetization/README.md",
+      "sourcePath": "docs/monetization/README.md",
+      "sourceSha256": "8a6b4cc26164846d13af099a3c79720cc424163d017e328c54a7581a31432b28",
+      "preparedSha256": "8a6b4cc26164846d13af099a3c79720cc424163d017e328c54a7581a31432b28",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/prepublication-checks.json",
+      "sourcePath": null,
+      "sourceSha256": null,
+      "transformation": "new-prepublication-document",
+      "preparedSha256": "9fc72264368cdf03a30325a37c0726074e34a40a493cc21e29adba7a2ee8abe9",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/security/README.md",
+      "sourcePath": "docs/security/README.md",
+      "sourceSha256": "78c619b042c3b126a32bdbf94d99a4a27cb6c8e992d368b1f491d1d9fda0dd45",
+      "preparedSha256": "78c619b042c3b126a32bdbf94d99a4a27cb6c8e992d368b1f491d1d9fda0dd45",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/tutorials/tienda-saas.md",
+      "sourcePath": "docs/tutorials/tienda-saas.md",
+      "sourceSha256": "8648da9003d2179bbb93fa086cf7821f01bd5c4f14d7786f7df09d4dcff7d0e2",
+      "preparedSha256": "8648da9003d2179bbb93fa086cf7821f01bd5c4f14d7786f7df09d4dcff7d0e2",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/validation-results.json",
+      "sourcePath": null,
+      "sourceSha256": null,
+      "preparedSha256": "67b34bd46d91e5ffd0f80b64a167ce67ae38657aa5dc7d492c488a20f5d9c7e7",
+      "transformation": "new-distribution-document-or-verification",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "docs/validation.md",
+      "sourcePath": null,
+      "sourceSha256": null,
+      "preparedSha256": "cf78ca0feb9c3eb9d850673ee2fffdda808085ea44bd7dacc6388adb235a9a7b",
+      "transformation": "new-distribution-document-or-verification",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "examples/agents/codex-config.example.toml",
+      "sourcePath": "examples/agents/codex-config.example.toml",
+      "sourceSha256": "b592b2463518130105fe3fca597bc2b2c10db541f602396a60afb733affd467e",
+      "preparedSha256": "d32d076c36577ea0d5d1bdc8fbbbcf12554c4c0129d500f52405f432008e4794",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "examples/agents/gemini-settings.example.json",
+      "sourcePath": null,
+      "sourceSha256": null,
+      "preparedSha256": "2778d57179873b5868e782df57072bfd23512ee0c00dd00581c2935f4af506dd",
+      "transformation": "new-distribution-document-or-verification",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "examples/agents/stdio-server.example.json",
+      "sourcePath": "examples/agents/stdio-server.example.json",
+      "sourceSha256": "82b49224a21d6c25e3c712e0d87cc9685339b9dcf544546bdafb5e77ea535918",
+      "preparedSha256": "90bb6591cb91a81091e21df44411a09fce1478087a13db2686e5aa34b3ca0a8a",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "examples/composition/README.md",
+      "sourcePath": "examples/composition/README.md",
+      "sourceSha256": "6e810cd20963f6fbf56afb1814244038c512a36e17a6ba0d26922666d63a2141",
+      "preparedSha256": "6e810cd20963f6fbf56afb1814244038c512a36e17a6ba0d26922666d63a2141",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "examples/composition/tienda-crm.request.json",
+      "sourcePath": "examples/composition/tienda-crm.request.json",
+      "sourceSha256": "0e047c4b9082e0a5c47b9c7ea3a385c277ed84096ee184b904158f8756957039",
+      "preparedSha256": "0e047c4b9082e0a5c47b9c7ea3a385c277ed84096ee184b904158f8756957039",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "package-lock.json",
+      "sourcePath": "package-lock.json",
+      "sourceSha256": "75cddd5612d63a3dc517d184998322f9a053f3fb4876df9b3e37c22ae6a90e9c",
+      "preparedSha256": "371cb67c8406760305c776df4230817d8f0fc5991a5acfcc56c1065aa05b2da5",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "package.json",
+      "sourcePath": "package.json",
+      "sourceSha256": "5ee59833561a73f3805cff9a54e59194d52d4231623a4397b48b0f5903f06e20",
+      "preparedSha256": "6d11ed3af03505aa9bf8679f280f0e874c1276c6dcbe583e759fe9d7b5df1139",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "schemas/agent-request.schema.json",
+      "sourcePath": "schemas/agent-request.schema.json",
+      "sourceSha256": "762f909f00da0d380e3a50a3b2fe4b81b73f58462802e4dc50b7fde23d6a0689",
+      "preparedSha256": "762f909f00da0d380e3a50a3b2fe4b81b73f58462802e4dc50b7fde23d6a0689",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "schemas/command-plan.schema.json",
+      "sourcePath": "schemas/command-plan.schema.json",
+      "sourceSha256": "3e75c3ee5b7bb59739efc286823434747863521f01659d792b57a7463cbe53be",
+      "preparedSha256": "3e75c3ee5b7bb59739efc286823434747863521f01659d792b57a7463cbe53be",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "schemas/commercial-catalog.schema.json",
+      "sourcePath": "schemas/commercial-catalog.schema.json",
+      "sourceSha256": "1f4cccb0e945f8306e2487e29174f0fa8d01aafa1712fbc1bec833e994841d10",
+      "preparedSha256": "1f4cccb0e945f8306e2487e29174f0fa8d01aafa1712fbc1bec833e994841d10",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "schemas/commercial-combinations.schema.json",
+      "sourcePath": "schemas/commercial-combinations.schema.json",
+      "sourceSha256": "bb9ba73b5b93147e5d9ad88b28f7613de9aaba8d3d89eb7e26bb64f529be9d54",
+      "preparedSha256": "bb9ba73b5b93147e5d9ad88b28f7613de9aaba8d3d89eb7e26bb64f529be9d54",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "schemas/composition-catalog.schema.json",
+      "sourcePath": "schemas/composition-catalog.schema.json",
+      "sourceSha256": "978c129a5df2fda0d7dea6fc6cffe59093a70e5652838d7ca3f82189c32cd6c4",
+      "preparedSha256": "978c129a5df2fda0d7dea6fc6cffe59093a70e5652838d7ca3f82189c32cd6c4",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "schemas/composition-openapi.schema.json",
+      "sourcePath": "schemas/composition-openapi.schema.json",
+      "sourceSha256": "9f4f83abb62cf2e61b4690460b9defec6124c943780731e0e4d2316bce9f42d2",
+      "preparedSha256": "9f4f83abb62cf2e61b4690460b9defec6124c943780731e0e4d2316bce9f42d2",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "schemas/composition-plan.schema.json",
+      "sourcePath": "schemas/composition-plan.schema.json",
+      "sourceSha256": "9fe2a4af24f5498f0ffbf753b62b9aab11b5fad99ba31a32255af60a84ca285a",
+      "preparedSha256": "9fe2a4af24f5498f0ffbf753b62b9aab11b5fad99ba31a32255af60a84ca285a",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "schemas/diagnostic-report.schema.json",
+      "sourcePath": "schemas/diagnostic-report.schema.json",
+      "sourceSha256": "0f5fcb3dbed3f39b9c6c15fea6ba55049299d50fd26bfb96e38de3aab29fbfa9",
+      "preparedSha256": "0f5fcb3dbed3f39b9c6c15fea6ba55049299d50fd26bfb96e38de3aab29fbfa9",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "schemas/install-recipes.schema.json",
+      "sourcePath": "schemas/install-recipes.schema.json",
+      "sourceSha256": "2043febe7aeac260466da028cebaa507f234e2f30c1e2bcb63720d9a7aa550b9",
+      "preparedSha256": "2043febe7aeac260466da028cebaa507f234e2f30c1e2bcb63720d9a7aa550b9",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "schemas/kit-first.schema.json",
+      "sourcePath": "schemas/kit-first.schema.json",
+      "sourceSha256": "adccd220c1e55a90632267078c5cc68bfbaada9371308c10bd57e8dd93db6aef",
+      "preparedSha256": "adccd220c1e55a90632267078c5cc68bfbaada9371308c10bd57e8dd93db6aef",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "schemas/project-memory.schema.json",
+      "sourcePath": "schemas/project-memory.schema.json",
+      "sourceSha256": "0fa267ea17fa68222629283b9b184cba196fbd60305e86c0e276263d4b298760",
+      "preparedSha256": "0fa267ea17fa68222629283b9b184cba196fbd60305e86c0e276263d4b298760",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "schemas/technical-plan.schema.json",
+      "sourcePath": "schemas/technical-plan.schema.json",
+      "sourceSha256": "ab3ebdc06b5c3ca0829e182e52a3c93523bf8b78bd4dadd20084d1e1d4af5aa5",
+      "preparedSha256": "ab3ebdc06b5c3ca0829e182e52a3c93523bf8b78bd4dadd20084d1e1d4af5aa5",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "schemas/terminal-vocabulary.schema.json",
+      "sourcePath": "schemas/terminal-vocabulary.schema.json",
+      "sourceSha256": "91201d2901f01d069f084224fe35ddb2b6ef493080b4cd376de0309bc70d27ca",
+      "preparedSha256": "91201d2901f01d069f084224fe35ddb2b6ef493080b4cd376de0309bc70d27ca",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "schemas/terminal.schema.json",
+      "sourcePath": "schemas/terminal.schema.json",
+      "sourceSha256": "3be8bece447fa47d2564d82377e4a5c1585024c2e3a125463a09978c0f304dc5",
+      "preparedSha256": "3be8bece447fa47d2564d82377e4a5c1585024c2e3a125463a09978c0f304dc5",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "schemas/tool-catalog.schema.json",
+      "sourcePath": "schemas/tool-catalog.schema.json",
+      "sourceSha256": "833d5d00d34f71468446ce29a743294306d37dc5676647caa44f1c5240418fed",
+      "preparedSha256": "833d5d00d34f71468446ce29a743294306d37dc5676647caa44f1c5240418fed",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "schemas/tool-plan.schema.json",
+      "sourcePath": "schemas/tool-plan.schema.json",
+      "sourceSha256": "272c845a5bf17083e537ef1ff8d00c7ea67461e8eb9d5f5ab4f79e2a8ff4c7be",
+      "preparedSha256": "272c845a5bf17083e537ef1ff8d00c7ea67461e8eb9d5f5ab4f79e2a8ff4c7be",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "schemas/vendor/compose-spec.LICENSE",
+      "sourcePath": "schemas/vendor/compose-spec.LICENSE",
+      "sourceSha256": "7c87873291f289713ac5df48b1f2010eb6963752bbd6b530416ab99fc37914a8",
+      "preparedSha256": "7c87873291f289713ac5df48b1f2010eb6963752bbd6b530416ab99fc37914a8",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "Apache-2.0-see-retained-license-and-notice"
+    },
+    {
+      "path": "schemas/vendor/compose-spec.NOTICE",
+      "sourcePath": "schemas/vendor/compose-spec.NOTICE",
+      "sourceSha256": "b7b844543ed029ff0cc2bded0e951adc4c9240cc6366dea81c882b33534f484a",
+      "preparedSha256": "b7b844543ed029ff0cc2bded0e951adc4c9240cc6366dea81c882b33534f484a",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "Apache-2.0-see-retained-license-and-notice"
+    },
+    {
+      "path": "schemas/vendor/compose-spec.json",
+      "sourcePath": "schemas/vendor/compose-spec.json",
+      "sourceSha256": "af3567ba304f132a87389c499bba66676fcf132d95c16323f49e08553edbdad4",
+      "preparedSha256": "af3567ba304f132a87389c499bba66676fcf132d95c16323f49e08553edbdad4",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "Apache-2.0-see-retained-license-and-notice"
+    },
+    {
+      "path": "schemas/vendor/compose-spec.provenance.json",
+      "sourcePath": "schemas/vendor/compose-spec.provenance.json",
+      "sourceSha256": "2e9000b0af74c6b1e7a14275df35f2fc5fcd7a4218ae3386120c23ee5ee825b9",
+      "preparedSha256": "2e9000b0af74c6b1e7a14275df35f2fc5fcd7a4218ae3386120c23ee5ee825b9",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "Apache-2.0-see-retained-license-and-notice"
+    },
+    {
+      "path": "scripts/agents/benchmark.js",
+      "sourcePath": "scripts/agents/benchmark.js",
+      "sourceSha256": "3ab8e214b854a8f083bcacb3463e12a439330f6b4b343152a6511dece4e85393",
+      "preparedSha256": "3ab8e214b854a8f083bcacb3463e12a439330f6b4b343152a6511dece4e85393",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/agents/cli.js",
+      "sourcePath": "scripts/agents/cli.js",
+      "sourceSha256": "109c0f24e0f2a3676e6b4fa7ef136d44bbc77c5af5324831f3d2e6c8cae7cb1d",
+      "preparedSha256": "109c0f24e0f2a3676e6b4fa7ef136d44bbc77c5af5324831f3d2e6c8cae7cb1d",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/agents/context.js",
+      "sourcePath": "scripts/agents/context.js",
+      "sourceSha256": "5f3ff8995dcc28c8e3fcab76df199c2ea588e9eee80f3a9514fd664d06d5f99f",
+      "preparedSha256": "5f3ff8995dcc28c8e3fcab76df199c2ea588e9eee80f3a9514fd664d06d5f99f",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/agents/controller.js",
+      "sourcePath": "scripts/agents/controller.js",
+      "sourceSha256": "713fef12dc9d1ae0d6d3428ff81d4fe4e244fdcc1f63354c2af94b93aa18a47a",
+      "preparedSha256": "713fef12dc9d1ae0d6d3428ff81d4fe4e244fdcc1f63354c2af94b93aa18a47a",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/agents/mcp-server.js",
+      "sourcePath": "scripts/agents/mcp-server.js",
+      "sourceSha256": "27658034e0280623692f5fd5221444fcefbfbe960e49543caaeb413785d8bbd6",
+      "preparedSha256": "27658034e0280623692f5fd5221444fcefbfbe960e49543caaeb413785d8bbd6",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/agents/progressive.js",
+      "sourcePath": "scripts/agents/progressive.js",
+      "sourceSha256": "584aaf5034e1006d73f75f086abfd79444053be0f15a786efd052ae2e9ac289e",
+      "preparedSha256": "584aaf5034e1006d73f75f086abfd79444053be0f15a786efd052ae2e9ac289e",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/agents/usage.js",
+      "sourcePath": "scripts/agents/usage.js",
+      "sourceSha256": "7351f5cd528c719def6718a94a2d9bbb756d3b32651a8c57d107d4afe71a3637",
+      "preparedSha256": "7351f5cd528c719def6718a94a2d9bbb756d3b32651a8c57d107d4afe71a3637",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/commands/catalog.js",
+      "sourcePath": "scripts/commands/catalog.js",
+      "sourceSha256": "1309a7140592724896caa0d405fd777c53f1b725a17ad2bf45a8984f21547681",
+      "preparedSha256": "1309a7140592724896caa0d405fd777c53f1b725a17ad2bf45a8984f21547681",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/commands/plan.js",
+      "sourcePath": "scripts/commands/plan.js",
+      "sourceSha256": "4d84ad9482bafb1b327a42bc8f4c219042449ed87ca1fe2a03c13e1012177a02",
+      "preparedSha256": "4d84ad9482bafb1b327a42bc8f4c219042449ed87ca1fe2a03c13e1012177a02",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/commands/policy.js",
+      "sourcePath": "scripts/commands/policy.js",
+      "sourceSha256": "073b454b67c12729385479d83ed4a237aea03880c2f34ab435bcdf40782b452e",
+      "preparedSha256": "073b454b67c12729385479d83ed4a237aea03880c2f34ab435bcdf40782b452e",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/commands/render.js",
+      "sourcePath": "scripts/commands/render.js",
+      "sourceSha256": "ef22e997783412f438b5ff6592eba70ecdb63bb093b527ac2aa9e722d9a01853",
+      "preparedSha256": "ef22e997783412f438b5ff6592eba70ecdb63bb093b527ac2aa9e722d9a01853",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/commands/schema.js",
+      "sourcePath": "scripts/commands/schema.js",
+      "sourceSha256": "181d57ca10c94a9c6b43ebefaaa436ca70bdf6f89fdd89af775f42ac0aa13ba1",
+      "preparedSha256": "181d57ca10c94a9c6b43ebefaaa436ca70bdf6f89fdd89af775f42ac0aa13ba1",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/commercial/catalog.js",
+      "sourcePath": "scripts/commercial/catalog.js",
+      "sourceSha256": "220424d1844e81ebc56d7e0ce476ad84b3c53e8b730c34b28c37322e0a172251",
+      "preparedSha256": "220424d1844e81ebc56d7e0ce476ad84b3c53e8b730c34b28c37322e0a172251",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/commercial/combinations.js",
+      "sourcePath": "scripts/commercial/combinations.js",
+      "sourceSha256": "e7d480ccc9d795f57d283ddba9d6f51138efffb57e57c3e9c53e1a54bc4f92f3",
+      "preparedSha256": "e7d480ccc9d795f57d283ddba9d6f51138efffb57e57c3e9c53e1a54bc4f92f3",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/acceptance.js",
+      "sourcePath": "scripts/composition/acceptance.js",
+      "sourceSha256": "196da5330b66c3f5f57dc6b4e602dfa8ca31bdcdef9245c8666bc6ca00f598a4",
+      "preparedSha256": "196da5330b66c3f5f57dc6b4e602dfa8ca31bdcdef9245c8666bc6ca00f598a4",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/business-runtime/api.cjs",
+      "sourcePath": "scripts/composition/business-runtime/api.cjs",
+      "sourceSha256": "8cad47a0637be4e19c62ce8bbdd92b8cd69a85b7eec92e6d6869086f65ba6c83",
+      "preparedSha256": "8cad47a0637be4e19c62ce8bbdd92b8cd69a85b7eec92e6d6869086f65ba6c83",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/business-runtime/app.cjs",
+      "sourcePath": "scripts/composition/business-runtime/app.cjs",
+      "sourceSha256": "90dbd05160d03441d64c6cbff84b11863bad323432d26ce37bfd2150158cf62d",
+      "preparedSha256": "90dbd05160d03441d64c6cbff84b11863bad323432d26ce37bfd2150158cf62d",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/business-runtime/auth.cjs",
+      "sourcePath": "scripts/composition/business-runtime/auth.cjs",
+      "sourceSha256": "a89b76a993b9defce05c3fd69ec18fe2b03bea612293174a32b57c9775333465",
+      "preparedSha256": "a89b76a993b9defce05c3fd69ec18fe2b03bea612293174a32b57c9775333465",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/business-runtime/channels.cjs",
+      "sourcePath": "scripts/composition/business-runtime/channels.cjs",
+      "sourceSha256": "6743272cab733a712277629b18089ee70f5efe94c1c4957e8bfa6f3d41fcb7b9",
+      "preparedSha256": "6743272cab733a712277629b18089ee70f5efe94c1c4957e8bfa6f3d41fcb7b9",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/business-runtime/commercial.sql",
+      "sourcePath": "scripts/composition/business-runtime/commercial.sql",
+      "sourceSha256": "d747b321bd3297759024796547795583ac208156848f3788f2c0284b13752843",
+      "preparedSha256": "d747b321bd3297759024796547795583ac208156848f3788f2c0284b13752843",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/business-runtime/inbox.html",
+      "sourcePath": "scripts/composition/business-runtime/inbox.html",
+      "sourceSha256": "5bdb2a724fc9a79c516820f524d005bcfd484256651c999315d0d6664777e8af",
+      "preparedSha256": "5bdb2a724fc9a79c516820f524d005bcfd484256651c999315d0d6664777e8af",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/business-runtime/inbox.js",
+      "sourcePath": "scripts/composition/business-runtime/inbox.js",
+      "sourceSha256": "813df02025883cb2d7851fe197ae93f4da695647a49d95f1621cf831b9a20d6b",
+      "preparedSha256": "813df02025883cb2d7851fe197ae93f4da695647a49d95f1621cf831b9a20d6b",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/business-runtime/integration.test.cjs",
+      "sourcePath": "scripts/composition/business-runtime/integration.test.cjs",
+      "sourceSha256": "269ef4db68d506f68543c1758ab368327328246602bca689ca3d4b0deaa610ca",
+      "preparedSha256": "269ef4db68d506f68543c1758ab368327328246602bca689ca3d4b0deaa610ca",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/business-runtime/migrate.cjs",
+      "sourcePath": "scripts/composition/business-runtime/migrate.cjs",
+      "sourceSha256": "9cb348ef3343f3c649ea025bbd2feb15bf08e27b2d676e5037e7c3458791be7e",
+      "preparedSha256": "9cb348ef3343f3c649ea025bbd2feb15bf08e27b2d676e5037e7c3458791be7e",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/business-runtime/repository.cjs",
+      "sourcePath": "scripts/composition/business-runtime/repository.cjs",
+      "sourceSha256": "5aa8bd7c8681bbb78d4a63b5a3774d0e137e1036457a41bdfa4a2f376ef3a524",
+      "preparedSha256": "5aa8bd7c8681bbb78d4a63b5a3774d0e137e1036457a41bdfa4a2f376ef3a524",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/business-runtime/saas.cjs",
+      "sourcePath": "scripts/composition/business-runtime/saas.cjs",
+      "sourceSha256": "0c737406271b835b88e71ba766cdf57b040e36ea3945ea6e430ca69ca5c2de44",
+      "preparedSha256": "0c737406271b835b88e71ba766cdf57b040e36ea3945ea6e430ca69ca5c2de44",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/business-runtime/saas.sql",
+      "sourcePath": "scripts/composition/business-runtime/saas.sql",
+      "sourceSha256": "b5a67ef0b464a5e459af95f84d7a692a268e9105ee1b8c5eeea97f6de6d46b61",
+      "preparedSha256": "b5a67ef0b464a5e459af95f84d7a692a268e9105ee1b8c5eeea97f6de6d46b61",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/business-runtime/saas.test.cjs",
+      "sourcePath": "scripts/composition/business-runtime/saas.test.cjs",
+      "sourceSha256": "87499699851e877ec9860fcff91fda19d505e6a9d28c107d1251164af8a78d63",
+      "preparedSha256": "87499699851e877ec9860fcff91fda19d505e6a9d28c107d1251164af8a78d63",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/business-runtime/schema.sql",
+      "sourcePath": "scripts/composition/business-runtime/schema.sql",
+      "sourceSha256": "aac26690eb8479fe1472132d142ce846a92c53b674218cc4ca23d71037e024a9",
+      "preparedSha256": "aac26690eb8479fe1472132d142ce846a92c53b674218cc4ca23d71037e024a9",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/business-runtime/server.cjs",
+      "sourcePath": "scripts/composition/business-runtime/server.cjs",
+      "sourceSha256": "dfea631f52874a686a541637734851c2168c28de9b79149ff4f86a4345e34646",
+      "preparedSha256": "dfea631f52874a686a541637734851c2168c28de9b79149ff4f86a4345e34646",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/business-runtime/validate.cjs",
+      "sourcePath": "scripts/composition/business-runtime/validate.cjs",
+      "sourceSha256": "ffe38615be124969467bbaee2b3aa6a04ad12ebb98505462e9e0c39f3fff02b3",
+      "preparedSha256": "ffe38615be124969467bbaee2b3aa6a04ad12ebb98505462e9e0c39f3fff02b3",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/business.js",
+      "sourcePath": "scripts/composition/business.js",
+      "sourceSha256": "2d81c807f6e41e7264558c7ab33403d3352c23904cc7303c4df5016740b1f04e",
+      "preparedSha256": "2d81c807f6e41e7264558c7ab33403d3352c23904cc7303c4df5016740b1f04e",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/catalog.js",
+      "sourcePath": "scripts/composition/catalog.js",
+      "sourceSha256": "0fcab8ef206efdcc8860924850a1603e96f6f4269d41c63a8ff83fd7ae587208",
+      "preparedSha256": "0fcab8ef206efdcc8860924850a1603e96f6f4269d41c63a8ff83fd7ae587208",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/contracts.js",
+      "sourcePath": "scripts/composition/contracts.js",
+      "sourceSha256": "33c463d001fde52935fc3d2ddff81601989e2e754820f9538c28e415e952a187",
+      "preparedSha256": "33c463d001fde52935fc3d2ddff81601989e2e754820f9538c28e415e952a187",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/engine.js",
+      "sourcePath": "scripts/composition/engine.js",
+      "sourceSha256": "50f2959dd4304c3270da30d4cf2dd24ead0f33bc7c673f2d1dd4d292d8c9a6fe",
+      "preparedSha256": "50f2959dd4304c3270da30d4cf2dd24ead0f33bc7c673f2d1dd4d292d8c9a6fe",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/generate.js",
+      "sourcePath": "scripts/composition/generate.js",
+      "sourceSha256": "934cf6794b4f939e11ae5ff7773e24ad8f6c4bb8e8d95a5a6ed6affb9e1edd05",
+      "preparedSha256": "934cf6794b4f939e11ae5ff7773e24ad8f6c4bb8e8d95a5a6ed6affb9e1edd05",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/intents.js",
+      "sourcePath": "scripts/composition/intents.js",
+      "sourceSha256": "40108c5706c12c98c402fe507c157ccb5d34431f0bc8ed7b1e983a2617ecf48b",
+      "preparedSha256": "40108c5706c12c98c402fe507c157ccb5d34431f0bc8ed7b1e983a2617ecf48b",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/planner.js",
+      "sourcePath": "scripts/composition/planner.js",
+      "sourceSha256": "4e0a4a0ce83dc462c98d45f78fc2a5567b68905e48696c4d2a75e2e676fe7625",
+      "preparedSha256": "4e0a4a0ce83dc462c98d45f78fc2a5567b68905e48696c4d2a75e2e676fe7625",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/python-runtime/001.sql",
+      "sourcePath": "scripts/composition/python-runtime/001.sql",
+      "sourceSha256": "b06999138d9e1742ffb0531a571cac948bf7ba846f8003a307b0e3711096019e",
+      "preparedSha256": "b06999138d9e1742ffb0531a571cac948bf7ba846f8003a307b0e3711096019e",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/python-runtime/inventory.py",
+      "sourcePath": "scripts/composition/python-runtime/inventory.py",
+      "sourceSha256": "e9a4d4d45978233cf697ea0296165166f09d1ec88f7503a0d8ea2bcd71a3731c",
+      "preparedSha256": "e9a4d4d45978233cf697ea0296165166f09d1ec88f7503a0d8ea2bcd71a3731c",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/python-runtime/migrate.py",
+      "sourcePath": "scripts/composition/python-runtime/migrate.py",
+      "sourceSha256": "661a12c8829de14da7eef833d54aa14ace842dc3133f1ffcde65bfb15e7358d8",
+      "preparedSha256": "661a12c8829de14da7eef833d54aa14ace842dc3133f1ffcde65bfb15e7358d8",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/python-runtime/server.py",
+      "sourcePath": "scripts/composition/python-runtime/server.py",
+      "sourceSha256": "87d5f8d96b95618ab3c64e2952b9a3c736ce6be6c7df6f8593cea55655fee014",
+      "preparedSha256": "87d5f8d96b95618ab3c64e2952b9a3c736ce6be6c7df6f8593cea55655fee014",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/python-runtime/test_inventory.py",
+      "sourcePath": "scripts/composition/python-runtime/test_inventory.py",
+      "sourceSha256": "091066fadc442d31c9e13a8512d7e94de73ce44cbfe33d484d2f86a75a9d7955",
+      "preparedSha256": "091066fadc442d31c9e13a8512d7e94de73ce44cbfe33d484d2f86a75a9d7955",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/python.js",
+      "sourcePath": "scripts/composition/python.js",
+      "sourceSha256": "8b1f7d7c1d97f4c8de71ecd122f5b775e8a2a1cb6d5c1a6814e9a1e18535339b",
+      "preparedSha256": "8b1f7d7c1d97f4c8de71ecd122f5b775e8a2a1cb6d5c1a6814e9a1e18535339b",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/runtime/adapters.cjs",
+      "sourcePath": "scripts/composition/runtime/adapters.cjs",
+      "sourceSha256": "cf2515d40d593c21f750688a78f5fbf853a264f927a0eee3587b638b4d3d5384",
+      "preparedSha256": "cf2515d40d593c21f750688a78f5fbf853a264f927a0eee3587b638b4d3d5384",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/runtime/app.cjs",
+      "sourcePath": "scripts/composition/runtime/app.cjs",
+      "sourceSha256": "83893c95f7cc58d0556d913892249d872307644c94165638ab14867378a83827",
+      "preparedSha256": "83893c95f7cc58d0556d913892249d872307644c94165638ab14867378a83827",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/runtime/commerce.cjs",
+      "sourcePath": "scripts/composition/runtime/commerce.cjs",
+      "sourceSha256": "d0011019d6ed75f6ade2c2a9a97808c7115f06c5339e1d2486018187fccc9c0b",
+      "preparedSha256": "d0011019d6ed75f6ade2c2a9a97808c7115f06c5339e1d2486018187fccc9c0b",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/runtime/crm.cjs",
+      "sourcePath": "scripts/composition/runtime/crm.cjs",
+      "sourceSha256": "aec3ee12db2ae4815c9e8fdd932f03514b35424aab9e2612eb51a198e18a27cb",
+      "preparedSha256": "aec3ee12db2ae4815c9e8fdd932f03514b35424aab9e2612eb51a198e18a27cb",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/runtime/db.cjs",
+      "sourcePath": "scripts/composition/runtime/db.cjs",
+      "sourceSha256": "5d89aeecf8ee211049cc4a5c83e3c57ebf304aa32aa6f3d047a4625611078e40",
+      "preparedSha256": "5d89aeecf8ee211049cc4a5c83e3c57ebf304aa32aa6f3d047a4625611078e40",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/runtime/http-ports.cjs",
+      "sourcePath": "scripts/composition/runtime/http-ports.cjs",
+      "sourceSha256": "19180235377458d0de4ca91be2676420a6890f228ede687b54a914b5d081f688",
+      "preparedSha256": "19180235377458d0de4ca91be2676420a6890f228ede687b54a914b5d081f688",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/runtime/integration.test.cjs",
+      "sourcePath": "scripts/composition/runtime/integration.test.cjs",
+      "sourceSha256": "b3cfc1b57d79b6036fdd638c5aed8bee7e21b1c844a66826eeda133b9511b666",
+      "preparedSha256": "b3cfc1b57d79b6036fdd638c5aed8bee7e21b1c844a66826eeda133b9511b666",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/runtime/migrate.cjs",
+      "sourcePath": "scripts/composition/runtime/migrate.cjs",
+      "sourceSha256": "dd794318acf34dbd6b6249727079e9c206366ecd841eaf72ae9940efde2b9a8c",
+      "preparedSha256": "dd794318acf34dbd6b6249727079e9c206366ecd841eaf72ae9940efde2b9a8c",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/runtime/migrations/commerce.sql",
+      "sourcePath": "scripts/composition/runtime/migrations/commerce.sql",
+      "sourceSha256": "2097cac1ed18c9648b70448217d8cd38b1423f24076bf012f949e3f25b684bd7",
+      "preparedSha256": "2097cac1ed18c9648b70448217d8cd38b1423f24076bf012f949e3f25b684bd7",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/runtime/migrations/crm.sql",
+      "sourcePath": "scripts/composition/runtime/migrations/crm.sql",
+      "sourceSha256": "f8c7409b3d745c92da8b3b7b992d3e1b930ed679dddc3c42e01c467154890544",
+      "preparedSha256": "f8c7409b3d745c92da8b3b7b992d3e1b930ed679dddc3c42e01c467154890544",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/runtime/server.cjs",
+      "sourcePath": "scripts/composition/runtime/server.cjs",
+      "sourceSha256": "08a9ff9eb265be0a83100075b98f1393b6fe7452967056af2c9133f66e38eae5",
+      "preparedSha256": "08a9ff9eb265be0a83100075b98f1393b6fe7452967056af2c9133f66e38eae5",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/runtime/validate.cjs",
+      "sourcePath": "scripts/composition/runtime/validate.cjs",
+      "sourceSha256": "4b9f8cb9fa06f4e705d179d408a38abc942b4e4b1b5457386ce2d11b2177ad0a",
+      "preparedSha256": "4b9f8cb9fa06f4e705d179d408a38abc942b4e4b1b5457386ce2d11b2177ad0a",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/composition/verify.js",
+      "sourcePath": "scripts/composition/verify.js",
+      "sourceSha256": "8a3b3bf482724725d86133c97e2e31fc945fe4931a2d382bd79865fedf35cbfb",
+      "preparedSha256": "8a3b3bf482724725d86133c97e2e31fc945fe4931a2d382bd79865fedf35cbfb",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/devkit.js",
+      "sourcePath": "scripts/devkit.js",
+      "sourceSha256": "6c6d956930b73d5b1408ceda9b2fde5b934b4effbd244480f95bcf0d74ad923d",
+      "preparedSha256": "6c6d956930b73d5b1408ceda9b2fde5b934b4effbd244480f95bcf0d74ad923d",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/docker/backends-v1.js",
+      "sourcePath": "scripts/docker/backends-v1.js",
+      "sourceSha256": "f433304a4f2435c95c0cd7f6323e276189c7ab701844e847e0f38de06741b5c8",
+      "preparedSha256": "f433304a4f2435c95c0cd7f6323e276189c7ab701844e847e0f38de06741b5c8",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/docker/backends.js",
+      "sourcePath": "scripts/docker/backends.js",
+      "sourceSha256": "57a6092429cc931e2c2ac62a2b686701885258e0b71a5f8767343cafa15a2c53",
+      "preparedSha256": "57a6092429cc931e2c2ac62a2b686701885258e0b71a5f8767343cafa15a2c53",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/docker/doctor.js",
+      "sourcePath": "scripts/docker/doctor.js",
+      "sourceSha256": "318bdafb8cc398b43745c73b6cc5efc724370a39659801ce89f0e2df52d1af93",
+      "preparedSha256": "318bdafb8cc398b43745c73b6cc5efc724370a39659801ce89f0e2df52d1af93",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/docker/generate.js",
+      "sourcePath": "scripts/docker/generate.js",
+      "sourceSha256": "8ab6cc99eefd3a16ef083334c9cf38860c5c68fe6c831267059acfb45d06e95d",
+      "preparedSha256": "8ab6cc99eefd3a16ef083334c9cf38860c5c68fe6c831267059acfb45d06e95d",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/docker/operations.js",
+      "sourcePath": "scripts/docker/operations.js",
+      "sourceSha256": "e6665234b166fe2cb4002963ee0ef626002b7225feaac39deaa36e1905173155",
+      "preparedSha256": "e6665234b166fe2cb4002963ee0ef626002b7225feaac39deaa36e1905173155",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/docker/schema.js",
+      "sourcePath": "scripts/docker/schema.js",
+      "sourceSha256": "3bfafb6f2a1ba1b7b8b11762070527060adbacc148d6dc245daccc674108bd7e",
+      "preparedSha256": "3bfafb6f2a1ba1b7b8b11762070527060adbacc148d6dc245daccc674108bd7e",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/doctor/environment.js",
+      "sourcePath": "scripts/doctor/environment.js",
+      "sourceSha256": "1da6926056e331b11d7fb5b5ee3b28c0db18b0ba9b0310022c03878920f9989c",
+      "preparedSha256": "1da6926056e331b11d7fb5b5ee3b28c0db18b0ba9b0310022c03878920f9989c",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/installers/archive-engine.js",
+      "sourcePath": "scripts/installers/archive-engine.js",
+      "sourceSha256": "7a4f712cdf65edaf666d2e023aa12c2d2b5a1c61bbc8e5d5092f671c91053ef0",
+      "preparedSha256": "7a4f712cdf65edaf666d2e023aa12c2d2b5a1c61bbc8e5d5092f671c91053ef0",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/installers/archive-recipes.js",
+      "sourcePath": "scripts/installers/archive-recipes.js",
+      "sourceSha256": "1b814e8964720c27a1bbf0e6afff84f1ba22e3ba425985d3551c1a64b07ebd60",
+      "preparedSha256": "1b814e8964720c27a1bbf0e6afff84f1ba22e3ba425985d3551c1a64b07ebd60",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/installers/filesystem.js",
+      "sourcePath": "scripts/installers/filesystem.js",
+      "sourceSha256": "e490507cbbd1a2b4f1f6e610c404f68b05d5c8e6c7b8ffe6fbca61e0a0f4b2ef",
+      "preparedSha256": "e490507cbbd1a2b4f1f6e610c404f68b05d5c8e6c7b8ffe6fbca61e0a0f4b2ef",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/installers/go.js",
+      "sourcePath": "scripts/installers/go.js",
+      "sourceSha256": "bf4c95e7a63cf41f5e651d825246181c96baf666d314a919b051211b446bb170",
+      "preparedSha256": "bf4c95e7a63cf41f5e651d825246181c96baf666d314a919b051211b446bb170",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/installers/index.js",
+      "sourcePath": "scripts/installers/index.js",
+      "sourceSha256": "19215b78c265736130e99761bd799f619b43c9e14bf8fabff3cbe1d63a31128e",
+      "preparedSha256": "19215b78c265736130e99761bd799f619b43c9e14bf8fabff3cbe1d63a31128e",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/installers/transport.js",
+      "sourcePath": "scripts/installers/transport.js",
+      "sourceSha256": "74fdf0a726693a38f8083d01f5c44bc1577d3240a55eec8e2154a70dc68585af",
+      "preparedSha256": "74fdf0a726693a38f8083d01f5c44bc1577d3240a55eec8e2154a70dc68585af",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/kit-first/cache.js",
+      "sourcePath": "scripts/kit-first/cache.js",
+      "sourceSha256": "ffb32bc7404cba5e01ede06ce96a5c9f17c9291d6bda5d67537fb64febba2371",
+      "preparedSha256": "ffb32bc7404cba5e01ede06ce96a5c9f17c9291d6bda5d67537fb64febba2371",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/kit-first/discovery.js",
+      "sourcePath": "scripts/kit-first/discovery.js",
+      "sourceSha256": "5847ca1b6cfe2c3725b972ea20f2c88f5adb330426a9f98ef9802488f508bad0",
+      "preparedSha256": "5847ca1b6cfe2c3725b972ea20f2c88f5adb330426a9f98ef9802488f508bad0",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/kit-first/inspect.js",
+      "sourcePath": "scripts/kit-first/inspect.js",
+      "sourceSha256": "22e474522fde322f0a0831a2a40172a178b75639546eda821f6e3f9acba2341a",
+      "preparedSha256": "22e474522fde322f0a0831a2a40172a178b75639546eda821f6e3f9acba2341a",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/kit-first/service.js",
+      "sourcePath": "scripts/kit-first/service.js",
+      "sourceSha256": "7c17ee876259b4ef8531c667f3087b9adf1623c118c6af288e74dc20bbf5c2ce",
+      "preparedSha256": "7c17ee876259b4ef8531c667f3087b9adf1623c118c6af288e74dc20bbf5c2ce",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/kit.js",
+      "sourcePath": "scripts/kit.js",
+      "sourceSha256": "db9718fc854ace6ab2a9ea240b69d21cbf8c5c8be9d2220971f9259ce87ad2ac",
+      "preparedSha256": "db9718fc854ace6ab2a9ea240b69d21cbf8c5c8be9d2220971f9259ce87ad2ac",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/memory/checkpoint.js",
+      "sourcePath": "scripts/memory/checkpoint.js",
+      "sourceSha256": "481700b07007819a23e2bbada94b17e3cbf434746ed2d4d222ca4a75fb8590d4",
+      "preparedSha256": "481700b07007819a23e2bbada94b17e3cbf434746ed2d4d222ca4a75fb8590d4",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/memory/enhance.js",
+      "sourcePath": "scripts/memory/enhance.js",
+      "sourceSha256": "e526d59e191c829efe63301c1041cd6df762c05ff23a9f5db55c625442aa8899",
+      "preparedSha256": "e526d59e191c829efe63301c1041cd6df762c05ff23a9f5db55c625442aa8899",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/memory/store.js",
+      "sourcePath": "scripts/memory/store.js",
+      "sourceSha256": "9a6a891bb5fd6b443d7c4d69652561f1859c1e41bfc866374fab1d29fd797cf9",
+      "preparedSha256": "9a6a891bb5fd6b443d7c4d69652561f1859c1e41bfc866374fab1d29fd797cf9",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/planner/plan.js",
+      "sourcePath": "scripts/planner/plan.js",
+      "sourceSha256": "2a922ee5ca6f33c9afa4f911e94ee0f7b45e4c79402baaa86a2556d77dbfc77a",
+      "preparedSha256": "2a922ee5ca6f33c9afa4f911e94ee0f7b45e4c79402baaa86a2556d77dbfc77a",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/terminal/interpret.js",
+      "sourcePath": "scripts/terminal/interpret.js",
+      "sourceSha256": "0099c3376f683bb1507fa154aa99d70bdaecbc92d1e130ddda9bba324a542eea",
+      "preparedSha256": "0099c3376f683bb1507fa154aa99d70bdaecbc92d1e130ddda9bba324a542eea",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/terminal/resources.js",
+      "sourcePath": "scripts/terminal/resources.js",
+      "sourceSha256": "ead3af439707c50b6577b889fb62c3215084a1680866ecf079605756f0806808",
+      "preparedSha256": "ead3af439707c50b6577b889fb62c3215084a1680866ecf079605756f0806808",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/terminal/service.js",
+      "sourcePath": "scripts/terminal/service.js",
+      "sourceSha256": "218bea27a255f1dd538251928c8e083a534622d201961c04c7aaa64c8f142395",
+      "preparedSha256": "218bea27a255f1dd538251928c8e083a534622d201961c04c7aaa64c8f142395",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/terminal/technical.js",
+      "sourcePath": "scripts/terminal/technical.js",
+      "sourceSha256": "b8a20a8c1a2d71b758ae3b0ed0e75645f39299380f0273ef41f84c38ce7f64bb",
+      "preparedSha256": "b8a20a8c1a2d71b758ae3b0ed0e75645f39299380f0273ef41f84c38ce7f64bb",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/tools/catalog.js",
+      "sourcePath": "scripts/tools/catalog.js",
+      "sourceSha256": "eceb6694651c8a2bc46844757d1adb1ee52597c139497eca6cc6f6c607d5c845",
+      "preparedSha256": "eceb6694651c8a2bc46844757d1adb1ee52597c139497eca6cc6f6c607d5c845",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/tools/text.js",
+      "sourcePath": "scripts/tools/text.js",
+      "sourceSha256": "dfadb7aa64f81b2f247478cef7a40eade3db5ac92c5f1cb808cf06e606c6fc31",
+      "preparedSha256": "dfadb7aa64f81b2f247478cef7a40eade3db5ac92c5f1cb808cf06e606c6fc31",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/workspace/cli.js",
+      "sourcePath": "scripts/workspace/cli.js",
+      "sourceSha256": "85a136879fd967fe515c7939b0902ab6af2fe0f928c28b5f0480781998a7634d",
+      "preparedSha256": "85a136879fd967fe515c7939b0902ab6af2fe0f928c28b5f0480781998a7634d",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/workspace/compose-check.js",
+      "sourcePath": "scripts/workspace/compose-check.js",
+      "sourceSha256": "e2eebe65eee9d990dedaa60998ae33d9e3d367fea02eea9aba5fca2a654bf3ee",
+      "preparedSha256": "e2eebe65eee9d990dedaa60998ae33d9e3d367fea02eea9aba5fca2a654bf3ee",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/workspace/environment.js",
+      "sourcePath": "scripts/workspace/environment.js",
+      "sourceSha256": "f293358f3d79100cd364dbd4626b54fe1e9e306849dad843f973cd15e9d6ff0e",
+      "preparedSha256": "f293358f3d79100cd364dbd4626b54fe1e9e306849dad843f973cd15e9d6ff0e",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/workspace/files.js",
+      "sourcePath": "scripts/workspace/files.js",
+      "sourceSha256": "cccd3b45fec9379d16b889ae113756545cb9f593e78101cfbcceb96c146bb408",
+      "preparedSha256": "cccd3b45fec9379d16b889ae113756545cb9f593e78101cfbcceb96c146bb408",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/workspace/native-check.js",
+      "sourcePath": "scripts/workspace/native-check.js",
+      "sourceSha256": "cc0603fd8151866fa43d925b70c78cfb6ed02ae8f9c5241873d4c0d9c895f1bc",
+      "preparedSha256": "cc0603fd8151866fa43d925b70c78cfb6ed02ae8f9c5241873d4c0d9c895f1bc",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/workspace/profiles.js",
+      "sourcePath": "scripts/workspace/profiles.js",
+      "sourceSha256": "94255430f37455354dc4a49a816abb72d642bb07816acc76a63415d24415177b",
+      "preparedSha256": "94255430f37455354dc4a49a816abb72d642bb07816acc76a63415d24415177b",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/workspace/project.js",
+      "sourcePath": "scripts/workspace/project.js",
+      "sourceSha256": "616c36f4e435eb4333bfcece0df873e42b6f2383d7ac61a5b5393dfb147c26a9",
+      "preparedSha256": "616c36f4e435eb4333bfcece0df873e42b6f2383d7ac61a5b5393dfb147c26a9",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/workspace/static-validation.js",
+      "sourcePath": "scripts/workspace/static-validation.js",
+      "sourceSha256": "8c7ca63dd1323b5010880c6c7d3c5c4b14b22b851f5ba4c6e35913cbccdc695c",
+      "preparedSha256": "8c7ca63dd1323b5010880c6c7d3c5c4b14b22b851f5ba4c6e35913cbccdc695c",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "scripts/workspace/verify.js",
+      "sourcePath": "scripts/workspace/verify.js",
+      "sourceSha256": "bc8a4fbe745f65a2f6259841e5d42914b025640eeaf871be6e1806942e85f393",
+      "preparedSha256": "bc8a4fbe745f65a2f6259841e5d42914b025640eeaf871be6e1806942e85f393",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/distribution.test.cjs",
+      "sourcePath": null,
+      "sourceSha256": null,
+      "preparedSha256": "6f2fc7d9a44f42f90d63f0d00d4a2c49e13801590abcce0e561ba969224ee445",
+      "transformation": "new-distribution-document-or-verification",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/acceptance.test.js",
+      "sourcePath": "tests/kit/acceptance.test.js",
+      "sourceSha256": "7725b19ce775c4fe6868b14f650de757b1afaa2de3aaafaf1d3b30bb4856c739",
+      "preparedSha256": "7725b19ce775c4fe6868b14f650de757b1afaa2de3aaafaf1d3b30bb4856c739",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/agents.test.js",
+      "sourcePath": "tests/kit/agents.test.js",
+      "sourceSha256": "3c1ec920a3a77931896241eafe9f3834599184bbd8ceacc88c92ade6be775155",
+      "preparedSha256": "3c1ec920a3a77931896241eafe9f3834599184bbd8ceacc88c92ade6be775155",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/archive-installers.test.js",
+      "sourcePath": "tests/kit/archive-installers.test.js",
+      "sourceSha256": "ca328c9c44adb3fd2d5681a8aaabaf16aacff87d8e29415b2801f2cd1e5d98b9",
+      "preparedSha256": "ca328c9c44adb3fd2d5681a8aaabaf16aacff87d8e29415b2801f2cd1e5d98b9",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/business.test.js",
+      "sourcePath": "tests/kit/business.test.js",
+      "sourceSha256": "24e55aeacc34529b444874ec00a90bec004d35cefbc8942900c023fd3265ba30",
+      "preparedSha256": "24e55aeacc34529b444874ec00a90bec004d35cefbc8942900c023fd3265ba30",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/channels.test.js",
+      "sourcePath": "tests/kit/channels.test.js",
+      "sourceSha256": "020e3b6ef87875bc884a0120a4fb1f23a32bf1bcfdee58416a51f5a605feb39e",
+      "preparedSha256": "020e3b6ef87875bc884a0120a4fb1f23a32bf1bcfdee58416a51f5a605feb39e",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/cli.test.js",
+      "sourcePath": "tests/kit/cli.test.js",
+      "sourceSha256": "d8faffe5211ed1392013eef792fa933826d6df91c5f56d1660030745d5db5f0e",
+      "preparedSha256": "d8faffe5211ed1392013eef792fa933826d6df91c5f56d1660030745d5db5f0e",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/commercial.test.js",
+      "sourcePath": "tests/kit/commercial.test.js",
+      "sourceSha256": "9ed61ae621d696e32cc466b85c325bbc5239753425bdc2b86284284105f85469",
+      "preparedSha256": "9ed61ae621d696e32cc466b85c325bbc5239753425bdc2b86284284105f85469",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/composition-planner.test.js",
+      "sourcePath": "tests/kit/composition-planner.test.js",
+      "sourceSha256": "05f8c1d40f1a1f5ae95f0aaa64b1361fa7ab0185058609ab6c058a11081f57c0",
+      "preparedSha256": "05f8c1d40f1a1f5ae95f0aaa64b1361fa7ab0185058609ab6c058a11081f57c0",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/composition-runtime.test.js",
+      "sourcePath": "tests/kit/composition-runtime.test.js",
+      "sourceSha256": "af4adf0b760da263537ceaa79f2a1dbbbac85b3bc30acb9ee2c24c9f931b56b9",
+      "preparedSha256": "af4adf0b760da263537ceaa79f2a1dbbbac85b3bc30acb9ee2c24c9f931b56b9",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/efficiency.test.js",
+      "sourcePath": "tests/kit/efficiency.test.js",
+      "sourceSha256": "cc8c3322e408a118a168fde3eb4c6ae2255af09f8cfe9b400631d7981f89fc0c",
+      "preparedSha256": "cc8c3322e408a118a168fde3eb4c6ae2255af09f8cfe9b400631d7981f89fc0c",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/environment.test.js",
+      "sourcePath": "tests/kit/environment.test.js",
+      "sourceSha256": "f06c093d2811d57a874835f2e1d33476aa312675ade334c375968edd9ce27c96",
+      "preparedSha256": "69673f2ee5ad986bec825d5ec2ef2680d94704effcf0b3d4983024797b14f95b",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/installers.test.js",
+      "sourcePath": "tests/kit/installers.test.js",
+      "sourceSha256": "6e84850c0943c0bf938bb53f40f65cd148cb753f7aa7f95974c930851ca263da",
+      "preparedSha256": "6e84850c0943c0bf938bb53f40f65cd148cb753f7aa7f95974c930851ca263da",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/kit-first.test.js",
+      "sourcePath": "tests/kit/kit-first.test.js",
+      "sourceSha256": "83c4b49a4d6e0a1fca9559ffc93d30501f39d4d6ad5e9e19811dae14fbbf7e6e",
+      "preparedSha256": "83c4b49a4d6e0a1fca9559ffc93d30501f39d4d6ad5e9e19811dae14fbbf7e6e",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/manual-commands.test.js",
+      "sourcePath": "tests/kit/manual-commands.test.js",
+      "sourceSha256": "21f5b3a29d90fa2815461809655575d315e47aa8d60850ea6d80f19321f087bb",
+      "preparedSha256": "6d8918a35ae0791430396205e01a971b6c07d5bcdd4a55c7843e7b926df7226b",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/memory.test.js",
+      "sourcePath": "tests/kit/memory.test.js",
+      "sourceSha256": "0b41466dc8357b4259258a13e1d13bf0e34dd4dcbe1476a6c68a3471fb970028",
+      "preparedSha256": "0b41466dc8357b4259258a13e1d13bf0e34dd4dcbe1476a6c68a3471fb970028",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/native-i.test.js",
+      "sourcePath": "tests/kit/native-i.test.js",
+      "sourceSha256": "676bd02309fab06278b4a98e3a8d78757563550dc586bbfbbef8f682b13cfa80",
+      "preparedSha256": "676bd02309fab06278b4a98e3a8d78757563550dc586bbfbbef8f682b13cfa80",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/planner.test.js",
+      "sourcePath": "tests/kit/planner.test.js",
+      "sourceSha256": "e67054a6692ceb4b2f2167f6bb50b619458ce4fb876d53b552241083964b97ae",
+      "preparedSha256": "e67054a6692ceb4b2f2167f6bb50b619458ce4fb876d53b552241083964b97ae",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/polyglot.test.js",
+      "sourcePath": "tests/kit/polyglot.test.js",
+      "sourceSha256": "d539baddb800214b1b026319e4cff6f6b51908cc7e35d7b13c568fc7fdd0e4fb",
+      "preparedSha256": "d539baddb800214b1b026319e4cff6f6b51908cc7e35d7b13c568fc7fdd0e4fb",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/saas.test.js",
+      "sourcePath": "tests/kit/saas.test.js",
+      "sourceSha256": "ae01e351a91036ea293d935a7907363861d0abb55553efa1fd1bf88be4aa3927",
+      "preparedSha256": "ae01e351a91036ea293d935a7907363861d0abb55553efa1fd1bf88be4aa3927",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/terminal.test.js",
+      "sourcePath": "tests/kit/terminal.test.js",
+      "sourceSha256": "662bfbacb77a8caab8bad73587b5d34b8ac0867b13f43680a138cb4f00b0d1df",
+      "preparedSha256": "662bfbacb77a8caab8bad73587b5d34b8ac0867b13f43680a138cb4f00b0d1df",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/tool-catalog.test.js",
+      "sourcePath": "tests/kit/tool-catalog.test.js",
+      "sourceSha256": "000e5a290a77eaefa05e83d499018749713bfbe4c53343c4da3e4393944943ce",
+      "preparedSha256": "114a357ef295cf7c9d1fc8d62971ef250dcae0e4e3bb89747cc600926a8d1955",
+      "transformation": "adapted-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/universal-planning.test.js",
+      "sourcePath": "tests/kit/universal-planning.test.js",
+      "sourceSha256": "1d657c3dc3abea3b4d155fc7d6e9f8566c5b9a2e237d5c2341be467797dea7c2",
+      "preparedSha256": "1d657c3dc3abea3b4d155fc7d6e9f8566c5b9a2e237d5c2341be467797dea7c2",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/universal-resources.test.js",
+      "sourcePath": "tests/kit/universal-resources.test.js",
+      "sourceSha256": "63f636341c7e8a25c0a3201c217b6ccaf3c6a09971921952409f0479809610ff",
+      "preparedSha256": "63f636341c7e8a25c0a3201c217b6ccaf3c6a09971921952409f0479809610ff",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/workspace-f.test.js",
+      "sourcePath": "tests/kit/workspace-f.test.js",
+      "sourceSha256": "e0b3c9b07bbc814aee9a1c6653bfc0f1dd13f0609671d9285d1c6764516583b6",
+      "preparedSha256": "e0b3c9b07bbc814aee9a1c6653bfc0f1dd13f0609671d9285d1c6764516583b6",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/workspace-g.test.js",
+      "sourcePath": "tests/kit/workspace-g.test.js",
+      "sourceSha256": "118348276b4ec0cbf38a4a64c588be4e580b5038644d2a65d9c287e902928b0b",
+      "preparedSha256": "118348276b4ec0cbf38a4a64c588be4e580b5038644d2a65d9c287e902928b0b",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/workspace-h.test.js",
+      "sourcePath": "tests/kit/workspace-h.test.js",
+      "sourceSha256": "4a2cbbdfb91edf4a3d54373b20e5d095a71d30240e0e31c5092e30ce7538aefb",
+      "preparedSha256": "4a2cbbdfb91edf4a3d54373b20e5d095a71d30240e0e31c5092e30ce7538aefb",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tests/kit/workspace-i.test.js",
+      "sourcePath": "tests/kit/workspace-i.test.js",
+      "sourceSha256": "5852447afb73e55d4e634a3db0f899ac4797db50f15f3fc844c39abdfb715c4a",
+      "preparedSha256": "5852447afb73e55d4e634a3db0f899ac4797db50f15f3fc844c39abdfb715c4a",
+      "transformation": "unchanged-copy",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    },
+    {
+      "path": "tools/verify-distribution.cjs",
+      "sourcePath": null,
+      "sourceSha256": null,
+      "preparedSha256": "ed3c99a03ef7c1af7d1e47785ec0990a2ae246785bd2006fb314a622df7c2fb7",
+      "transformation": "new-distribution-document-or-verification",
+      "licenseStatus": "ISC-original-code-owner-declared-CanedoStudio-local-provenance-reviewed"
+    }
+  ],
+  "excludedOriginalPaths": [
+    ".agents/mcp_config.json",
+    ".agents/plugins/n8n-skills/.claude-plugin/marketplace.json",
+    ".agents/plugins/n8n-skills/.claude-plugin/plugin.json",
+    ".agents/plugins/n8n-skills/.gitignore",
+    ".agents/plugins/n8n-skills/.mcp.json.example",
+    ".agents/plugins/n8n-skills/CLAUDE.md",
+    ".agents/plugins/n8n-skills/LICENSE",
+    ".agents/plugins/n8n-skills/NOTICES",
+    ".agents/plugins/n8n-skills/NOTICES-APACHE-2.0.txt",
+    ".agents/plugins/n8n-skills/README.md",
+    ".agents/plugins/n8n-skills/build.sh",
+    ".agents/plugins/n8n-skills/docs/CODE_NODE_BEST_PRACTICES.md",
+    ".agents/plugins/n8n-skills/docs/DEVELOPMENT.md",
+    ".agents/plugins/n8n-skills/docs/INSTALLATION.md",
+    ".agents/plugins/n8n-skills/docs/MCP_TESTING_LOG.md",
+    ".agents/plugins/n8n-skills/docs/USAGE.md",
+    ".agents/plugins/n8n-skills/evaluations/agents/eval-001-tool-descriptions.json",
+    ".agents/plugins/n8n-skills/evaluations/agents/eval-002-classifier-vs-agent.json",
+    ".agents/plugins/n8n-skills/evaluations/agents/eval-003-structured-output-autofix.json",
+    ".agents/plugins/n8n-skills/evaluations/binary-and-data/eval-001-binary-not-json.json",
+    ".agents/plugins/n8n-skills/evaluations/binary-and-data/eval-002-agent-tool-file.json",
+    ".agents/plugins/n8n-skills/evaluations/binary-and-data/eval-003-image-to-chat.json",
+    ".agents/plugins/n8n-skills/evaluations/code-javascript/eval-001-webhook-body-gotcha.json",
+    ".agents/plugins/n8n-skills/evaluations/code-javascript/eval-002-return-format-error.json",
+    ".agents/plugins/n8n-skills/evaluations/code-javascript/eval-003-http-request.json",
+    ".agents/plugins/n8n-skills/evaluations/code-javascript/eval-004-aggregation-pattern.json",
+    ".agents/plugins/n8n-skills/evaluations/code-javascript/eval-005-expression-syntax-confusion.json",
+    ".agents/plugins/n8n-skills/evaluations/code-python/eval-001-module-import-error.json",
+    ".agents/plugins/n8n-skills/evaluations/code-python/eval-002-dictionary-keyerror.json",
+    ".agents/plugins/n8n-skills/evaluations/code-python/eval-003-webhook-body-gotcha.json",
+    ".agents/plugins/n8n-skills/evaluations/code-python/eval-004-return-format-error.json",
+    ".agents/plugins/n8n-skills/evaluations/code-python/eval-005-standard-library-usage.json",
+    ".agents/plugins/n8n-skills/evaluations/code-tool/eval-001-wrong-output-type.json",
+    ".agents/plugins/n8n-skills/evaluations/code-tool/eval-002-fromai-not-available.json",
+    ".agents/plugins/n8n-skills/evaluations/code-tool/eval-003-structured-input-schema.json",
+    ".agents/plugins/n8n-skills/evaluations/error-handling/eval-001-onerror-and-wire.json",
+    ".agents/plugins/n8n-skills/evaluations/error-handling/eval-002-status-code-mapping.json",
+    ".agents/plugins/n8n-skills/evaluations/error-handling/eval-003-retry-and-error-workflow.json",
+    ".agents/plugins/n8n-skills/evaluations/expression-syntax/eval-001-missing-braces.json",
+    ".agents/plugins/n8n-skills/evaluations/expression-syntax/eval-002-webhook-body-data.json",
+    ".agents/plugins/n8n-skills/evaluations/expression-syntax/eval-003-code-node-confusion.json",
+    ".agents/plugins/n8n-skills/evaluations/expression-syntax/eval-004-node-reference.json",
+    ".agents/plugins/n8n-skills/evaluations/mcp-tools/eval-001-tool-selection.json",
+    ".agents/plugins/n8n-skills/evaluations/mcp-tools/eval-002-nodetype-format.json",
+    ".agents/plugins/n8n-skills/evaluations/mcp-tools/eval-003-validation-workflow.json",
+    ".agents/plugins/n8n-skills/evaluations/mcp-tools/eval-004-essentials-vs-info.json",
+    ".agents/plugins/n8n-skills/evaluations/mcp-tools/eval-005-smart-parameters.json",
+    ".agents/plugins/n8n-skills/evaluations/multi-instance/eval-001-switch-before-op.json",
+    ".agents/plugins/n8n-skills/evaluations/multi-instance/eval-002-credential-verify.json",
+    ".agents/plugins/n8n-skills/evaluations/multi-instance/eval-003-notfound-misroute.json",
+    ".agents/plugins/n8n-skills/evaluations/multi-instance/eval-004-copy-between-instances.json",
+    ".agents/plugins/n8n-skills/evaluations/multi-instance/eval-005-instance-ambiguous.json",
+    ".agents/plugins/n8n-skills/evaluations/node-configuration/eval-001-property-dependencies.json",
+    ".agents/plugins/n8n-skills/evaluations/node-configuration/eval-002-operation-specific-config.json",
+    ".agents/plugins/n8n-skills/evaluations/node-configuration/eval-003-conditional-fields.json",
+    ".agents/plugins/n8n-skills/evaluations/node-configuration/eval-004-essentials-vs-info.json",
+    ".agents/plugins/n8n-skills/evaluations/self-hosting/eval-001-mode-selection.json",
+    ".agents/plugins/n8n-skills/evaluations/self-hosting/eval-002-queue-mode-deploy.json",
+    ".agents/plugins/n8n-skills/evaluations/self-hosting/eval-003-secret-hygiene.json",
+    ".agents/plugins/n8n-skills/evaluations/self-hosting/eval-004-day2-backup-update.json",
+    ".agents/plugins/n8n-skills/evaluations/self-hosting/eval-005-queue-env-parity-modules.json",
+    ".agents/plugins/n8n-skills/evaluations/subworkflows/eval-001-define-below.json",
+    ".agents/plugins/n8n-skills/evaluations/subworkflows/eval-002-mode-each-vs-all.json",
+    ".agents/plugins/n8n-skills/evaluations/subworkflows/eval-003-naming-discovery.json",
+    ".agents/plugins/n8n-skills/evaluations/validation-expert/eval-001-missing-required-field.json",
+    ".agents/plugins/n8n-skills/evaluations/validation-expert/eval-002-false-positive.json",
+    ".agents/plugins/n8n-skills/evaluations/validation-expert/eval-003-auto-sanitization.json",
+    ".agents/plugins/n8n-skills/evaluations/validation-expert/eval-004-validation-loop.json",
+    ".agents/plugins/n8n-skills/evaluations/workflow-patterns/eval-001-webhook-workflow.json",
+    ".agents/plugins/n8n-skills/evaluations/workflow-patterns/eval-002-http-api-workflow.json",
+    ".agents/plugins/n8n-skills/evaluations/workflow-patterns/eval-003-database-sync.json",
+    ".agents/plugins/n8n-skills/evaluations/workflow-patterns/eval-004-ai-agent.json",
+    ".agents/plugins/n8n-skills/evaluations/workflow-patterns/eval-005-scheduled-report.json",
+    ".agents/plugins/n8n-skills/hooks/hooks.json",
+    ".agents/plugins/n8n-skills/hooks/post-tool-use/validate-workflow.sh",
+    ".agents/plugins/n8n-skills/hooks/pre-tool-use/_emit.sh",
+    ".agents/plugins/n8n-skills/hooks/pre-tool-use/create-workflow.sh",
+    ".agents/plugins/n8n-skills/hooks/pre-tool-use/get-node.sh",
+    ".agents/plugins/n8n-skills/hooks/pre-tool-use/instances.sh",
+    ".agents/plugins/n8n-skills/hooks/pre-tool-use/manage-credentials.sh",
+    ".agents/plugins/n8n-skills/hooks/pre-tool-use/test-workflow.sh",
+    ".agents/plugins/n8n-skills/hooks/pre-tool-use/update-workflow.sh",
+    ".agents/plugins/n8n-skills/hooks/pre-tool-use/validate-workflow.sh",
+    ".agents/plugins/n8n-skills/hooks/session-start.sh",
+    ".agents/plugins/n8n-skills/mcp.json",
+    ".agents/plugins/n8n-skills/plugin.json",
+    ".agents/plugins/n8n-skills/skills.png",
+    ".agents/plugins/n8n-skills/skills/n8n-agents/CHAT_AGENT_PATTERNS.md",
+    ".agents/plugins/n8n-skills/skills/n8n-agents/EXAMPLES.md",
+    ".agents/plugins/n8n-skills/skills/n8n-agents/HUMAN_REVIEW.md",
+    ".agents/plugins/n8n-skills/skills/n8n-agents/MEMORY.md",
+    ".agents/plugins/n8n-skills/skills/n8n-agents/RAG.md",
+    ".agents/plugins/n8n-skills/skills/n8n-agents/README.md",
+    ".agents/plugins/n8n-skills/skills/n8n-agents/SKILL.md",
+    ".agents/plugins/n8n-skills/skills/n8n-agents/STRUCTURED_OUTPUT.md",
+    ".agents/plugins/n8n-skills/skills/n8n-agents/SUBWORKFLOW_AS_TOOL.md",
+    ".agents/plugins/n8n-skills/skills/n8n-agents/SYSTEM_PROMPT.md",
+    ".agents/plugins/n8n-skills/skills/n8n-agents/TOOLS.md",
+    ".agents/plugins/n8n-skills/skills/n8n-binary-and-data/AGENT_TOOL_BINARY.md",
+    ".agents/plugins/n8n-skills/skills/n8n-binary-and-data/BINARY_BASICS.md",
+    ".agents/plugins/n8n-skills/skills/n8n-binary-and-data/CDN_REQUIREMENT.md",
+    ".agents/plugins/n8n-skills/skills/n8n-binary-and-data/MERGE_FOR_CONTEXT.md",
+    ".agents/plugins/n8n-skills/skills/n8n-binary-and-data/README.md",
+    ".agents/plugins/n8n-skills/skills/n8n-binary-and-data/SKILL.md",
+    ".agents/plugins/n8n-skills/skills/n8n-code-javascript/BUILTIN_FUNCTIONS.md",
+    ".agents/plugins/n8n-skills/skills/n8n-code-javascript/COMMON_PATTERNS.md",
+    ".agents/plugins/n8n-skills/skills/n8n-code-javascript/DATA_ACCESS.md",
+    ".agents/plugins/n8n-skills/skills/n8n-code-javascript/ERROR_PATTERNS.md",
+    ".agents/plugins/n8n-skills/skills/n8n-code-javascript/README.md",
+    ".agents/plugins/n8n-skills/skills/n8n-code-javascript/SKILL.md",
+    ".agents/plugins/n8n-skills/skills/n8n-code-python/COMMON_PATTERNS.md",
+    ".agents/plugins/n8n-skills/skills/n8n-code-python/DATA_ACCESS.md",
+    ".agents/plugins/n8n-skills/skills/n8n-code-python/ERROR_PATTERNS.md",
+    ".agents/plugins/n8n-skills/skills/n8n-code-python/README.md",
+    ".agents/plugins/n8n-skills/skills/n8n-code-python/SKILL.md",
+    ".agents/plugins/n8n-skills/skills/n8n-code-python/STANDARD_LIBRARY.md",
+    ".agents/plugins/n8n-skills/skills/n8n-code-tool/ERROR_PATTERNS.md",
+    ".agents/plugins/n8n-skills/skills/n8n-code-tool/INPUT_SCHEMA.md",
+    ".agents/plugins/n8n-skills/skills/n8n-code-tool/README.md",
+    ".agents/plugins/n8n-skills/skills/n8n-code-tool/SKILL.md",
+    ".agents/plugins/n8n-skills/skills/n8n-error-handling/API_WORKFLOWS.md",
+    ".agents/plugins/n8n-skills/skills/n8n-error-handling/ERROR_WORKFLOWS.md",
+    ".agents/plugins/n8n-skills/skills/n8n-error-handling/NODE_ERROR_OUTPUTS.md",
+    ".agents/plugins/n8n-skills/skills/n8n-error-handling/README.md",
+    ".agents/plugins/n8n-skills/skills/n8n-error-handling/RESPONSE_SHAPES.md",
+    ".agents/plugins/n8n-skills/skills/n8n-error-handling/SKILL.md",
+    ".agents/plugins/n8n-skills/skills/n8n-expression-syntax/COMMON_MISTAKES.md",
+    ".agents/plugins/n8n-skills/skills/n8n-expression-syntax/EXAMPLES.md",
+    ".agents/plugins/n8n-skills/skills/n8n-expression-syntax/README.md",
+    ".agents/plugins/n8n-skills/skills/n8n-expression-syntax/SKILL.md",
+    ".agents/plugins/n8n-skills/skills/n8n-mcp-tools-expert/OPERATIONS_GUIDE.md",
+    ".agents/plugins/n8n-skills/skills/n8n-mcp-tools-expert/README.md",
+    ".agents/plugins/n8n-skills/skills/n8n-mcp-tools-expert/SEARCH_GUIDE.md",
+    ".agents/plugins/n8n-skills/skills/n8n-mcp-tools-expert/SKILL.md",
+    ".agents/plugins/n8n-skills/skills/n8n-mcp-tools-expert/VALIDATION_GUIDE.md",
+    ".agents/plugins/n8n-skills/skills/n8n-mcp-tools-expert/WORKFLOW_GUIDE.md",
+    ".agents/plugins/n8n-skills/skills/n8n-multi-instance/README.md",
+    ".agents/plugins/n8n-skills/skills/n8n-multi-instance/SKILL.md",
+    ".agents/plugins/n8n-skills/skills/n8n-node-configuration/DEPENDENCIES.md",
+    ".agents/plugins/n8n-skills/skills/n8n-node-configuration/NODE_FAMILY_GOTCHAS.md",
+    ".agents/plugins/n8n-skills/skills/n8n-node-configuration/OPERATION_PATTERNS.md",
+    ".agents/plugins/n8n-skills/skills/n8n-node-configuration/README.md",
+    ".agents/plugins/n8n-skills/skills/n8n-node-configuration/SKILL.md",
+    ".agents/plugins/n8n-skills/skills/n8n-self-hosting/CREDENTIAL_OVERWRITES.md",
+    ".agents/plugins/n8n-skills/skills/n8n-self-hosting/DAY2.md",
+    ".agents/plugins/n8n-skills/skills/n8n-self-hosting/QUEUE_MODE.md",
+    ".agents/plugins/n8n-skills/skills/n8n-self-hosting/README.md",
+    ".agents/plugins/n8n-skills/skills/n8n-self-hosting/SECURITY.md",
+    ".agents/plugins/n8n-skills/skills/n8n-self-hosting/SINGLE_MODE.md",
+    ".agents/plugins/n8n-skills/skills/n8n-self-hosting/SKILL.md",
+    ".agents/plugins/n8n-skills/skills/n8n-self-hosting/assets/.env.queue.example",
+    ".agents/plugins/n8n-skills/skills/n8n-self-hosting/assets/.env.single.example",
+    ".agents/plugins/n8n-skills/skills/n8n-self-hosting/assets/Caddyfile",
+    ".agents/plugins/n8n-skills/skills/n8n-self-hosting/assets/docker-compose.queue.yml",
+    ".agents/plugins/n8n-skills/skills/n8n-self-hosting/assets/docker-compose.single.yml",
+    ".agents/plugins/n8n-skills/skills/n8n-self-hosting/assets/init-data.sh",
+    ".agents/plugins/n8n-skills/skills/n8n-subworkflows/NAMING_AND_DISCOVERY.md",
+    ".agents/plugins/n8n-skills/skills/n8n-subworkflows/README.md",
+    ".agents/plugins/n8n-skills/skills/n8n-subworkflows/SKILL.md",
+    ".agents/plugins/n8n-skills/skills/n8n-subworkflows/SUBWORKFLOW_PATTERNS.md",
+    ".agents/plugins/n8n-skills/skills/n8n-validation-expert/ERROR_CATALOG.md",
+    ".agents/plugins/n8n-skills/skills/n8n-validation-expert/FALSE_POSITIVES.md",
+    ".agents/plugins/n8n-skills/skills/n8n-validation-expert/README.md",
+    ".agents/plugins/n8n-skills/skills/n8n-validation-expert/REVIEW_CHECKLIST.md",
+    ".agents/plugins/n8n-skills/skills/n8n-validation-expert/SKILL.md",
+    ".agents/plugins/n8n-skills/skills/n8n-workflow-patterns/README.md",
+    ".agents/plugins/n8n-skills/skills/n8n-workflow-patterns/SKILL.md",
+    ".agents/plugins/n8n-skills/skills/n8n-workflow-patterns/ai_agent_workflow.md",
+    ".agents/plugins/n8n-skills/skills/n8n-workflow-patterns/database_operations.md",
+    ".agents/plugins/n8n-skills/skills/n8n-workflow-patterns/http_api_integration.md",
+    ".agents/plugins/n8n-skills/skills/n8n-workflow-patterns/scheduled_tasks.md",
+    ".agents/plugins/n8n-skills/skills/n8n-workflow-patterns/webhook_processing.md",
+    ".agents/plugins/n8n-skills/skills/using-n8n-mcp-skills/README.md",
+    ".agents/plugins/n8n-skills/skills/using-n8n-mcp-skills/SKILL.md",
+    ".agents/skills/robot-contenidos/SKILL.md",
+    ".agents/skills/seo-auditor/SKILL.md",
+    ".agents/skills/slider-resenas/SKILL.md",
+    ".claude/commands/setup.md",
+    ".claude/settings.json",
+    ".claude/skills/luis-estudio-web/.DS_Store",
+    ".claude/skills/luis-estudio-web/SKILL.md",
+    ".claude/skills/luis-estudio-web/evals/evals.json",
+    ".claude/skills/luis-estudio-web/intake-template.md",
+    ".claude/skills/luis-estudio-web/recommended-settings.json",
+    ".claude/skills/luis-estudio-web/reference/01-stack-and-conventions.md",
+    ".claude/skills/luis-estudio-web/reference/02-archetypes.md",
+    ".claude/skills/luis-estudio-web/reference/03-effects-catalog.md",
+    ".claude/skills/luis-estudio-web/reference/04-critical-gotchas.md",
+    ".claude/skills/luis-estudio-web/reference/05-image-and-asset-pipeline.md",
+    ".claude/skills/luis-estudio-web/reference/06-diversity-guardrails.md",
+    ".claude/skills/luis-estudio-web/reference/07-windows-troubleshooting.md",
+    ".claude/skills/luis-estudio-web/reference/08-pre-deploy-checklist.md",
+    ".claude/skills/luis-estudio-web/reference/09-environment-detection.md",
+    ".claude/skills/luis-estudio-web/reference/10-deployment-and-cache.md",
+    ".claude/skills/luis-estudio-web/reference/11-ai-image-generation.md",
+    ".claude/skills/luis-estudio-web/reference/12-hostinger-connect.md",
+    ".claude/skills/luis-estudio-web/reference/13-hostinger-deploy.md",
+    ".claude/skills/luis-estudio-web/reference/14-cloudflare-deploy.md",
+    ".claude/skills/luis-estudio-web/scripts/diagnostico.ps1",
+    ".claude/skills/luis-estudio-web/scripts/diagnostico.sh",
+    ".claude/skills/luis-estudio-web/scripts/download_libs.py",
+    ".claude/skills/luis-estudio-web/scripts/download_libs.sh",
+    ".claude/skills/luis-estudio-web/scripts/generar-foto.mjs",
+    ".claude/skills/luis-estudio-web/scripts/openverse_fetch.py",
+    ".claude/skills/luis-estudio-web/scripts/openverse_fetch.sh",
+    ".claude/skills/luis-estudio-web/scripts/recortar-banner.ps1",
+    ".claude/skills/luis-estudio-web/scripts/recortar-banner.sh",
+    ".claude/skills/luis-estudio-web/scripts/verify_project.py",
+    ".claude/skills/luis-estudio-web/scripts/webp_convert.py",
+    ".claude/skills/luis-estudio-web/templates/htaccess.template",
+    ".claude/skills/luis-rediseño-premium/SKILL.md",
+    ".env.example",
+    ".github/workflows/kit-validation.yml",
+    "CHANGELOG.md",
+    "EMPIEZA-AQUI.md",
+    "INSTALACION.md",
+    "automatismos/README.md",
+    "automatismos/canedostudio-sales-agent/README.md",
+    "automatismos/canedostudio-sales-agent/migrations/0000_initial_schema.sql",
+    "automatismos/canedostudio-sales-agent/package.json",
+    "automatismos/canedostudio-sales-agent/prompts/canedostudio-knowledge.js",
+    "automatismos/canedostudio-sales-agent/prompts/sales-agent-system.js",
+    "automatismos/canedostudio-sales-agent/src/agent/engine.js",
+    "automatismos/canedostudio-sales-agent/src/agent/handoff.js",
+    "automatismos/canedostudio-sales-agent/src/agent/schema.js",
+    "automatismos/canedostudio-sales-agent/src/channels/instagram.js",
+    "automatismos/canedostudio-sales-agent/src/channels/telegram.js",
+    "automatismos/canedostudio-sales-agent/src/crm/index.js",
+    "automatismos/canedostudio-sales-agent/src/index.js",
+    "automatismos/canedostudio-sales-agent/tests/behavior.test.js",
+    "automatismos/canedostudio-sales-agent/tests/crm.test.js",
+    "automatismos/canedostudio-sales-agent/tests/engine.test.js",
+    "automatismos/canedostudio-sales-agent/tests/instagram.test.js",
+    "automatismos/canedostudio-sales-agent/tests/telegram.test.js",
+    "automatismos/canedostudio-sales-agent/wrangler.toml",
+    "automatismos/ejemplo-blog-bot/package.json",
+    "automatismos/ejemplo-blog-bot/src/index.js",
+    "automatismos/ejemplo-blog-bot/src/topics.js",
+    "automatismos/ejemplo-blog-bot/wrangler.toml",
+    "automatismos/n8n/README.md",
+    "automatismos/n8n/arquitectura-shorts-multiagente.md",
+    "automatismos/social-media-bot/.gitignore",
+    "automatismos/social-media-bot/Inter-Bold.ttf",
+    "automatismos/social-media-bot/README.md",
+    "automatismos/social-media-bot/bundled-test/README.md",
+    "automatismos/social-media-bot/bundled-test/compositor-worker.js",
+    "automatismos/social-media-bot/bundled-test/compositor-worker.js.map",
+    "automatismos/social-media-bot/bundled-test/d1864343b543978bd491d40c80010cea50c1b7bf-Roboto-Bold.ttf",
+    "automatismos/social-media-bot/bundled-test/dd4dd8881e2df4e64203b5c0ae65e1648ab55207-index_bg.wasm",
+    "automatismos/social-media-bot/bundled-test/index.js",
+    "automatismos/social-media-bot/bundled-test/index.js.map",
+    "automatismos/social-media-bot/compositor-worker.js",
+    "automatismos/social-media-bot/dist/README.md",
+    "automatismos/social-media-bot/dist/compositor-worker.js",
+    "automatismos/social-media-bot/dist/compositor-worker.js.map",
+    "automatismos/social-media-bot/dist/dd4dd8881e2df4e64203b5c0ae65e1648ab55207-index_bg.wasm",
+    "automatismos/social-media-bot/make_diagnose.cjs",
+    "automatismos/social-media-bot/migrations/0002_create_remake_state.sql",
+    "automatismos/social-media-bot/package-lock.json",
+    "automatismos/social-media-bot/package.json",
+    "automatismos/social-media-bot/polyfill.js",
+    "automatismos/social-media-bot/schema.sql",
+    "automatismos/social-media-bot/schema_cost_log.sql",
+    "automatismos/social-media-bot/src/Roboto-Bold.ttf",
+    "automatismos/social-media-bot/src/index.js",
+    "automatismos/social-media-bot/test_image.jpg",
+    "automatismos/social-media-bot/test_node.js",
+    "automatismos/social-media-bot/test_satori.mjs",
+    "automatismos/social-media-bot/test_worker_polyfill.js",
+    "automatismos/social-media-bot/test_worker_standalone.js",
+    "automatismos/social-media-bot/wrangler.test-standalone.toml",
+    "automatismos/social-media-bot/wrangler.test.toml",
+    "automatismos/social-media-bot/wrangler.toml",
+    "cazas/.gitkeep",
+    "componente-resenas.md",
+    "despliegue.md",
+    "docs/CLOUDFLARE.md",
+    "docs/DEBUGGING.md",
+    "docs/DESIGN-TO-WEB.md",
+    "docs/GUIA-DEMOS.md",
+    "docs/NEW-SITE-CHECKLIST.md",
+    "docs/PERFORMANCE.md",
+    "docs/PREMIUM-DESIGN-SYSTEM.md",
+    "docs/STRUCTURED-DATA.md",
+    "docs/assets/canedo-studio-kit-banner.png",
+    "docs/deployment-audit.md",
+    "docs/reports/CODEX-MCP-REGISTRATION.md",
+    "docs/reports/CODEX-PILOT-CONNECTION-CHECK.md",
+    "docs/reports/COMPOSITION-NATIVE-MACOS-ARM64.json",
+    "docs/reports/KIT-EVOLUTION-ACCEPTANCE-MACOS-ARM64.json",
+    "docs/reports/KIT-EVOLUTION-INDEX.md",
+    "docs/reports/KIT-EVOLUTION-STAGE-1.md",
+    "docs/reports/KIT-EVOLUTION-STAGE-2.md",
+    "docs/reports/KIT-EVOLUTION-STAGE-3.md",
+    "docs/reports/KIT-EVOLUTION-STAGE-4.md",
+    "docs/reports/KIT-EVOLUTION-STAGE-5.md",
+    "docs/reports/KIT-EVOLUTION-STAGE-6.md",
+    "docs/reports/KIT-EVOLUTION-STAGE-7.md",
+    "docs/reports/KIT-EVOLUTION-STAGE-8.md",
+    "docs/reports/PHASE-E-MANUAL.md",
+    "docs/reports/PHASE-F.md",
+    "docs/reports/PHASE-G.md",
+    "docs/reports/PHASE-H.md",
+    "docs/reports/PHASE-I-CI-FILES.json",
+    "docs/reports/PHASE-I-NATIVE-MACOS-ARM64.json",
+    "docs/reports/PHASE-I.md",
+    "docs/reports/PHASES-F-I.md",
+    "docs/reports/PROJECT-COMPOSITION.md",
+    "docs/reports/PUBLICATION-AUDIT.md",
+    "docs/reports/PUBLICATION-MANIFEST.json",
+    "docs/reports/UNIVERSAL-4-8-EFFICIENCY-RESULTS.json",
+    "docs/reports/UNIVERSAL-4-8-EFFICIENCY.md",
+    "docs/reports/UNIVERSAL-4-8-TESTS.json",
+    "docs/reports/UNIVERSAL-IMPROVEMENTS-1-3-RESULTS.json",
+    "docs/reports/UNIVERSAL-IMPROVEMENTS-1-3.md",
+    "docs/reports/UNIVERSAL-PLANNING-STAGE-1.md",
+    "ejemplos/LEEME.md",
+    "ejemplos/web-de-practica/fotos/cochinillo.svg",
+    "ejemplos/web-de-practica/fotos/comedor.svg",
+    "ejemplos/web-de-practica/fotos/fachada.svg",
+    "ejemplos/web-de-practica/index.html",
+    "ejemplos/web-de-practica/logo.svg",
+    "inject_sheets.py",
+    "plantilla-calificanos.html",
+    "plantilla-propuesta.md",
+    "scripts/design-to-web/adapters/gemini-adapter.js",
+    "scripts/design-to-web/adapters/index.js",
+    "scripts/design-to-web/adapters/mock-adapter.js",
+    "scripts/design-to-web/analyzer-prompt.md",
+    "scripts/design-to-web/analyzer.js",
+    "scripts/design-to-web/builder.js",
+    "scripts/design-to-web/components/button.js",
+    "scripts/design-to-web/components/heading.js",
+    "scripts/design-to-web/components/hero.js",
+    "scripts/design-to-web/components/image.js",
+    "scripts/design-to-web/components/index.js",
+    "scripts/design-to-web/design-spec.schema.json",
+    "scripts/design-to-web/example-design-spec.json",
+    "scripts/design-to-web/qa.js",
+    "scripts/design-to-web/validator.js",
+    "scripts/new-site.js",
+    "scripts/validate.js",
+    "scripts/verify-production.js",
+    "starter-template/_headers",
+    "starter-template/_redirects",
+    "starter-template/assets/img/hero-desktop.webp",
+    "starter-template/assets/img/hero-mobile.webp",
+    "starter-template/assets/img/og-image.jpg",
+    "starter-template/assets/img/service-1-desktop.webp",
+    "starter-template/assets/img/service-1-mobile.webp",
+    "starter-template/favicon.ico",
+    "starter-template/index.html",
+    "starter-template/main.js",
+    "starter-template/robots.txt",
+    "starter-template/sitemap.xml",
+    "starter-template/styles.css",
+    "starter-template/wrangler.toml",
+    "tests/design-to-web/invalid.txt",
+    "tests/design-to-web/sample.pdf",
+    "tests/design-to-web/simple-landing.png",
+    "tests/design-to-web/test-builder.js",
+    "tests/design-to-web/test-gemini.js",
+    "tests/design-to-web/test-qa.js",
+    "tests/design-to-web/test.js"
+  ],
+  "licenseDecision": "ISC-approved-by-owner-for-original-code-only",
+  "publicationExecuted": false,
+  "intendedRepository": "https://github.com/luisfor/canedo-devkit",
+  "copyrightHolderDeclaredByOwner": "CanedoStudio",
+  "ownershipVerificationScope": "local-provenance-notices-and-owner-authorization; no-independent-legal-chain-certification",
+  "originalRepositoryVerificationScope": "Original preservation counts belong to prior preparation; this closure reads and modifies distribution only."
+}

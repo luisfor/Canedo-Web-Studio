@@ -1,0 +1,414 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "recipeSetVersion": {
+      "const": "1.0.0"
+    },
+    "reviewedAt": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "scope": {
+      "const": "manual-commands-only"
+    },
+    "methods": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "homebrew": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "platforms": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "darwin",
+                  "linux",
+                  "win32"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "documentation": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "repository": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "distributions": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "ubuntu",
+                  "debian",
+                  "fedora"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "platforms",
+            "documentation",
+            "repository"
+          ]
+        },
+        "winget": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "platforms": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "darwin",
+                  "linux",
+                  "win32"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "documentation": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "repository": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "distributions": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "ubuntu",
+                  "debian",
+                  "fedora"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "platforms",
+            "documentation",
+            "repository"
+          ]
+        },
+        "apt": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "platforms": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "darwin",
+                  "linux",
+                  "win32"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "documentation": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "repository": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "distributions": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "ubuntu",
+                  "debian",
+                  "fedora"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "platforms",
+            "documentation",
+            "repository"
+          ]
+        },
+        "dnf": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "platforms": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "darwin",
+                  "linux",
+                  "win32"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "documentation": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "repository": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "distributions": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "ubuntu",
+                  "debian",
+                  "fedora"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "platforms",
+            "documentation",
+            "repository"
+          ]
+        },
+        "official": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "platforms": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "darwin",
+                  "linux",
+                  "win32"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "documentation": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "repository": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "distributions": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "ubuntu",
+                  "debian",
+                  "fedora"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "platforms",
+            "documentation",
+            "repository"
+          ]
+        }
+      },
+      "required": [
+        "homebrew",
+        "winget",
+        "apt",
+        "dnf",
+        "official"
+      ]
+    },
+    "recipes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]+-manual-v1$"
+          },
+          "tool": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "version": {
+            "const": 1
+          },
+          "methods": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "homebrew": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "package": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9@./{}-]+$"
+                  },
+                  "kind": {
+                    "enum": [
+                      "formula",
+                      "cask"
+                    ]
+                  },
+                  "requiresRepository": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "package",
+                  "kind",
+                  "requiresRepository"
+                ]
+              },
+              "winget": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "package": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9@./{}-]+$"
+                  },
+                  "kind": {
+                    "enum": [
+                      "formula",
+                      "cask"
+                    ]
+                  },
+                  "requiresRepository": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "package",
+                  "kind",
+                  "requiresRepository"
+                ]
+              },
+              "apt": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "package": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9@./{}-]+$"
+                  },
+                  "kind": {
+                    "enum": [
+                      "formula",
+                      "cask"
+                    ]
+                  },
+                  "requiresRepository": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "package",
+                  "kind",
+                  "requiresRepository"
+                ]
+              },
+              "dnf": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "package": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9@./{}-]+$"
+                  },
+                  "kind": {
+                    "enum": [
+                      "formula",
+                      "cask"
+                    ]
+                  },
+                  "requiresRepository": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "package",
+                  "kind",
+                  "requiresRepository"
+                ]
+              }
+            }
+          },
+          "officialArchive": {
+            "type": "boolean"
+          },
+          "components": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "id",
+          "tool",
+          "version",
+          "methods",
+          "officialArchive"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 200
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "recipeSetVersion",
+    "reviewedAt",
+    "scope",
+    "methods",
+    "recipes"
+  ]
+}

@@ -1,0 +1,454 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "kind",
+    "text",
+    "action",
+    "forced",
+    "evidence",
+    "requirements",
+    "status",
+    "questions",
+    "limitations",
+    "observed",
+    "architecture",
+    "steps",
+    "acceptance",
+    "generation",
+    "files",
+    "commands",
+    "executionAllowed",
+    "ok",
+    "planId",
+    "resources"
+  ],
+  "definitions": {
+    "strings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "question",
+        "options"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "question": {
+          "type": "string"
+        },
+        "options": {
+          "$ref": "#/definitions/strings"
+        }
+      }
+    }
+  },
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "kind": {
+      "const": "technical-project-plan"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 4000
+    },
+    "action": {
+      "const": "plan"
+    },
+    "forced": {
+      "type": "boolean"
+    },
+    "planId": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "evidence": {
+      "type": "object"
+    },
+    "requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domains",
+        "targets",
+        "technologies",
+        "excluded",
+        "contradictions",
+        "unknown",
+        "continuation",
+        "architecture"
+      ],
+      "properties": {
+        "domains": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "web",
+              "frontend",
+              "backend",
+              "mobile",
+              "desktop",
+              "game",
+              "iot",
+              "automation",
+              "ai",
+              "database",
+              "devops",
+              "enterprise",
+              "custom"
+            ]
+          }
+        },
+        "targets": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "android",
+              "ios",
+              "windows",
+              "macos",
+              "linux"
+            ]
+          }
+        },
+        "technologies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "toolId",
+              "cataloged"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "toolId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "cataloged": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "excluded": {
+          "$ref": "#/definitions/strings"
+        },
+        "contradictions": {
+          "$ref": "#/definitions/strings"
+        },
+        "unknown": {
+          "$ref": "#/definitions/strings"
+        },
+        "continuation": {
+          "type": "boolean"
+        },
+        "architecture": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "independent",
+            "modular"
+          ],
+          "properties": {
+            "independent": {
+              "type": "boolean"
+            },
+            "modular": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "status": {
+      "enum": [
+        "ready-for-review",
+        "needs-decisions",
+        "needs-inspection"
+      ]
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/question"
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "detail"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "observed": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "architecture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "preserveExisting",
+        "approach"
+      ],
+      "properties": {
+        "status": {
+          "const": "proposed-for-review"
+        },
+        "preserveExisting": {
+          "type": "boolean"
+        },
+        "approach": {
+          "type": "string"
+        }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "description"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "acceptance": {
+      "$ref": "#/definitions/strings"
+    },
+    "generation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "available",
+        "reason"
+      ],
+      "properties": {
+        "available": {
+          "const": false
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "maxItems": 0
+    },
+    "commands": {
+      "type": "array",
+      "maxItems": 0
+    },
+    "executionAllowed": {
+      "const": false
+    },
+    "ok": {
+      "const": true
+    },
+    "resources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "request",
+        "selected",
+        "toolPlan",
+        "diagnostics",
+        "profiles",
+        "environmentPlans",
+        "environmentDecisions",
+        "installation",
+        "reuseCandidates",
+        "limitations",
+        "executionAllowed",
+        "manualCommands"
+      ],
+      "properties": {
+        "request": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "versions",
+            "manager"
+          ],
+          "properties": {
+            "versions": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "pattern": "^\\d+\\.\\d+\\.\\d+$"
+              }
+            },
+            "manager": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "selected": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "reason"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "reason": {
+                "enum": [
+                  "explicit-request",
+                  "requested-target",
+                  "requested-board-family",
+                  "database-deployment-decision"
+                ]
+              }
+            }
+          }
+        },
+        "toolPlan": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "diagnostics": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "mode",
+            "observation",
+            "diagnosticTools",
+            "preview",
+            "environmentRechecked"
+          ],
+          "properties": {
+            "mode": {
+              "enum": [
+                "not-run",
+                "provided-report",
+                "live-doctor"
+              ]
+            },
+            "observation": {
+              "type": "object"
+            },
+            "diagnosticTools": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "preview": {
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "environmentRechecked": {
+              "const": false
+            }
+          }
+        },
+        "profiles": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "environmentPlans": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "environmentDecisions": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "installation": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "reuseCandidates": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "executionAllowed": {
+          "const": false
+        },
+        "manualCommands": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

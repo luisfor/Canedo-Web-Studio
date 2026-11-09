@@ -1,0 +1,16 @@
+{
+ "$schema":"http://json-schema.org/draft-07/schema#","type":"object","additionalProperties":false,"required":["schemaVersion","version","packages"],
+ "definitions":{"id":{"type":"string","pattern":"^[a-z][a-z0-9-]{0,63}$"},"ids":{"type":"array","uniqueItems":true,"items":{"$ref":"#/definitions/id"}},"strings":{"type":"array","items":{"type":"string","minLength":1,"maxLength":1500}}},
+ "properties":{"schemaVersion":{"const":1},"version":{"type":"string","pattern":"^\\d+\\.\\d+\\.\\d+$"},"packages":{"type":"array","items":{"type":"object","additionalProperties":false,
+  "required":["id","name","description","sector","features","dependencies","modules","technologies","integrations","security","operationalRequirements","monetization","status","implementedScope","gaps","tests","acceptance","proof"],
+  "properties":{
+   "id":{"$ref":"#/definitions/id"},"name":{"type":"string","maxLength":200},"description":{"type":"string","maxLength":2000},"sector":{"$ref":"#/definitions/id"},"features":{"$ref":"#/definitions/ids"},"modules":{"$ref":"#/definitions/ids"},
+   "dependencies":{"type":"object","additionalProperties":false,"required":["modules","tools"],"properties":{"modules":{"$ref":"#/definitions/ids"},"tools":{"$ref":"#/definitions/ids"}}},
+   "technologies":{"type":"object","additionalProperties":false,"required":["runtimes","frameworks","persistence"],"properties":{"runtimes":{"$ref":"#/definitions/ids"},"frameworks":{"$ref":"#/definitions/ids"},"persistence":{"$ref":"#/definitions/ids"}}},
+   "integrations":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["id","state"],"properties":{"id":{"$ref":"#/definitions/id"},"state":{"enum":["disabled","experimental","verified"]}}}},
+   "security":{"$ref":"#/definitions/ids"},"operationalRequirements":{"$ref":"#/definitions/strings"},"monetization":{"$ref":"#/definitions/ids"},"status":{"enum":["available","partial","experimental","planned","unsupported"]},"implementedScope":{"$ref":"#/definitions/strings"},"gaps":{"$ref":"#/definitions/strings"},"tests":{"$ref":"#/definitions/strings"},
+   "acceptance":{"type":"array","minItems":1,"items":{"type":"object","additionalProperties":false,"required":["id","criterion"],"properties":{"id":{"$ref":"#/definitions/id"},"criterion":{"type":"string","minLength":1,"maxLength":1500}}}},
+   "proof":{"anyOf":[{"type":"null"},{"type":"object","additionalProperties":false,"required":["file","digest"],"properties":{"file":{"type":"string"},"digest":{"type":"string","pattern":"^[a-f0-9]{64}$"}}}]}
+  }
+ }}}
+}

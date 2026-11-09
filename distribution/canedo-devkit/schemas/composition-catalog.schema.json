@@ -1,0 +1,207 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "capabilities",
+    "archetypes",
+    "projects"
+  ],
+  "definitions": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,63}$"
+    },
+    "ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/id"
+      }
+    },
+    "strings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
+      }
+    }
+  },
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "domain",
+          "aliases",
+          "requires"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/definitions/id"
+          },
+          "domain": {
+            "$ref": "#/definitions/id"
+          },
+          "aliases": {
+            "$ref": "#/definitions/strings"
+          },
+          "requires": {
+            "$ref": "#/definitions/ids"
+          }
+        }
+      }
+    },
+    "archetypes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "adapter",
+          "architecture",
+          "languages",
+          "capabilities"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/definitions/id"
+          },
+          "adapter": {
+            "$ref": "#/definitions/id"
+          },
+          "architecture": {
+            "enum": [
+              "modular-monolith",
+              "independent-services"
+            ]
+          },
+          "languages": {
+            "$ref": "#/definitions/ids"
+          },
+          "capabilities": {
+            "$ref": "#/definitions/ids"
+          },
+          "databases": {
+            "$ref": "#/definitions/ids"
+          },
+          "frameworks": {
+            "$ref": "#/definitions/ids"
+          }
+        }
+      }
+    },
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "url",
+          "revision",
+          "reviewedAt",
+          "languages",
+          "frameworks",
+          "databases",
+          "capabilities",
+          "license",
+          "reviewedFiles",
+          "usage"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/definitions/id"
+          },
+          "url": {
+            "type": "string",
+            "pattern": "^https://github\\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+          },
+          "revision": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "reviewedAt": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "languages": {
+            "$ref": "#/definitions/ids"
+          },
+          "frameworks": {
+            "$ref": "#/definitions/ids"
+          },
+          "databases": {
+            "$ref": "#/definitions/ids"
+          },
+          "capabilities": {
+            "$ref": "#/definitions/ids"
+          },
+          "reviewedFiles": {
+            "$ref": "#/definitions/strings"
+          },
+          "usage": {
+            "const": "architectural-reference-only"
+          },
+          "license": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "declared",
+              "evidence",
+              "rootLicenseVerified",
+              "codeImportAllowed"
+            ],
+            "properties": {
+              "declared": {
+                "type": "string",
+                "maxLength": 100
+              },
+              "evidence": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "rootLicenseVerified": {
+                "type": "boolean"
+              },
+              "codeImportAllowed": {
+                "const": false
+              }
+            }
+          },
+          "author": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "dependencies": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 100
+            }
+          },
+          "restrictions": {
+            "$ref": "#/definitions/strings"
+          },
+          "risks": {
+            "$ref": "#/definitions/strings"
+          },
+          "compatibilities": {
+            "$ref": "#/definitions/ids"
+          }
+        }
+      }
+    }
+  }
+}

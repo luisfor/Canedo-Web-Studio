@@ -1,0 +1,17 @@
+{
+ "$schema":"http://json-schema.org/draft-07/schema#",
+ "definitions":{
+  "ids":{"type":"array","uniqueItems":true,"items":{"type":"string","pattern":"^[a-z][a-z0-9-]{0,63}$"}},
+  "question":{"type":"object","additionalProperties":false,"required":["id","question","options"],"properties":{"id":{"type":"string"},"question":{"type":"string"},"options":{"type":"array","items":{"type":"string"}}}}
+ },
+ "type":"object","additionalProperties":false,
+ "required":["schemaVersion","provider","applications","sectors","capabilities","excluded","languages","frameworks","databases","integrations","security","infrastructure","budget","architecture","unknown","questions"],
+ "properties":{
+  "schemaVersion":{"const":1},"provider":{"type":"string","pattern":"^[a-z][a-z0-9-]{0,63}$"},"applications":{"$ref":"#/definitions/ids"},"sectors":{"$ref":"#/definitions/ids"},"capabilities":{"$ref":"#/definitions/ids"},"excluded":{"$ref":"#/definitions/ids"},"languages":{"$ref":"#/definitions/ids"},"frameworks":{"$ref":"#/definitions/ids"},"databases":{"$ref":"#/definitions/ids"},
+  "integrations":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["id","activation"],"properties":{"id":{"type":"string"},"activation":{"const":"disabled"}}}},
+  "security":{"type":"object","additionalProperties":false,"required":["multiUser","multiTenant","reuseExistingIdentity"],"properties":{"multiUser":{"type":["boolean","null"]},"multiTenant":{"type":["boolean","null"]},"reuseExistingIdentity":{"const":true}}},
+  "infrastructure":{"$ref":"#/definitions/ids"},
+  "budget":{"type":"object","additionalProperties":false,"required":["amount","currency","period","paidAi"],"properties":{"amount":{"type":["number","null"],"minimum":0},"currency":{"enum":["USD","COP","EUR",null]},"period":{"enum":["monthly","yearly","unspecified"]},"paidAi":{"enum":["forbidden","unspecified"]}}},
+  "architecture":{"enum":["modular-monolith","independent-services"]},"unknown":{"type":"array","items":{"type":"string","maxLength":200}},"questions":{"type":"array","items":{"$ref":"#/definitions/question"}}
+ }
+}

@@ -1,0 +1,467 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "commandPlanId": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "schemaVersion": {
+      "const": 3
+    },
+    "commandPlannerVersion": {
+      "const": "1.0.0"
+    },
+    "mode": {
+      "const": "manual"
+    },
+    "executionAllowed": {
+      "const": false
+    },
+    "approval": {
+      "const": "not-requested"
+    },
+    "environmentRechecked": {
+      "const": false
+    },
+    "recipeSetVersion": {
+      "const": "1.0.0"
+    },
+    "recipeDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "sourcePlan": {
+      "type": "object"
+    },
+    "artifactSnapshot": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "method": {
+          "enum": [
+            "auto",
+            "homebrew",
+            "winget",
+            "apt",
+            "dnf",
+            "official"
+          ]
+        },
+        "mode": {
+          "const": "manual"
+        },
+        "packageVersions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[0-9][A-Za-z0-9.+:~_-]{0,99}$"
+          }
+        },
+        "repositoryReady": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "method",
+        "mode",
+        "packageVersions",
+        "repositoryReady"
+      ]
+    },
+    "method": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 8192
+    },
+    "shell": {
+      "enum": [
+        "posix",
+        "powershell"
+      ]
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "tool": {
+            "type": "string",
+            "maxLength": 8192
+          },
+          "recipe": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 8192
+          },
+          "intent": {
+            "type": "string",
+            "maxLength": 8192
+          },
+          "method": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 8192
+          },
+          "targetVersion": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 8192
+          },
+          "compatibility": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "status": {
+                "enum": [
+                  "compatible",
+                  "incompatible",
+                  "not-assessed",
+                  "unverifiable"
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "maxLength": 8192
+              }
+            },
+            "required": [
+              "status",
+              "reason"
+            ]
+          },
+          "package": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 8192
+          },
+          "packageVersion": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 8192
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 8192
+            },
+            "maxItems": 500
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 8192
+            },
+            "maxItems": 500
+          },
+          "permissions": {
+            "type": "string",
+            "maxLength": 8192
+          },
+          "space": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "bytes": {
+                "type": "null"
+              },
+              "basis": {
+                "type": "string",
+                "maxLength": 8192
+              }
+            },
+            "required": [
+              "bytes",
+              "basis"
+            ]
+          },
+          "risks": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 8192
+            },
+            "maxItems": 500
+          },
+          "verification": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 8192
+            },
+            "maxItems": 500
+          },
+          "status": {
+            "type": "string",
+            "maxLength": 8192
+          },
+          "archiveBytes": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "tool",
+          "recipe",
+          "intent",
+          "method",
+          "targetVersion",
+          "compatibility",
+          "package",
+          "packageVersion",
+          "sources",
+          "dependencies",
+          "permissions",
+          "space",
+          "risks",
+          "verification",
+          "status"
+        ]
+      },
+      "maxItems": 200
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 8192
+          },
+          "tool": {
+            "type": "string",
+            "maxLength": 8192
+          },
+          "stage": {
+            "enum": [
+              "inspect",
+              "guard",
+              "preview",
+              "verify",
+              "install",
+              "create-directory",
+              "download",
+              "integrity",
+              "extract"
+            ]
+          },
+          "run": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "executable": {
+                "type": "string",
+                "maxLength": 8192
+              },
+              "args": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "maxLength": 8192
+                },
+                "maxItems": 500
+              },
+              "stdinFrom": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "executable": {
+                        "type": "string",
+                        "maxLength": 8192
+                      },
+                      "args": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "maxLength": 8192
+                        },
+                        "maxItems": 500
+                      }
+                    },
+                    "required": [
+                      "executable",
+                      "args"
+                    ]
+                  }
+                ]
+              }
+            },
+            "required": [
+              "executable",
+              "args",
+              "stdinFrom"
+            ]
+          },
+          "command": {
+            "type": "string",
+            "maxLength": 8192
+          },
+          "requiresSuccessfulSteps": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 8192
+            },
+            "maxItems": 500
+          },
+          "manualReviewRequired": {
+            "const": true
+          },
+          "changesSystem": {
+            "type": "boolean"
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 8192
+          },
+          "requiresReviewedSteps": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 8192
+            },
+            "maxItems": 500
+          }
+        },
+        "required": [
+          "id",
+          "tool",
+          "stage",
+          "run",
+          "command",
+          "requiresSuccessfulSteps",
+          "manualReviewRequired",
+          "changesSystem",
+          "notes",
+          "requiresReviewedSteps"
+        ]
+      },
+      "maxItems": 2000
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "tool": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 8192
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 8192
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 8192
+          }
+        },
+        "required": [
+          "tool",
+          "code",
+          "message"
+        ]
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "tool": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 8192
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 8192
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 8192
+          }
+        },
+        "required": [
+          "tool",
+          "code",
+          "message"
+        ]
+      }
+    },
+    "status": {
+      "enum": [
+        "blocked",
+        "needs-decisions",
+        "no-changes",
+        "review-ready"
+      ]
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "instructions": {
+      "type": "string",
+      "maxLength": 8192
+    }
+  },
+  "required": [
+    "commandPlanId",
+    "schemaVersion",
+    "commandPlannerVersion",
+    "mode",
+    "executionAllowed",
+    "approval",
+    "environmentRechecked",
+    "recipeSetVersion",
+    "recipeDigest",
+    "sourcePlan",
+    "artifactSnapshot",
+    "request",
+    "method",
+    "shell",
+    "items",
+    "steps",
+    "blockers",
+    "decisions",
+    "status",
+    "ok",
+    "instructions"
+  ]
+}

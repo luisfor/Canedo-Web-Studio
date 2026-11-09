@@ -1,0 +1,19 @@
+{
+ "$schema":"https://json-schema.org/draft/2020-12/schema",
+ "title":"Generated OpenAPI 3.1 subset (not the full upstream specification)",
+ "type":"object","required":["openapi","info","paths","components","security"],"additionalProperties":false,
+ "properties":{
+   "openapi":{"const":"3.1.0"},
+   "info":{"type":"object","required":["title","version"],"properties":{"title":{"type":"string"},"version":{"type":"string"}}},
+   "servers":{"type":"array","items":{"type":"object","required":["url"],"properties":{"url":{"type":"string"}}}},
+   "security":{"type":"array"},
+   "components":{"type":"object","required":["schemas","securitySchemes"],"properties":{"schemas":{"type":"object","additionalProperties":{"type":"object"}},"securitySchemes":{"type":"object"}}},
+   "paths":{"type":"object","minProperties":1,"propertyNames":{"pattern":"^/"},"additionalProperties":{"type":"object","minProperties":1,"additionalProperties":{"$ref":"#/$defs/operation"}}}
+ },
+ "$defs":{"operation":{"type":"object","required":["operationId","responses"],"additionalProperties":false,"properties":{
+   "operationId":{"type":"string","pattern":"^[A-Za-z][A-Za-z0-9]+$"},"security":{"type":"array"},"tags":{"type":"array","items":{"type":"string"}},
+   "parameters":{"type":"array","items":{"type":"object","required":["name","in","required","schema"],"properties":{"name":{"type":"string"},"in":{"enum":["header"]},"required":{"const":true},"schema":{"type":"object"}}}},
+   "requestBody":{"type":"object","required":["required","content"],"properties":{"required":{"const":true},"content":{"type":"object","required":["application/json"],"properties":{"application/json":{"type":"object","required":["schema"],"properties":{"schema":{"type":"object"}}}}}}},
+   "responses":{"type":"object","minProperties":1,"propertyNames":{"pattern":"^[1-5][0-9]{2}$"},"additionalProperties":{"type":"object","required":["description"],"properties":{"description":{"type":"string"},"content":{"type":"object","required":["application/json"],"properties":{"application/json":{"type":"object","required":["schema"],"properties":{"schema":{"type":"object"}}}}}}}}
+ }}}
+}

@@ -1,0 +1,1601 @@
+{
+  "schemaVersion": 1,
+  "version": "1.0.0",
+  "packages": [
+    {
+      "id": "crm-whatsapp",
+      "name": "CRM para WhatsApp",
+      "description": "CRM para WhatsApp como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "horizontal",
+      "features": [
+        "crm",
+        "whatsapp"
+      ],
+      "dependencies": {
+        "modules": [
+          "crm",
+          "whatsapp"
+        ],
+        "tools": [
+          "node"
+        ]
+      },
+      "modules": [
+        "crm",
+        "whatsapp"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite"
+        ]
+      },
+      "integrations": [
+        {
+          "id": "whatsapp",
+          "state": "disabled"
+        }
+      ],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "partial",
+      "implementedScope": [
+        "Contactos y actividad CRM; puerto WhatsApp deshabilitado."
+      ],
+      "gaps": [
+        "Conexión real, bandeja comercial completa y operación de usuarios."
+      ],
+      "tests": [
+        "tests/kit/composition-runtime.test.js"
+      ],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    },
+    {
+      "id": "crm-omnichannel",
+      "name": "CRM omnicanal",
+      "description": "CRM omnicanal como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "horizontal",
+      "features": [
+        "crm",
+        "whatsapp",
+        "messenger",
+        "instagram"
+      ],
+      "dependencies": {
+        "modules": [
+          "crm",
+          "whatsapp",
+          "messenger",
+          "instagram"
+        ],
+        "tools": [
+          "node"
+        ]
+      },
+      "modules": [
+        "crm",
+        "whatsapp",
+        "messenger",
+        "instagram"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite"
+        ]
+      },
+      "integrations": [
+        {
+          "id": "whatsapp",
+          "state": "disabled"
+        },
+        {
+          "id": "messenger",
+          "state": "disabled"
+        },
+        {
+          "id": "instagram",
+          "state": "disabled"
+        }
+      ],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "partial",
+      "implementedScope": [
+        "Backend local persistente, contratos, permisos, pruebas SQLite/HTTP y generación segura."
+      ],
+      "gaps": [
+        "Sin certificación de canales reales ni envíos externos.",
+        "Interfaz inicial; recordatorios pendientes de despacho manual; no es producto comercial completo."
+      ],
+      "tests": [
+        "tests/kit/business.test.js"
+      ],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    },
+    {
+      "id": "crm-omnichannel-ai",
+      "name": "CRM omnicanal con IA",
+      "description": "CRM omnicanal con IA como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "horizontal",
+      "features": [
+        "crm",
+        "whatsapp",
+        "messenger",
+        "instagram",
+        "chatbot"
+      ],
+      "dependencies": {
+        "modules": [
+          "crm",
+          "whatsapp",
+          "messenger",
+          "instagram",
+          "chatbot"
+        ],
+        "tools": [
+          "node"
+        ]
+      },
+      "modules": [
+        "crm",
+        "whatsapp",
+        "messenger",
+        "instagram",
+        "chatbot"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite"
+        ]
+      },
+      "integrations": [
+        {
+          "id": "whatsapp",
+          "state": "disabled"
+        },
+        {
+          "id": "messenger",
+          "state": "disabled"
+        },
+        {
+          "id": "instagram",
+          "state": "disabled"
+        },
+        {
+          "id": "ai",
+          "state": "disabled"
+        }
+      ],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "partial",
+      "implementedScope": [
+        "Backend local persistente, contratos, permisos, pruebas SQLite/HTTP y generación segura."
+      ],
+      "gaps": [
+        "Sin certificación de canales reales ni envíos externos.",
+        "Interfaz inicial; recordatorios pendientes de despacho manual; no es producto comercial completo."
+      ],
+      "tests": [
+        "tests/kit/business.test.js"
+      ],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    },
+    {
+      "id": "pos",
+      "name": "POS y caja registradora",
+      "description": "POS y caja registradora como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "retail",
+      "features": [
+        "products",
+        "inventory",
+        "sales",
+        "cash"
+      ],
+      "dependencies": {
+        "modules": [
+          "products",
+          "inventory",
+          "sales",
+          "cash"
+        ],
+        "tools": [
+          "node"
+        ]
+      },
+      "modules": [
+        "products",
+        "inventory",
+        "sales",
+        "cash"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite"
+        ]
+      },
+      "integrations": [],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "partial",
+      "implementedScope": [
+        "Venta básica, stock y libro de caja transaccional."
+      ],
+      "gaps": [
+        "Apertura/cierre, devoluciones, impuestos, UI y operación fiscal."
+      ],
+      "tests": [
+        "tests/kit/composition-runtime.test.js"
+      ],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    },
+    {
+      "id": "inventory",
+      "name": "Inventarios y almacenes",
+      "description": "Inventarios y almacenes como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "retail",
+      "features": [
+        "products",
+        "inventory"
+      ],
+      "dependencies": {
+        "modules": [
+          "products",
+          "inventory"
+        ],
+        "tools": [
+          "node",
+          "python"
+        ]
+      },
+      "modules": [
+        "products",
+        "inventory"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node",
+          "python"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite",
+          "json-file"
+        ]
+      },
+      "integrations": [],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "partial",
+      "implementedScope": [
+        "Productos y entradas positivas de stock en Node o Python."
+      ],
+      "gaps": [
+        "Almacenes múltiples, transferencias, valoración y conteos."
+      ],
+      "tests": [
+        "tests/kit/composition-runtime.test.js",
+        "tests/kit/polyglot.test.js"
+      ],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    },
+    {
+      "id": "erp",
+      "name": "ERP comercial",
+      "description": "ERP comercial como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "retail",
+      "features": [
+        "products",
+        "inventory",
+        "purchases",
+        "suppliers",
+        "sales",
+        "cash",
+        "crm"
+      ],
+      "dependencies": {
+        "modules": [
+          "products",
+          "inventory",
+          "purchases",
+          "suppliers",
+          "sales",
+          "cash",
+          "crm"
+        ],
+        "tools": [
+          "node"
+        ]
+      },
+      "modules": [
+        "products",
+        "inventory",
+        "purchases",
+        "suppliers",
+        "sales",
+        "cash",
+        "crm"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite"
+        ]
+      },
+      "integrations": [],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "partial",
+      "implementedScope": [
+        "Módulos comerciales iniciales con contratos y persistencia."
+      ],
+      "gaps": [
+        "Contabilidad, fiscalidad y operaciones empresariales completas."
+      ],
+      "tests": [
+        "tests/kit/composition-runtime.test.js"
+      ],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    },
+    {
+      "id": "ecommerce",
+      "name": "Comercio electrónico",
+      "description": "Comercio electrónico como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "retail",
+      "features": [
+        "ecommerce",
+        "inventory",
+        "payments",
+        "crm"
+      ],
+      "dependencies": {
+        "modules": [
+          "ecommerce",
+          "inventory",
+          "payments",
+          "crm"
+        ],
+        "tools": [
+          "node"
+        ]
+      },
+      "modules": [
+        "ecommerce",
+        "inventory",
+        "payments",
+        "crm"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite"
+        ]
+      },
+      "integrations": [
+        {
+          "id": "payments",
+          "state": "disabled"
+        }
+      ],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "partial",
+      "implementedScope": [
+        "Catálogo y pedidos autenticados que reutilizan ventas, inventario, caja y CRM."
+      ],
+      "gaps": [
+        "Sin proveedores reales, revisión de producción o cumplimiento fiscal.",
+        "Interfaz y operación avanzadas pendientes."
+      ],
+      "tests": [
+        "tests/kit/saas.test.js"
+      ],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    },
+    {
+      "id": "appointments",
+      "name": "Agenda y reservas inteligentes",
+      "description": "Agenda y reservas inteligentes como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "services",
+      "features": [
+        "appointments",
+        "reminders"
+      ],
+      "dependencies": {
+        "modules": [
+          "appointments",
+          "reminders"
+        ],
+        "tools": [
+          "node"
+        ]
+      },
+      "modules": [
+        "appointments",
+        "reminders"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite"
+        ]
+      },
+      "integrations": [],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "partial",
+      "implementedScope": [
+        "Backend local persistente, contratos, permisos, pruebas SQLite/HTTP y generación segura."
+      ],
+      "gaps": [
+        "Sin certificación de canales reales ni envíos externos.",
+        "Interfaz inicial; recordatorios pendientes de despacho manual; no es producto comercial completo."
+      ],
+      "tests": [
+        "tests/kit/business.test.js"
+      ],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    },
+    {
+      "id": "clinics",
+      "name": "Gestión de clínicas y consultorios",
+      "description": "Gestión de clínicas y consultorios como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "healthcare",
+      "features": [
+        "clinics",
+        "appointments",
+        "roles"
+      ],
+      "dependencies": {
+        "modules": [
+          "clinics",
+          "appointments",
+          "roles"
+        ],
+        "tools": [
+          "node"
+        ]
+      },
+      "modules": [
+        "clinics",
+        "appointments",
+        "roles"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite"
+        ]
+      },
+      "integrations": [],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "planned",
+      "implementedScope": [],
+      "gaps": [
+        "Definir alcance clínico, privacidad, permisos y requisitos locales."
+      ],
+      "tests": [],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    },
+    {
+      "id": "workshops",
+      "name": "Gestión de talleres",
+      "description": "Gestión de talleres como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "automotive",
+      "features": [
+        "workshops",
+        "inventory",
+        "appointments"
+      ],
+      "dependencies": {
+        "modules": [
+          "workshops",
+          "inventory",
+          "appointments"
+        ],
+        "tools": [
+          "node"
+        ]
+      },
+      "modules": [
+        "workshops",
+        "inventory",
+        "appointments"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite"
+        ]
+      },
+      "integrations": [],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "planned",
+      "implementedScope": [],
+      "gaps": [
+        "Órdenes de trabajo, recursos, agenda e historial."
+      ],
+      "tests": [],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    },
+    {
+      "id": "marketing",
+      "name": "Marketing automatizado",
+      "description": "Marketing automatizado como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "horizontal",
+      "features": [
+        "marketing",
+        "crm"
+      ],
+      "dependencies": {
+        "modules": [
+          "marketing",
+          "crm"
+        ],
+        "tools": [
+          "node"
+        ]
+      },
+      "modules": [
+        "marketing",
+        "crm"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite"
+        ]
+      },
+      "integrations": [
+        {
+          "id": "ai",
+          "state": "disabled"
+        }
+      ],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "partial",
+      "implementedScope": [
+        "Campañas manuales y audiencias por etiquetas con consentimiento; sin envíos."
+      ],
+      "gaps": [
+        "Sin proveedores reales, revisión de producción o cumplimiento fiscal.",
+        "Interfaz y operación avanzadas pendientes."
+      ],
+      "tests": [
+        "tests/kit/saas.test.js"
+      ],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    },
+    {
+      "id": "content-ai",
+      "name": "Generación de contenidos con IA",
+      "description": "Generación de contenidos con IA como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "marketing",
+      "features": [
+        "content",
+        "chatbot"
+      ],
+      "dependencies": {
+        "modules": [
+          "content",
+          "chatbot"
+        ],
+        "tools": [
+          "node"
+        ]
+      },
+      "modules": [
+        "content",
+        "chatbot"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite"
+        ]
+      },
+      "integrations": [
+        {
+          "id": "ai",
+          "state": "disabled"
+        }
+      ],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "partial",
+      "implementedScope": [
+        "Almacenamiento de borradores manuales; IA externa deshabilitada."
+      ],
+      "gaps": [
+        "Sin proveedores reales, revisión de producción o cumplimiento fiscal.",
+        "Interfaz y operación avanzadas pendientes."
+      ],
+      "tests": [
+        "tests/kit/saas.test.js"
+      ],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    },
+    {
+      "id": "reputation",
+      "name": "Gestión de reputación y reseñas",
+      "description": "Gestión de reputación y reseñas como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "horizontal",
+      "features": [
+        "reputation",
+        "crm"
+      ],
+      "dependencies": {
+        "modules": [
+          "reputation",
+          "crm"
+        ],
+        "tools": [
+          "node"
+        ]
+      },
+      "modules": [
+        "reputation",
+        "crm"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite"
+        ]
+      },
+      "integrations": [],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "planned",
+      "implementedScope": [],
+      "gaps": [
+        "Gestión de reseñas verificable y políticas aplicables."
+      ],
+      "tests": [],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    },
+    {
+      "id": "helpdesk",
+      "name": "Helpdesk y soporte",
+      "description": "Helpdesk y soporte como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "horizontal",
+      "features": [
+        "helpdesk",
+        "crm",
+        "roles"
+      ],
+      "dependencies": {
+        "modules": [
+          "helpdesk",
+          "crm",
+          "roles"
+        ],
+        "tools": [
+          "node"
+        ]
+      },
+      "modules": [
+        "helpdesk",
+        "crm",
+        "roles"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite"
+        ]
+      },
+      "integrations": [],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "planned",
+      "implementedScope": [],
+      "gaps": [
+        "Tickets, asignaciones, SLA y auditoría."
+      ],
+      "tests": [],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    },
+    {
+      "id": "chatbots",
+      "name": "Chatbots y agentes de IA",
+      "description": "Chatbots y agentes de IA como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "horizontal",
+      "features": [
+        "chatbot",
+        "crm"
+      ],
+      "dependencies": {
+        "modules": [
+          "chatbot",
+          "crm"
+        ],
+        "tools": [
+          "node"
+        ]
+      },
+      "modules": [
+        "chatbot",
+        "crm"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite"
+        ]
+      },
+      "integrations": [
+        {
+          "id": "ai",
+          "state": "disabled"
+        }
+      ],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "partial",
+      "implementedScope": [
+        "Puerto de chatbot, consentimiento e idempotencia."
+      ],
+      "gaps": [
+        "Proveedor, conocimiento, evaluación y operación real."
+      ],
+      "tests": [
+        "tests/kit/composition-runtime.test.js"
+      ],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    },
+    {
+      "id": "saas",
+      "name": "SaaS multi-tenant",
+      "description": "SaaS multi-tenant como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "horizontal",
+      "features": [
+        "tenant-isolation",
+        "subscriptions",
+        "usage",
+        "roles"
+      ],
+      "dependencies": {
+        "modules": [
+          "tenant-isolation",
+          "subscriptions",
+          "usage",
+          "roles"
+        ],
+        "tools": [
+          "node"
+        ]
+      },
+      "modules": [
+        "tenant-isolation",
+        "subscriptions",
+        "usage",
+        "roles"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite"
+        ]
+      },
+      "integrations": [
+        {
+          "id": "billing",
+          "state": "disabled"
+        }
+      ],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "partial",
+      "implementedScope": [
+        "Planes/suscripciones manuales por operador, cuotas mensuales transaccionales, alertas y aislamiento por empresa."
+      ],
+      "gaps": [
+        "Sin cobros, impuestos, pasarela, facturación autorizada, HA o identidad de producción."
+      ],
+      "tests": [
+        "tests/kit/saas.test.js"
+      ],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    },
+    {
+      "id": "customer-portals",
+      "name": "Portales de clientes",
+      "description": "Portales de clientes como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "horizontal",
+      "features": [
+        "customer-portals",
+        "crm",
+        "roles"
+      ],
+      "dependencies": {
+        "modules": [
+          "customer-portals",
+          "crm",
+          "roles"
+        ],
+        "tools": [
+          "node"
+        ]
+      },
+      "modules": [
+        "customer-portals",
+        "crm",
+        "roles"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite"
+        ]
+      },
+      "integrations": [],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "planned",
+      "implementedScope": [],
+      "gaps": [
+        "Identidad, autorización por objeto y experiencia de cliente."
+      ],
+      "tests": [],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    },
+    {
+      "id": "automation",
+      "name": "Automatización empresarial",
+      "description": "Automatización empresarial como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "horizontal",
+      "features": [
+        "automation",
+        "events"
+      ],
+      "dependencies": {
+        "modules": [
+          "automation",
+          "events"
+        ],
+        "tools": [
+          "node"
+        ]
+      },
+      "modules": [
+        "automation",
+        "events"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite"
+        ]
+      },
+      "integrations": [],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "planned",
+      "implementedScope": [],
+      "gaps": [
+        "Flujos, reintentos, permisos e idempotencia de acciones."
+      ],
+      "tests": [],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    },
+    {
+      "id": "purchasing",
+      "name": "Gestión de compras y proveedores",
+      "description": "Gestión de compras y proveedores como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "retail",
+      "features": [
+        "purchases",
+        "suppliers",
+        "inventory"
+      ],
+      "dependencies": {
+        "modules": [
+          "purchases",
+          "suppliers",
+          "inventory"
+        ],
+        "tools": [
+          "node"
+        ]
+      },
+      "modules": [
+        "purchases",
+        "suppliers",
+        "inventory"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite"
+        ]
+      },
+      "integrations": [],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "partial",
+      "implementedScope": [
+        "Recepción de compras y stock con proveedores."
+      ],
+      "gaps": [
+        "Aprobaciones, cuentas por pagar y abastecimiento completo."
+      ],
+      "tests": [
+        "tests/kit/composition-runtime.test.js"
+      ],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    },
+    {
+      "id": "invoicing",
+      "name": "Facturación con proveedores autorizados",
+      "description": "Facturación con proveedores autorizados como solución extensible; el estado describe el alcance real del código, no una conexión o certificación comercial.",
+      "sector": "horizontal",
+      "features": [
+        "invoicing",
+        "sales"
+      ],
+      "dependencies": {
+        "modules": [
+          "invoicing",
+          "sales"
+        ],
+        "tools": [
+          "node"
+        ]
+      },
+      "modules": [
+        "invoicing",
+        "sales"
+      ],
+      "technologies": {
+        "runtimes": [
+          "node"
+        ],
+        "frameworks": [],
+        "persistence": [
+          "sqlite"
+        ]
+      },
+      "integrations": [
+        {
+          "id": "authorized-invoicing",
+          "state": "disabled"
+        }
+      ],
+      "security": [
+        "tenant-isolation",
+        "authorization-by-object",
+        "private-configuration",
+        "audit-as-required"
+      ],
+      "operationalRequirements": [
+        "Revisar alcance, datos, backup y permisos.",
+        "Configurar proveedores reales explícitamente antes de operarlos."
+      ],
+      "monetization": [
+        "monthly-subscription",
+        "annual-subscription",
+        "implementation-service",
+        "support-and-maintenance"
+      ],
+      "status": "partial",
+      "implementedScope": [
+        "Borradores ligados a ventas con importes originales; sin emisión fiscal ni proveedor."
+      ],
+      "gaps": [
+        "Sin proveedores reales, revisión de producción o cumplimiento fiscal.",
+        "Interfaz y operación avanzadas pendientes."
+      ],
+      "tests": [
+        "tests/kit/saas.test.js"
+      ],
+      "acceptance": [
+        {
+          "id": "domain-flow",
+          "criterion": "Operaciones del dominio implementadas y probadas con persistencia real."
+        },
+        {
+          "id": "security",
+          "criterion": "Aislamiento y permisos probados; sin secretos en código/manifiestos."
+        },
+        {
+          "id": "integration-state",
+          "criterion": "Integraciones y límites descritos sin simular disponibilidad real."
+        }
+      ],
+      "proof": null
+    }
+  ]
+}

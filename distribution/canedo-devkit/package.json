@@ -1,0 +1,81 @@
+{
+  "name": "canedo-devkit",
+  "version": "1.0.0",
+  "description": "Asistente técnico local para desarrolladores y agentes: KIT-FIRST, planificación, diagnósticos, CLI y MCP.",
+  "main": "scripts/agents/controller.js",
+  "exports": {
+    ".": "./scripts/agents/controller.js",
+    "./kit-first": "./scripts/kit-first/service.js",
+    "./terminal": "./scripts/terminal/service.js",
+    "./memory": "./scripts/memory/store.js"
+  },
+  "bin": {
+    "devkit": "scripts/devkit.js"
+  },
+  "scripts": {
+    "kit:catalog": "node scripts/kit.js catalog",
+    "kit:doctor": "node scripts/kit.js doctor",
+    "kit:validate": "node scripts/kit.js validate",
+    "test:kit": "node --test tests/kit/cli.test.js tests/kit/environment.test.js tests/kit/tool-catalog.test.js tests/kit/planner.test.js tests/kit/installers.test.js tests/kit/archive-installers.test.js tests/kit/manual-commands.test.js tests/kit/workspace-f.test.js tests/kit/workspace-g.test.js tests/kit/workspace-h.test.js tests/kit/workspace-i.test.js tests/kit/native-i.test.js tests/kit/composition-planner.test.js tests/kit/composition-runtime.test.js tests/kit/kit-first.test.js tests/kit/memory.test.js tests/kit/terminal.test.js tests/kit/agents.test.js tests/kit/polyglot.test.js tests/kit/commercial.test.js tests/kit/business.test.js tests/kit/saas.test.js tests/kit/acceptance.test.js tests/kit/channels.test.js tests/kit/universal-planning.test.js tests/kit/universal-resources.test.js tests/kit/efficiency.test.js",
+    "kit:tools": "node scripts/kit.js tools",
+    "kit:plan": "node scripts/kit.js plan",
+    "kit:install": "node scripts/kit.js install",
+    "kit:docker": "node scripts/kit.js docker",
+    "kit:project": "node scripts/kit.js project",
+    "kit:profiles": "node scripts/kit.js profiles",
+    "kit:environment": "node scripts/kit.js environment",
+    "kit:verify": "node scripts/kit.js verify",
+    "kit:composition": "node scripts/kit.js composition",
+    "kit:agent": "node scripts/kit.js agent",
+    "kit:memory": "node scripts/kit.js memory",
+    "devkit": "node scripts/devkit.js",
+    "test:terminal": "node --test tests/kit/terminal.test.js",
+    "test:agents": "node --test tests/kit/agents.test.js",
+    "kit:packages": "node scripts/kit.js packages",
+    "test:polyglot": "node --test tests/kit/polyglot.test.js",
+    "test:commercial": "node --test tests/kit/commercial.test.js",
+    "test:memory": "node --test tests/kit/memory.test.js",
+    "test:kit-first": "node --test tests/kit/kit-first.test.js",
+    "test:composition": "node --test tests/kit/composition-planner.test.js tests/kit/composition-runtime.test.js",
+    "test:business": "node --test tests/kit/business.test.js",
+    "test:saas": "node --test tests/kit/saas.test.js",
+    "test:acceptance": "node --test tests/kit/acceptance.test.js",
+    "test:channels": "node --test tests/kit/channels.test.js",
+    "test:universal": "node --test tests/kit/universal-planning.test.js tests/kit/universal-resources.test.js",
+    "test:efficiency": "node --test tests/kit/efficiency.test.js",
+    "kit:efficiency": "node scripts/kit.js efficiency",
+    "test": "node --test tests/kit/cli.test.js tests/kit/environment.test.js tests/kit/tool-catalog.test.js tests/kit/planner.test.js tests/kit/installers.test.js tests/kit/archive-installers.test.js tests/kit/manual-commands.test.js tests/kit/workspace-f.test.js tests/kit/workspace-g.test.js tests/kit/workspace-h.test.js tests/kit/workspace-i.test.js tests/kit/native-i.test.js tests/kit/composition-planner.test.js tests/kit/composition-runtime.test.js tests/kit/kit-first.test.js tests/kit/memory.test.js tests/kit/terminal.test.js tests/kit/agents.test.js tests/kit/polyglot.test.js tests/kit/commercial.test.js tests/kit/business.test.js tests/kit/saas.test.js tests/kit/acceptance.test.js tests/kit/channels.test.js tests/kit/universal-planning.test.js tests/kit/universal-resources.test.js tests/kit/efficiency.test.js",
+    "test:distribution": "node --test tests/distribution.test.cjs"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "type": "commonjs",
+  "private": true,
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0"
+  },
+  "files": [
+    "scripts/",
+    "catalog/",
+    "config/",
+    "schemas/",
+    "tests/kit/",
+    ".agents/skills/",
+    "docs/",
+    "examples/",
+    "README.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    "SECURITY.md",
+    "THIRD-PARTY-NOTICES.md",
+    "LICENSE-PROPOSAL.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luisfor/canedo-devkit.git"
+  }
+}

@@ -1,0 +1,5 @@
+'use strict';
+const check=new(require('ajv'))().compile(require('../../schemas/commercial-combinations.schema.json'));
+function list(extension){const value=structuredClone(require('../../catalog/commercial/combinations.json'));if(extension){if(!check(extension))throw Error('Combinaciones fuera de esquema');value.combinations.push(...extension.combinations);}if(!check(value)||new Set(value.combinations.map(c=>c.id)).size!==value.combinations.length)throw Error('Combinaciones inválidas');return {...value,scope:'local-initial-projects-only',liveIntegrationsVerified:false};}
+function plan(id,{docker=false,name='composed-business'}={}){const c=list().combinations.find(c=>c.id===id);if(!c)throw Error('Combinación no registrada');const value=require('../composition/engine').plan({text:c.request,name,docker});return {combination:c,plan:value,ok:value.ok,limitations:['Ready describes local generation only; no live messaging, AI, payment or invoicing provider is verified.'],executionAllowed:false};}
+module.exports={list,plan};

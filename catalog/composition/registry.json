@@ -1,0 +1,499 @@
+{
+  "schemaVersion": 1,
+  "capabilities": [
+    {
+      "id": "products",
+      "domain": "commerce",
+      "aliases": [
+        "producto",
+        "productos",
+        "catalogo"
+      ],
+      "requires": []
+    },
+    {
+      "id": "inventory",
+      "domain": "commerce",
+      "aliases": [
+        "inventario",
+        "inventarios",
+        "stock",
+        "existencias"
+      ],
+      "requires": [
+        "products"
+      ]
+    },
+    {
+      "id": "sales",
+      "domain": "commerce",
+      "aliases": [
+        "venta",
+        "ventas",
+        "vender",
+        "tienda",
+        "sistema comercial"
+      ],
+      "requires": [
+        "inventory",
+        "cash"
+      ]
+    },
+    {
+      "id": "cash",
+      "domain": "commerce",
+      "aliases": [
+        "caja",
+        "cobros"
+      ],
+      "requires": []
+    },
+    {
+      "id": "suppliers",
+      "domain": "commerce",
+      "aliases": [
+        "proveedor",
+        "proveedores"
+      ],
+      "requires": []
+    },
+    {
+      "id": "purchases",
+      "domain": "commerce",
+      "aliases": [
+        "compra",
+        "compras",
+        "abastecimiento"
+      ],
+      "requires": [
+        "inventory",
+        "suppliers"
+      ]
+    },
+    {
+      "id": "crm",
+      "domain": "communications",
+      "aliases": [
+        "crm",
+        "contacto",
+        "contactos",
+        "cliente",
+        "clientes",
+        "conversaciones"
+      ],
+      "requires": []
+    },
+    {
+      "id": "whatsapp",
+      "domain": "communications",
+      "aliases": [
+        "whatsapp",
+        "guasap"
+      ],
+      "requires": [
+        "crm"
+      ]
+    },
+    {
+      "id": "chatbot",
+      "domain": "communications",
+      "aliases": [
+        "chatbot",
+        "bot",
+        "asistente",
+        "inteligencia artificial",
+        "ia"
+      ],
+      "requires": [
+        "crm"
+      ]
+    },
+    {
+      "id": "omnichannel",
+      "domain": "communications",
+      "aliases": [
+        "omnicanal",
+        "bandeja unificada",
+        "embudo",
+        "etiquetas"
+      ],
+      "requires": [
+        "crm",
+        "roles",
+        "knowledge"
+      ]
+    },
+    {
+      "id": "messenger",
+      "domain": "communications",
+      "aliases": [
+        "messenger",
+        "facebook"
+      ],
+      "requires": [
+        "omnichannel"
+      ]
+    },
+    {
+      "id": "instagram",
+      "domain": "communications",
+      "aliases": [
+        "instagram"
+      ],
+      "requires": [
+        "omnichannel"
+      ]
+    },
+    {
+      "id": "tiktok",
+      "domain": "communications",
+      "aliases": [
+        "tiktok"
+      ],
+      "requires": [
+        "omnichannel"
+      ]
+    },
+    {
+      "id": "roles",
+      "domain": "communications",
+      "aliases": [
+        "roles",
+        "multiusuario"
+      ],
+      "requires": [
+        "crm"
+      ]
+    },
+    {
+      "id": "knowledge",
+      "domain": "communications",
+      "aliases": [
+        "base de conocimiento"
+      ],
+      "requires": [
+        "crm"
+      ]
+    },
+    {
+      "id": "appointments",
+      "domain": "communications",
+      "aliases": [
+        "agenda",
+        "citas",
+        "reservas"
+      ],
+      "requires": [
+        "omnichannel"
+      ]
+    },
+    {
+      "id": "reminders",
+      "domain": "communications",
+      "aliases": [
+        "recordatorios"
+      ],
+      "requires": [
+        "appointments"
+      ]
+    },
+    {
+      "id": "tenant-isolation",
+      "domain": "communications",
+      "aliases": [
+        "multiempresa",
+        "multi-tenant",
+        "saas"
+      ],
+      "requires": [
+        "subscriptions",
+        "usage"
+      ]
+    },
+    {
+      "id": "subscriptions",
+      "domain": "communications",
+      "aliases": [
+        "suscripciones",
+        "suscripcion",
+        "planes"
+      ],
+      "requires": [
+        "roles",
+        "crm"
+      ]
+    },
+    {
+      "id": "usage",
+      "domain": "communications",
+      "aliases": [
+        "limites de consumo",
+        "consumo",
+        "cuotas"
+      ],
+      "requires": [
+        "subscriptions"
+      ]
+    },
+    {
+      "id": "ecommerce",
+      "domain": "commerce",
+      "aliases": [
+        "ecommerce",
+        "comercio electronico"
+      ],
+      "requires": [
+        "products",
+        "sales",
+        "crm"
+      ]
+    },
+    {
+      "id": "payments",
+      "domain": "communications",
+      "aliases": [
+        "pagos",
+        "pagos online"
+      ],
+      "requires": [
+        "sales",
+        "crm"
+      ]
+    },
+    {
+      "id": "invoicing",
+      "domain": "communications",
+      "aliases": [
+        "facturacion",
+        "facturas"
+      ],
+      "requires": [
+        "sales",
+        "crm"
+      ]
+    },
+    {
+      "id": "marketing",
+      "domain": "communications",
+      "aliases": [
+        "marketing",
+        "redes sociales"
+      ],
+      "requires": [
+        "omnichannel"
+      ]
+    },
+    {
+      "id": "content",
+      "domain": "communications",
+      "aliases": [
+        "contenido",
+        "contenidos"
+      ],
+      "requires": [
+        "knowledge"
+      ]
+    }
+  ],
+  "archetypes": [
+    {
+      "id": "node-modular",
+      "adapter": "node-sqlite",
+      "architecture": "modular-monolith",
+      "languages": [
+        "javascript"
+      ],
+      "capabilities": [
+        "products",
+        "inventory",
+        "sales",
+        "cash",
+        "suppliers",
+        "purchases",
+        "crm",
+        "whatsapp",
+        "chatbot"
+      ]
+    },
+    {
+      "id": "node-services",
+      "adapter": "node-sqlite",
+      "architecture": "independent-services",
+      "languages": [
+        "javascript"
+      ],
+      "capabilities": [
+        "products",
+        "inventory",
+        "sales",
+        "cash",
+        "suppliers",
+        "purchases",
+        "crm",
+        "whatsapp",
+        "chatbot"
+      ]
+    },
+    {
+      "id": "python-inventory",
+      "adapter": "python-inventory",
+      "architecture": "modular-monolith",
+      "languages": [
+        "python"
+      ],
+      "databases": [
+        "sqlite",
+        "json-file"
+      ],
+      "capabilities": [
+        "products",
+        "inventory"
+      ]
+    },
+    {
+      "id": "node-business",
+      "adapter": "node-business-v2",
+      "architecture": "modular-monolith",
+      "languages": [
+        "javascript"
+      ],
+      "databases": [
+        "sqlite"
+      ],
+      "capabilities": [
+        "products",
+        "inventory",
+        "sales",
+        "cash",
+        "suppliers",
+        "purchases",
+        "crm",
+        "whatsapp",
+        "chatbot",
+        "omnichannel",
+        "messenger",
+        "instagram",
+        "tiktok",
+        "roles",
+        "knowledge",
+        "appointments",
+        "reminders",
+        "tenant-isolation",
+        "subscriptions",
+        "usage",
+        "ecommerce",
+        "payments",
+        "invoicing",
+        "marketing",
+        "content"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "afpventas",
+      "url": "https://github.com/Pipepena2979/AFPVentas",
+      "revision": "f3690aa3edadd4ea60c0e689316bbc57c80bce50",
+      "reviewedAt": "2026-11-02",
+      "languages": [
+        "php"
+      ],
+      "frameworks": [
+        "laravel"
+      ],
+      "databases": [
+        "mysql"
+      ],
+      "capabilities": [
+        "products",
+        "inventory",
+        "sales",
+        "cash",
+        "purchases",
+        "suppliers"
+      ],
+      "license": {
+        "declared": "MIT",
+        "evidence": "composer.json",
+        "rootLicenseVerified": false,
+        "codeImportAllowed": false
+      },
+      "reviewedFiles": [
+        "composer.json",
+        "package.json",
+        "README.md",
+        "routes/web.php"
+      ],
+      "usage": "architectural-reference-only",
+      "author": "Pipepena2979 (README)",
+      "dependencies": {
+        "php": "^8.2",
+        "laravel/framework": "^11.9"
+      },
+      "restrictions": [
+        "Referencia arquitectónica; licencia declarada MIT, texto principal no verificado.",
+        "Sin importación de código."
+      ],
+      "risks": [
+        "No se ejecutó la aplicación original ni se certificó su seguridad."
+      ],
+      "compatibilities": [
+        "http-api-mapping-required",
+        "event-contract-mapping-required"
+      ]
+    },
+    {
+      "id": "vocero-crm",
+      "url": "https://github.com/kevinrivm/vocero-crm",
+      "revision": "806fea149d5fbb7286ce868c66fd590d9321882e",
+      "reviewedAt": "2026-11-02",
+      "languages": [
+        "typescript"
+      ],
+      "frameworks": [
+        "nextjs"
+      ],
+      "databases": [
+        "postgresql"
+      ],
+      "capabilities": [
+        "crm",
+        "whatsapp",
+        "chatbot"
+      ],
+      "license": {
+        "declared": "MIT",
+        "evidence": "LICENSE",
+        "rootLicenseVerified": true,
+        "codeImportAllowed": false
+      },
+      "reviewedFiles": [
+        "LICENSE",
+        "package.json",
+        "README.md",
+        "src/lib/db/schema.ts",
+        "src/server/bot/llm-proxy.ts",
+        "src/app/api/bot/openapi.json/route.ts"
+      ],
+      "usage": "architectural-reference-only",
+      "author": "Kevin Belier (LICENSE)",
+      "dependencies": {
+        "next": "^15.5.28",
+        "react": "^19.0.0",
+        "drizzle-orm": "^0.45.4",
+        "postgres": "^3.4.5"
+      },
+      "restrictions": [
+        "El agente de IA es un servicio separado del CRM.",
+        "Licencia MIT explícita; sin importación de código."
+      ],
+      "risks": [
+        "Las APIs originales requieren mapeo y pruebas antes de integrarse."
+      ],
+      "compatibilities": [
+        "http-api-mapping-required",
+        "event-contract-mapping-required"
+      ]
+    }
+  ]
+}

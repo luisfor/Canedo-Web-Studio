@@ -1,0 +1,303 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "crm",
+      "facet": "application",
+      "aliases": [
+        "crm"
+      ],
+      "capabilities": [
+        "crm"
+      ]
+    },
+    {
+      "id": "pos",
+      "facet": "application",
+      "aliases": [
+        "pos",
+        "punto de venta",
+        "tienda fisica"
+      ],
+      "capabilities": [
+        "products",
+        "inventory",
+        "sales",
+        "cash"
+      ]
+    },
+    {
+      "id": "saas",
+      "facet": "application",
+      "aliases": [
+        "saas",
+        "software como servicio"
+      ],
+      "capabilities": [
+        "tenant-isolation"
+      ]
+    },
+    {
+      "id": "ecommerce",
+      "facet": "application",
+      "aliases": [
+        "e-commerce",
+        "ecommerce",
+        "comercio electronico",
+        "tienda online"
+      ],
+      "capabilities": [
+        "ecommerce"
+      ]
+    },
+    {
+      "id": "erp",
+      "facet": "application",
+      "aliases": [
+        "erp"
+      ],
+      "capabilities": [
+        "purchases",
+        "sales",
+        "inventory",
+        "cash"
+      ]
+    },
+    {
+      "id": "retail",
+      "facet": "sector",
+      "aliases": [
+        "tiendas",
+        "comercios",
+        "retail"
+      ],
+      "capabilities": []
+    },
+    {
+      "id": "clinics",
+      "facet": "sector",
+      "aliases": [
+        "clinicas",
+        "consultorios",
+        "clinica"
+      ],
+      "capabilities": []
+    },
+    {
+      "id": "workshops",
+      "facet": "sector",
+      "aliases": [
+        "talleres",
+        "taller mecanico"
+      ],
+      "capabilities": [
+        "workshops"
+      ]
+    },
+    {
+      "id": "whatsapp",
+      "facet": "integration",
+      "aliases": [
+        "whatsapp business platform",
+        "whatsapp"
+      ],
+      "capabilities": [
+        "whatsapp"
+      ]
+    },
+    {
+      "id": "messenger",
+      "facet": "integration",
+      "aliases": [
+        "facebook messenger",
+        "messenger",
+        "facebook"
+      ],
+      "capabilities": [
+        "messenger"
+      ]
+    },
+    {
+      "id": "instagram",
+      "facet": "integration",
+      "aliases": [
+        "instagram messaging",
+        "instagram"
+      ],
+      "capabilities": [
+        "instagram"
+      ]
+    },
+    {
+      "id": "tiktok",
+      "facet": "integration",
+      "aliases": [
+        "tiktok business messaging",
+        "tiktok"
+      ],
+      "capabilities": [
+        "tiktok"
+      ]
+    },
+    {
+      "id": "payments",
+      "facet": "integration",
+      "aliases": [
+        "pasarela de pagos",
+        "pagos en linea",
+        "pagos online"
+      ],
+      "capabilities": [
+        "payments"
+      ]
+    },
+    {
+      "id": "ai",
+      "facet": "integration",
+      "aliases": [
+        "chatbot ia",
+        "chatbot de ia",
+        "chatbot",
+        "agente de ia"
+      ],
+      "capabilities": [
+        "chatbot"
+      ]
+    },
+    {
+      "id": "subscriptions",
+      "facet": "feature",
+      "aliases": [
+        "suscripciones mensuales",
+        "suscripciones anuales",
+        "suscripciones",
+        "suscripcion"
+      ],
+      "capabilities": [
+        "subscriptions"
+      ]
+    },
+    {
+      "id": "appointments",
+      "facet": "feature",
+      "aliases": [
+        "agenda",
+        "citas",
+        "reservas"
+      ],
+      "capabilities": [
+        "appointments"
+      ]
+    },
+    {
+      "id": "reminders",
+      "facet": "feature",
+      "aliases": [
+        "recordatorios"
+      ],
+      "capabilities": [
+        "reminders"
+      ]
+    },
+    {
+      "id": "invoicing",
+      "facet": "feature",
+      "aliases": [
+        "facturacion",
+        "facturas"
+      ],
+      "capabilities": [
+        "invoicing"
+      ]
+    },
+    {
+      "id": "marketing",
+      "facet": "feature",
+      "aliases": [
+        "marketing automatizado",
+        "marketing"
+      ],
+      "capabilities": [
+        "marketing"
+      ]
+    },
+    {
+      "id": "knowledge",
+      "facet": "feature",
+      "aliases": [
+        "base de conocimiento"
+      ],
+      "capabilities": [
+        "knowledge"
+      ]
+    },
+    {
+      "id": "multi-tenant",
+      "facet": "security",
+      "aliases": [
+        "multiempresa",
+        "multi-tenant",
+        "multitenant",
+        "varias empresas"
+      ],
+      "capabilities": [
+        "tenant-isolation"
+      ]
+    },
+    {
+      "id": "multi-user",
+      "facet": "security",
+      "aliases": [
+        "multiusuario",
+        "varios usuarios"
+      ],
+      "capabilities": [
+        "roles"
+      ]
+    },
+    {
+      "id": "roles",
+      "facet": "security",
+      "aliases": [
+        "roles y permisos",
+        "roles",
+        "permisos"
+      ],
+      "capabilities": [
+        "roles"
+      ]
+    },
+    {
+      "id": "oidc",
+      "facet": "security",
+      "aliases": [
+        "openid connect",
+        "oidc",
+        "oauth 2.0",
+        "oauth2"
+      ],
+      "capabilities": [
+        "identity-provider"
+      ]
+    },
+    {
+      "id": "docker",
+      "facet": "infrastructure",
+      "aliases": [
+        "docker compose",
+        "docker"
+      ],
+      "capabilities": []
+    },
+    {
+      "id": "omnichannel",
+      "facet": "feature",
+      "aliases": [
+        "omnicanal"
+      ],
+      "capabilities": [
+        "omnichannel"
+      ]
+    }
+  ]
+}

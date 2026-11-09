@@ -1,0 +1,332 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "kind",
+    "manifestId",
+    "projectId",
+    "revision",
+    "kit",
+    "architecture",
+    "languages",
+    "frameworks",
+    "databases",
+    "modules",
+    "contracts",
+    "dependencies",
+    "implemented",
+    "pending",
+    "decisions",
+    "improvements",
+    "verification",
+    "files",
+    "legacyRecords"
+  ],
+  "definitions": {
+    "hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]{0,63}$"
+      }
+    },
+    "strings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 1000
+      }
+    }
+  },
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "kind": {
+      "const": "devkit-project"
+    },
+    "manifestId": {
+      "$ref": "#/definitions/hash"
+    },
+    "projectId": {
+      "$ref": "#/definitions/hash"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "kit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "fingerprint"
+      ],
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "fingerprint": {
+          "$ref": "#/definitions/hash"
+        }
+      }
+    },
+    "architecture": {
+      "enum": [
+        "unknown",
+        "modular-monolith",
+        "independent-services"
+      ]
+    },
+    "languages": {
+      "$ref": "#/definitions/ids"
+    },
+    "frameworks": {
+      "$ref": "#/definitions/ids"
+    },
+    "databases": {
+      "$ref": "#/definitions/ids"
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "version",
+          "origin",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "version": {
+            "type": "string"
+          },
+          "origin": {
+            "enum": [
+              "kit-generated-v1",
+              "existing-declaration"
+            ]
+          },
+          "status": {
+            "enum": [
+              "generated",
+              "observed"
+            ]
+          }
+        }
+      }
+    },
+    "contracts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "digest"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "digest": {
+            "$ref": "#/definitions/hash"
+          }
+        }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "version",
+          "sourceFile"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "version": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "sourceFile": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "implemented": {
+      "$ref": "#/definitions/ids"
+    },
+    "pending": {
+      "$ref": "#/definitions/ids"
+    },
+    "decisions": {
+      "$ref": "#/definitions/strings"
+    },
+    "improvements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "summary",
+          "files"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/definitions/hash"
+          },
+          "summary": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "files": {
+            "$ref": "#/definitions/strings"
+          }
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "limitations"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "not-run",
+            "passed",
+            "failed"
+          ]
+        },
+        "limitations": {
+          "$ref": "#/definitions/strings"
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "scope",
+            "host",
+            "runtime",
+            "tests",
+            "passed",
+            "failed",
+            "skipped",
+            "planId",
+            "sourceDigest",
+            "timestamp"
+          ],
+          "properties": {
+            "scope": {
+              "enum": [
+                "generated-local-tests-only",
+                "static-syntax-only"
+              ]
+            },
+            "host": {
+              "type": "string"
+            },
+            "runtime": {
+              "type": "string"
+            },
+            "tests": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "passed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "failed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "skipped": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "planId": {
+              "$ref": "#/definitions/hash"
+            },
+            "sourceDigest": {
+              "$ref": "#/definitions/hash"
+            },
+            "timestamp": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "digest",
+          "ownership"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "digest": {
+            "$ref": "#/definitions/hash"
+          },
+          "ownership": {
+            "enum": [
+              "kit-generated",
+              "existing"
+            ]
+          }
+        }
+      }
+    },
+    "legacyRecords": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "status"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "validated-record",
+              "unverified-record"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

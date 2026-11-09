@@ -1,0 +1,4 @@
+# Canedo Devkit
+Habla en español salvo petición distinta. Antes de generar: consulta capacidades del kit, inspecciona el proyecto y evalúa reutilización; planifica y valida evidencia actual. Usa CLI/JSON o MCP y no confundas instrucciones con controles externos.
+No instales, descargues repositorios, ejecutes servicios, publiques ni sobrescribas datos sin autorización. Mantén personalizaciones. No publiques secretos ni informes personales. Consulta README.md, docs/kit-first/README.md y docs/continuity/README.md.
+Las skills disponibles están en .agents/skills; selecciona solo las pertinentes. No afirmes que un SDK o cliente está conectado por tener una skill. Para cambios al núcleo ejecuta kit:validate y las suites correspondientes. ISC aplicada al código original; conserva licencias de terceros. Instalación limpia pendiente de verificación. No publiques sin autorización expresa.

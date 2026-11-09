@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "version": "1.0.0",
+  "profiles": [
+    {
+      "id": "minimal",
+      "stacks": [
+        "node",
+        "go",
+        "python",
+        "java",
+        "dotnet",
+        "rust"
+      ],
+      "suggestedTools": [
+        "git"
+      ],
+      "optionalServices": [],
+      "automaticDependencies": false
+    },
+    {
+      "id": "frontend",
+      "stacks": [
+        "node"
+      ],
+      "suggestedTools": [
+        "node",
+        "npm"
+      ],
+      "optionalServices": [],
+      "automaticDependencies": false
+    },
+    {
+      "id": "backend",
+      "stacks": [
+        "node",
+        "go",
+        "python",
+        "java",
+        "dotnet",
+        "rust"
+      ],
+      "suggestedTools": [],
+      "optionalServices": [
+        "postgres",
+        "redis"
+      ],
+      "automaticDependencies": false
+    },
+    {
+      "id": "full-stack",
+      "stacks": [
+        "node",
+        "go",
+        "python",
+        "java",
+        "dotnet"
+      ],
+      "suggestedTools": [],
+      "optionalServices": [
+        "postgres",
+        "redis"
+      ],
+      "automaticDependencies": false
+    },
+    {
+      "id": "mobile",
+      "stacks": [
+        "node",
+        "java"
+      ],
+      "suggestedTools": [
+        "adb"
+      ],
+      "optionalServices": [],
+      "automaticDependencies": false
+    },
+    {
+      "id": "cloud",
+      "stacks": [
+        "node",
+        "go",
+        "python"
+      ],
+      "suggestedTools": [
+        "docker",
+        "terraform"
+      ],
+      "optionalServices": [],
+      "automaticDependencies": false
+    },
+    {
+      "id": "iot",
+      "stacks": [
+        "node",
+        "go",
+        "python"
+      ],
+      "suggestedTools": [
+        "arduino"
+      ],
+      "optionalServices": [],
+      "automaticDependencies": false
+    },
+    {
+      "id": "ai",
+      "stacks": [
+        "python"
+      ],
+      "suggestedTools": [],
+      "optionalServices": [
+        "postgres"
+      ],
+      "automaticDependencies": false
+    },
+    {
+      "id": "enterprise",
+      "stacks": [
+        "java",
+        "dotnet",
+        "node",
+        "go"
+      ],
+      "suggestedTools": [],
+      "optionalServices": [
+        "postgres"
+      ],
+      "automaticDependencies": false
+    },
+    {
+      "id": "fintech",
+      "stacks": [
+        "python",
+        "java",
+        "dotnet",
+        "go"
+      ],
+      "suggestedTools": [],
+      "optionalServices": [
+        "postgres"
+      ],
+      "automaticDependencies": false
+    }
+  ]
+}

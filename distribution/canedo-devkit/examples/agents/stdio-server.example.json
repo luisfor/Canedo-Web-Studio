@@ -1,0 +1,11 @@
+{
+  "command": "node",
+  "args": [
+    "/ruta/canedo-devkit/scripts/agents/mcp-server.js",
+    "--root",
+    "/ruta/proyectos-propios",
+    "--compact",
+    "--max-context-bytes",
+    "8192"
+  ]
+}

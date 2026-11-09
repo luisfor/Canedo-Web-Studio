@@ -1,0 +1,5 @@
+{
+  "command": "node",
+  "args": ["/ruta/kit/scripts/agents/mcp-server.js", "--root", "/ruta/proyectos-propios"],
+  "description": "Campos de lanzamiento STDIO; adaptar al formato del cliente MCP. Sin escritura por defecto."
+}

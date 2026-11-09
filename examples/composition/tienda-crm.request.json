@@ -1,0 +1,7 @@
+{
+  "text": "Crear un sistema comercial con inventario, ventas, compras, proveedores, caja, CRM de WhatsApp y chatbot de IA",
+  "name": "tienda-crm",
+  "architecture": "auto",
+  "docker": true,
+  "nodeVersion": "24.22.2"
+}

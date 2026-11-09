@@ -1,0 +1,40 @@
+{
+  "state": "documentation-prepared-ISC-applied-owner-declared-clean-install-pending",
+  "host": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "v25.2.1"
+  },
+  "coreRegression": {
+    "passed": 419,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 164187.44575,
+    "isolatedCopy": true,
+    "localhostPermission": true,
+    "existingDependenciesReused": true
+  },
+  "targeted": {
+    "passed": 37,
+    "failed": 0
+  },
+  "distributionChecks": {
+    "tests": 5,
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 189.836625,
+    "finalPublicDocumentationVerified": true,
+    "historical": true
+  },
+  "installationFromScratchExecuted": false,
+  "modelCalls": 0,
+  "realAgentClientsVerified": [],
+  "originalsPreserved": true,
+  "licenseApproved": true,
+  "license": "ISC",
+  "copyrightHolder": "CanedoStudio",
+  "ownershipVerificationScope": "owner-declaration-and-local-provenance-not-independent-legal-certification",
+  "installationFromScratchStatus": "PENDIENTE DE VERIFICACIÓN",
+  "prepublicationClosureChecks": "docs/prepublication-checks.json"
+}

@@ -1,0 +1,27 @@
+{
+  "status": "passed-local-static-closure",
+  "date": "2026-11-02",
+  "distributionTests": {
+    "passed": 7,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 148.987917
+  },
+  "javascriptSyntaxChecks": 84,
+  "jsonFilesParsed": 34,
+  "localMarkdownReferencesChecked": 153,
+  "knownSecretAndPrivatePathPatternFindings": 0,
+  "coreFunctionalFilesChanged": [],
+  "thirdPartyArtifactsUnchanged": true,
+  "license": "ISC",
+  "copyrightHolderDeclaredByOwner": "CanedoStudio",
+  "ownershipReview": "owner-authorization-local-provenance-and-license-notices; not-independent-legal-certification",
+  "cleanInstallation": "PENDIENTE DE VERIFICACIÓN",
+  "securityContact": "contacto@canedostudio.com",
+  "emailDeliveryVerified": false,
+  "githubPrivateVulnerabilityReportingVerified": false,
+  "realAgentClientsVerified": [],
+  "dependenciesInstalled": false,
+  "regression419Repeated": false,
+  "publicationExecuted": false
+}

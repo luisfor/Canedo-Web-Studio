@@ -1,0 +1,285 @@
+{
+  "schemaVersion": 1,
+  "recipeSetVersion": "1.0.0",
+  "reviewedAt": "2026-11-02",
+  "scope": "manual-commands-only",
+  "methods": {
+    "homebrew": {
+      "platforms": [
+        "darwin"
+      ],
+      "documentation": "https://docs.brew.sh/Manpage",
+      "repository": "https://formulae.brew.sh/"
+    },
+    "winget": {
+      "platforms": [
+        "win32"
+      ],
+      "documentation": "https://learn.microsoft.com/en-us/windows/package-manager/winget/install",
+      "repository": "https://github.com/microsoft/winget-pkgs"
+    },
+    "apt": {
+      "platforms": [
+        "linux"
+      ],
+      "documentation": "https://manpages.debian.org/trixie/apt/apt-get.8.en.html",
+      "repository": "https://packages.debian.org/",
+      "distributions": [
+        "ubuntu",
+        "debian"
+      ]
+    },
+    "dnf": {
+      "platforms": [
+        "linux"
+      ],
+      "documentation": "https://dnf5.readthedocs.io/en/latest/commands/install.8.html",
+      "repository": "https://packages.fedoraproject.org/",
+      "distributions": [
+        "fedora"
+      ]
+    },
+    "official": {
+      "platforms": [
+        "darwin",
+        "win32",
+        "linux"
+      ],
+      "documentation": "https://go.dev/doc/install",
+      "repository": null
+    }
+  },
+  "recipes": [
+    {
+      "id": "node-manual-v1",
+      "tool": "node",
+      "version": 1,
+      "methods": {
+        "homebrew": {
+          "package": "node@{major}",
+          "kind": "formula",
+          "requiresRepository": false
+        },
+        "winget": {
+          "package": "OpenJS.NodeJS.LTS",
+          "kind": "formula",
+          "requiresRepository": false
+        },
+        "apt": {
+          "package": "nodejs",
+          "kind": "formula",
+          "requiresRepository": false
+        },
+        "dnf": {
+          "package": "nodejs",
+          "kind": "formula",
+          "requiresRepository": false
+        }
+      },
+      "officialArchive": true
+    },
+    {
+      "id": "go-manual-v1",
+      "tool": "go",
+      "version": 1,
+      "methods": {
+        "homebrew": {
+          "package": "go",
+          "kind": "formula",
+          "requiresRepository": false
+        },
+        "winget": {
+          "package": "GoLang.Go",
+          "kind": "formula",
+          "requiresRepository": false
+        },
+        "apt": {
+          "package": "golang-go",
+          "kind": "formula",
+          "requiresRepository": false
+        },
+        "dnf": {
+          "package": "golang",
+          "kind": "formula",
+          "requiresRepository": false
+        }
+      },
+      "officialArchive": true
+    },
+    {
+      "id": "python-manual-v1",
+      "tool": "python",
+      "version": 1,
+      "methods": {
+        "homebrew": {
+          "package": "python@{major}.{minor}",
+          "kind": "formula",
+          "requiresRepository": false
+        },
+        "winget": {
+          "package": "Python.Python.{major}.{minor}",
+          "kind": "formula",
+          "requiresRepository": false
+        },
+        "apt": {
+          "package": "python3",
+          "kind": "formula",
+          "requiresRepository": false
+        },
+        "dnf": {
+          "package": "python3",
+          "kind": "formula",
+          "requiresRepository": false
+        }
+      },
+      "officialArchive": false
+    },
+    {
+      "id": "git-manual-v1",
+      "tool": "git",
+      "version": 1,
+      "methods": {
+        "homebrew": {
+          "package": "git",
+          "kind": "formula",
+          "requiresRepository": false
+        },
+        "winget": {
+          "package": "Git.Git",
+          "kind": "formula",
+          "requiresRepository": false
+        },
+        "apt": {
+          "package": "git",
+          "kind": "formula",
+          "requiresRepository": false
+        },
+        "dnf": {
+          "package": "git",
+          "kind": "formula",
+          "requiresRepository": false
+        }
+      },
+      "officialArchive": false
+    },
+    {
+      "id": "java-manual-v1",
+      "tool": "java",
+      "version": 1,
+      "methods": {
+        "homebrew": {
+          "package": "openjdk@{major}",
+          "kind": "formula",
+          "requiresRepository": false
+        },
+        "winget": {
+          "package": "Microsoft.OpenJDK.{major}",
+          "kind": "formula",
+          "requiresRepository": false
+        },
+        "apt": {
+          "package": "openjdk-{major}-jdk-headless",
+          "kind": "formula",
+          "requiresRepository": false
+        },
+        "dnf": {
+          "package": "java-{major}-openjdk-devel",
+          "kind": "formula",
+          "requiresRepository": false
+        }
+      },
+      "officialArchive": false
+    },
+    {
+      "id": "dotnet-manual-v1",
+      "tool": "dotnet",
+      "version": 1,
+      "methods": {
+        "homebrew": {
+          "package": "dotnet-sdk",
+          "kind": "cask",
+          "requiresRepository": false
+        },
+        "winget": {
+          "package": "Microsoft.DotNet.SDK.{major}",
+          "kind": "formula",
+          "requiresRepository": false
+        },
+        "apt": {
+          "package": "dotnet-sdk-{major}.{minor}",
+          "kind": "formula",
+          "requiresRepository": true
+        },
+        "dnf": {
+          "package": "dotnet-sdk-{major}.{minor}",
+          "kind": "formula",
+          "requiresRepository": true
+        }
+      },
+      "officialArchive": false
+    },
+    {
+      "id": "terraform-manual-v1",
+      "tool": "terraform",
+      "version": 1,
+      "methods": {
+        "homebrew": {
+          "package": "hashicorp/tap/terraform",
+          "kind": "formula",
+          "requiresRepository": true
+        },
+        "winget": {
+          "package": "Hashicorp.Terraform",
+          "kind": "formula",
+          "requiresRepository": false
+        },
+        "apt": {
+          "package": "terraform",
+          "kind": "formula",
+          "requiresRepository": true
+        },
+        "dnf": {
+          "package": "terraform",
+          "kind": "formula",
+          "requiresRepository": true
+        }
+      },
+      "officialArchive": true
+    },
+    {
+      "id": "docker-manual-v1",
+      "tool": "docker",
+      "version": 1,
+      "methods": {
+        "homebrew": {
+          "package": "docker-desktop",
+          "kind": "cask",
+          "requiresRepository": false
+        },
+        "winget": {
+          "package": "Docker.DockerDesktop",
+          "kind": "formula",
+          "requiresRepository": false
+        },
+        "apt": {
+          "package": "docker-ce",
+          "kind": "formula",
+          "requiresRepository": true
+        },
+        "dnf": {
+          "package": "docker-ce",
+          "kind": "formula",
+          "requiresRepository": true
+        }
+      },
+      "officialArchive": false,
+      "components": [
+        "CLI",
+        "Engine",
+        "Desktop-when-applicable",
+        "Compose",
+        "Buildx"
+      ]
+    }
+  ]
+}

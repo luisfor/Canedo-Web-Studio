@@ -1,0 +1,381 @@
+{
+  "schemaVersion": 1,
+  "skills": [
+    {
+      "id": "arquitecto-fullstack",
+      "label": "Arquitecturas, SaaS y CRM",
+      "status": "instructions"
+    },
+    {
+      "id": "referencias-producto",
+      "label": "Evaluación de Clone Wars y complemento de REA",
+      "status": "instructions"
+    },
+    {
+      "id": "workspace-colaborativo",
+      "label": "Documentos, wikis, kanban y evaluación de AppFlowy",
+      "status": "instructions"
+    },
+    {
+      "id": "desarrollo-frontend",
+      "label": "React, Vue y Angular",
+      "status": "instructions"
+    },
+    {
+      "id": "desarrollo-backend",
+      "label": "Java, C#/.NET y Python",
+      "status": "instructions"
+    },
+    {
+      "id": "desarrollo-movil",
+      "label": "Android, React Native y Flutter",
+      "status": "instructions"
+    },
+    {
+      "id": "sistemas-embebidos",
+      "label": "C, C++ y Arduino",
+      "status": "instructions"
+    },
+    {
+      "id": "bases-datos",
+      "label": "SQL y cinco motores relacionales",
+      "status": "instructions"
+    },
+    {
+      "id": "devops-iac",
+      "label": "DevOps, Terraform y Pulumi",
+      "status": "instructions"
+    },
+    {
+      "id": "trading-cuantitativo",
+      "label": "Backtesting, simulación y software de trading",
+      "status": "instructions"
+    },
+    {
+      "id": "reverse-engineer-anything",
+      "label": "Investigación con REA; MCP externo",
+      "status": "instructions"
+    }
+  ],
+  "tools": {
+    "node": {
+      "command": "node",
+      "args": [
+        "--version"
+      ]
+    },
+    "npm": {
+      "command": "npm",
+      "args": [
+        "--version"
+      ]
+    },
+    "java": {
+      "command": "java",
+      "args": [
+        "-version"
+      ]
+    },
+    "dotnet": {
+      "command": "dotnet",
+      "args": [
+        "--version"
+      ]
+    },
+    "python": {
+      "command": "python3",
+      "args": [
+        "--version"
+      ]
+    },
+    "adb": {
+      "command": "adb",
+      "args": [
+        "version"
+      ]
+    },
+    "flutter": {
+      "command": "flutter",
+      "args": [
+        "--version"
+      ]
+    },
+    "rust": {
+      "command": "rustc",
+      "args": [
+        "--version"
+      ]
+    },
+    "c": {
+      "command": "cc",
+      "args": [
+        "--version"
+      ]
+    },
+    "cpp": {
+      "command": "c++",
+      "args": [
+        "--version"
+      ]
+    },
+    "cmake": {
+      "command": "cmake",
+      "args": [
+        "--version"
+      ]
+    },
+    "arduino": {
+      "command": "arduino-cli",
+      "args": [
+        "version"
+      ]
+    },
+    "sqlite": {
+      "command": "sqlite3",
+      "args": [
+        "--version"
+      ]
+    },
+    "postgresql": {
+      "command": "psql",
+      "args": [
+        "--version"
+      ]
+    },
+    "mysql": {
+      "command": "mysql",
+      "args": [
+        "--version"
+      ]
+    },
+    "sqlserver": {
+      "command": "sqlcmd",
+      "args": [
+        "-?"
+      ]
+    },
+    "oracle": {
+      "command": "sqlplus",
+      "args": [
+        "-V"
+      ]
+    },
+    "terraform": {
+      "command": "terraform",
+      "args": [
+        "version"
+      ]
+    },
+    "pulumi": {
+      "command": "pulumi",
+      "args": [
+        "version"
+      ]
+    },
+    "docker": {
+      "command": "docker",
+      "args": [
+        "--version"
+      ]
+    }
+  },
+  "profiles": [
+    {
+      "id": "react",
+      "label": "React",
+      "skill": "desarrollo-frontend",
+      "tools": [
+        "node",
+        "npm"
+      ]
+    },
+    {
+      "id": "vue",
+      "label": "Vue",
+      "skill": "desarrollo-frontend",
+      "tools": [
+        "node",
+        "npm"
+      ]
+    },
+    {
+      "id": "angular",
+      "label": "Angular",
+      "skill": "desarrollo-frontend",
+      "tools": [
+        "node",
+        "npm"
+      ]
+    },
+    {
+      "id": "java",
+      "label": "Java",
+      "skill": "desarrollo-backend",
+      "tools": [
+        "java"
+      ]
+    },
+    {
+      "id": "dotnet",
+      "label": "C# / .NET",
+      "skill": "desarrollo-backend",
+      "tools": [
+        "dotnet"
+      ]
+    },
+    {
+      "id": "python",
+      "label": "Python",
+      "skill": "desarrollo-backend",
+      "tools": [
+        "python"
+      ]
+    },
+    {
+      "id": "android",
+      "label": "Android (Java/Kotlin)",
+      "skill": "desarrollo-movil",
+      "tools": [
+        "java",
+        "adb"
+      ]
+    },
+    {
+      "id": "react-native",
+      "label": "React Native",
+      "skill": "desarrollo-movil",
+      "tools": [
+        "node",
+        "npm",
+        "java",
+        "adb"
+      ]
+    },
+    {
+      "id": "flutter",
+      "label": "Flutter / AppFlowy",
+      "skill": "desarrollo-movil",
+      "tools": [
+        "flutter"
+      ]
+    },
+    {
+      "id": "rust",
+      "label": "Rust (componentes de AppFlowy)",
+      "skill": "desarrollo-movil",
+      "tools": [
+        "rust"
+      ]
+    },
+    {
+      "id": "c",
+      "label": "C",
+      "skill": "sistemas-embebidos",
+      "tools": [
+        "c",
+        "cmake"
+      ]
+    },
+    {
+      "id": "cpp",
+      "label": "C++",
+      "skill": "sistemas-embebidos",
+      "tools": [
+        "cpp",
+        "cmake"
+      ]
+    },
+    {
+      "id": "arduino",
+      "label": "Arduino",
+      "skill": "sistemas-embebidos",
+      "tools": [
+        "arduino"
+      ]
+    },
+    {
+      "id": "sqlite",
+      "label": "SQLite",
+      "skill": "bases-datos",
+      "tools": [
+        "sqlite"
+      ]
+    },
+    {
+      "id": "postgresql",
+      "label": "PostgreSQL",
+      "skill": "bases-datos",
+      "tools": [
+        "postgresql"
+      ]
+    },
+    {
+      "id": "mysql",
+      "label": "MySQL",
+      "skill": "bases-datos",
+      "tools": [
+        "mysql"
+      ]
+    },
+    {
+      "id": "sqlserver",
+      "label": "SQL Server",
+      "skill": "bases-datos",
+      "tools": [
+        "sqlserver"
+      ]
+    },
+    {
+      "id": "oracle",
+      "label": "Oracle",
+      "skill": "bases-datos",
+      "tools": [
+        "oracle"
+      ]
+    },
+    {
+      "id": "sql",
+      "label": "SQL general (seleccionar motor)",
+      "skill": "bases-datos",
+      "tools": []
+    },
+    {
+      "id": "terraform",
+      "label": "Terraform",
+      "skill": "devops-iac",
+      "tools": [
+        "terraform"
+      ]
+    },
+    {
+      "id": "pulumi",
+      "label": "Pulumi",
+      "skill": "devops-iac",
+      "tools": [
+        "pulumi"
+      ]
+    },
+    {
+      "id": "docker",
+      "label": "Docker / DevOps",
+      "skill": "devops-iac",
+      "tools": [
+        "docker"
+      ]
+    },
+    {
+      "id": "trading",
+      "label": "Trading cuantitativo",
+      "skill": "trading-cuantitativo",
+      "tools": [
+        "python"
+      ]
+    },
+    {
+      "id": "crm",
+      "label": "CRM y arquitectura",
+      "skill": "arquitecto-fullstack",
+      "tools": []
+    }
+  ]
+}

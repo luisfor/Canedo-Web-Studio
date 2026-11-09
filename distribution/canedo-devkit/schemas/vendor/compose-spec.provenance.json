@@ -1,0 +1,9 @@
+{
+  "source": "https://github.com/compose-spec/compose-spec",
+  "commit": "3a4a6995e4a971f6173dff9130cb3e38e6738651",
+  "schemaUrl": "https://github.com/compose-spec/compose-spec/blob/3a4a6995e4a971f6173dff9130cb3e38e6738651/schema/compose-spec.json",
+  "license": "Apache-2.0",
+  "retrievedAt": "2026-11-02",
+  "verification": "Public upstream content pinned to a commit; not a signature or Docker execution.",
+  "vendoredSha256": "af3567ba304f132a87389c499bba66676fcf132d95c16323f49e08553edbdad4"
+}

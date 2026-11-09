@@ -1,0 +1,1991 @@
+{
+  "schemaVersion": 1,
+  "catalogVersion": "1.0.0",
+  "updatedAt": "2026-11-01",
+  "scope": "metadata-only",
+  "tools": [
+    {
+      "id": "node",
+      "label": "Node.js",
+      "kind": "runtime",
+      "description": "JavaScript en servidor y herramientas del kit.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://nodejs.org/en/about/previous-releases",
+          "purpose": "release-policy"
+        },
+        {
+          "url": "https://github.com/vercel-labs/skills",
+          "purpose": "project-policy"
+        }
+      ],
+      "versionPolicy": {
+        "state": "declared",
+        "requirement": {
+          "min": "22.20.0",
+          "majors": [
+            22,
+            24,
+            26
+          ]
+        },
+        "evidence": "https://nodejs.org/en/about/previous-releases",
+        "reviewedAt": "2026-11-01",
+        "note": "Política del kit: ramas LTS conocidas 22/24/26 y mínimo 22.20 para su flujo de skills. No es una garantía de compatibilidad de todos los frameworks ni de parches actualizados."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "node",
+        "args": [
+          "--version"
+        ]
+      }
+    },
+    {
+      "id": "npm",
+      "label": "npm",
+      "kind": "package-manager",
+      "description": "Gestor de paquetes JavaScript; se comprueba aparte de Node.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://docs.npmjs.com/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "node",
+          "reason": "npm se ejecuta mediante Node.js; su versión concreta debe ser compatible con el runtime."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "npm",
+        "args": [
+          "--version"
+        ]
+      }
+    },
+    {
+      "id": "java",
+      "label": "Java",
+      "kind": "runtime",
+      "description": "Comprobación de runtime Java; no demuestra que exista un JDK completo.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://dev.java/learn/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "java",
+        "args": [
+          "-version"
+        ]
+      }
+    },
+    {
+      "id": "dotnet",
+      "label": ".NET",
+      "kind": "runtime",
+      "description": "CLI/SDK .NET para C# y otros lenguajes; workloads se verifican por proyecto.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://learn.microsoft.com/dotnet/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "dotnet",
+        "args": [
+          "--version"
+        ]
+      }
+    },
+    {
+      "id": "python",
+      "label": "Python",
+      "kind": "runtime",
+      "description": "Intérprete Python; paquetes y entornos virtuales se seleccionan por proyecto.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://devguide.python.org/versions/",
+          "purpose": "release-policy"
+        }
+      ],
+      "versionPolicy": {
+        "state": "declared",
+        "requirement": {
+          "min": "3.11",
+          "maxExclusive": "3.16"
+        },
+        "evidence": "https://devguide.python.org/versions/",
+        "reviewedAt": "2026-11-01",
+        "note": "Ventana de ramas con soporte oficial revisada para este catálogo; las librerías de cada proyecto pueden exigir otros límites."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "python3",
+        "args": [
+          "--version"
+        ]
+      }
+    },
+    {
+      "id": "adb",
+      "label": "Android Debug Bridge",
+      "kind": "utility",
+      "description": "Cliente de comunicación Android; no acredita SDK completo ni dispositivo conectado.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://developer.android.com/tools/adb",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "adb",
+        "args": [
+          "version"
+        ]
+      }
+    },
+    {
+      "id": "flutter",
+      "label": "Flutter",
+      "kind": "sdk",
+      "description": "SDK Flutter. El doctor solo verifica presencia para evitar inicializar su caché.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://docs.flutter.dev/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [
+        {
+          "id": "android-sdk",
+          "reason": "Solo para el target Android."
+        },
+        {
+          "id": "xcode",
+          "reason": "Solo para targets Apple compatibles."
+        }
+      ],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "flutter",
+        "args": [
+          "--version"
+        ]
+      }
+    },
+    {
+      "id": "rust",
+      "label": "Rust",
+      "kind": "compiler",
+      "description": "Compilador rustc; Cargo y rustup tienen entradas separadas.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://www.rust-lang.org/tools/install",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "rustc",
+        "args": [
+          "--version"
+        ]
+      }
+    },
+    {
+      "id": "c",
+      "label": "Compilador C",
+      "kind": "compiler",
+      "description": "CLI cc; el compilador y ABI concretos dependen del proyecto.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://clang.llvm.org/docs/UsersManual.html",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "cc",
+        "args": [
+          "--version"
+        ]
+      }
+    },
+    {
+      "id": "cpp",
+      "label": "Compilador C++",
+      "kind": "compiler",
+      "description": "CLI c++; estándar, ABI y toolchain dependen del proyecto.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://clang.llvm.org/docs/UsersManual.html",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "c++",
+        "args": [
+          "--version"
+        ]
+      }
+    },
+    {
+      "id": "cmake",
+      "label": "CMake",
+      "kind": "utility",
+      "description": "Configuración de builds; no sustituye un compilador.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://cmake.org/documentation/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "cmake",
+        "args": [
+          "--version"
+        ]
+      }
+    },
+    {
+      "id": "arduino",
+      "label": "Arduino CLI",
+      "kind": "utility",
+      "description": "CLI Arduino; cores de placas y librerías se seleccionan aparte.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://docs.arduino.cc/arduino-cli/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "arduino-cli",
+        "args": [
+          "version"
+        ]
+      }
+    },
+    {
+      "id": "sqlite",
+      "label": "SQLite CLI",
+      "kind": "database-client",
+      "description": "Cliente sqlite3; las aplicaciones pueden usar una biblioteca sin esta CLI.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://sqlite.org/cli.html",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "sqlite3",
+        "args": [
+          "--version"
+        ]
+      }
+    },
+    {
+      "id": "postgresql",
+      "label": "PostgreSQL psql",
+      "kind": "database-client",
+      "description": "Cliente psql. Su ausencia no implica que falte un servidor PostgreSQL.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://www.postgresql.org/docs/current/app-psql.html",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "psql",
+        "args": [
+          "--version"
+        ]
+      }
+    },
+    {
+      "id": "mysql",
+      "label": "Cliente MySQL/MariaDB",
+      "kind": "database-client",
+      "description": "CLI mysql; no identifica por sí sola el motor del servidor conectado.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://dev.mysql.com/doc/refman/en/mysql.html",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "mysql",
+        "args": [
+          "--version"
+        ]
+      }
+    },
+    {
+      "id": "sqlserver",
+      "label": "SQL Server sqlcmd",
+      "kind": "database-client",
+      "description": "Cliente sqlcmd; no instala ni acredita un servidor SQL Server.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://learn.microsoft.com/sql/tools/sqlcmd/sqlcmd-utility",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "sqlcmd",
+        "args": [
+          "-?"
+        ]
+      }
+    },
+    {
+      "id": "oracle",
+      "label": "Oracle SQL*Plus",
+      "kind": "database-client",
+      "description": "Cliente sqlplus; versión y plataforma del servidor se comprueban aparte.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://docs.oracle.com/en/database/oracle/oracle-database/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "sqlplus",
+        "args": [
+          "-V"
+        ]
+      }
+    },
+    {
+      "id": "terraform",
+      "label": "Terraform",
+      "kind": "infrastructure",
+      "description": "CLI de IaC; providers, backend y credenciales no se verifican aquí.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://developer.hashicorp.com/terraform/docs",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "terraform",
+        "args": [
+          "version"
+        ]
+      }
+    },
+    {
+      "id": "pulumi",
+      "label": "Pulumi",
+      "kind": "infrastructure",
+      "description": "CLI de IaC; lenguaje del programa y providers se eligen por proyecto.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://www.pulumi.com/docs/iac/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [
+        {
+          "id": "node",
+          "reason": "Programas TypeScript/JavaScript."
+        },
+        {
+          "id": "python",
+          "reason": "Programas Python."
+        },
+        {
+          "id": "go",
+          "reason": "Programas Go."
+        },
+        {
+          "id": "dotnet",
+          "reason": "Programas .NET."
+        }
+      ],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "pulumi",
+        "args": [
+          "version"
+        ]
+      }
+    },
+    {
+      "id": "docker",
+      "label": "Docker CLI",
+      "kind": "infrastructure",
+      "description": "Cliente Docker; no prueba daemon, licencia de Desktop ni capacidad de ejecutar contenedores.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://docs.docker.com/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "docker",
+        "args": [
+          "--version"
+        ]
+      }
+    },
+    {
+      "id": "git",
+      "label": "Git",
+      "kind": "utility",
+      "description": "Control de versiones; no acredita acceso a repositorios remotos.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://git-scm.com/doc",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "git",
+        "args": [
+          "--version"
+        ]
+      }
+    },
+    {
+      "id": "go",
+      "label": "Go",
+      "kind": "compiler",
+      "description": "Toolchain Go local; no instala frameworks ni generadores.",
+      "availability": "diagnostic",
+      "sources": [
+        {
+          "url": "https://go.dev/doc/devel/release",
+          "purpose": "release-policy"
+        }
+      ],
+      "versionPolicy": {
+        "state": "declared",
+        "requirement": {
+          "min": "1.26",
+          "maxExclusive": "1.28"
+        },
+        "evidence": "https://go.dev/doc/devel/release",
+        "reviewedAt": "2026-11-01",
+        "note": "Ventana de ramas soportadas 1.26 y 1.27 según la política oficial consultada; no acredita que el parche sea el último."
+      },
+      "dependencies": [],
+      "optionalDependencies": [
+        {
+          "id": "git",
+          "reason": "Acceso VCS directo cuando no se usa un proxy de módulos."
+        },
+        {
+          "id": "govulncheck",
+          "reason": "Análisis de seguridad explícitamente seleccionado."
+        },
+        {
+          "id": "golangci-lint",
+          "reason": "Linting cuando el proyecto lo requiera."
+        }
+      ],
+      "conflicts": [],
+      "diagnostic": {
+        "command": "go",
+        "args": [
+          "version"
+        ]
+      }
+    },
+    {
+      "id": "winget",
+      "label": "WinGet",
+      "kind": "package-manager",
+      "description": "Gestor de aplicaciones de Windows; se verifican requisitos del OS en una fase posterior.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://learn.microsoft.com/windows/package-manager/winget/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "platforms": [
+        "win32"
+      ]
+    },
+    {
+      "id": "homebrew",
+      "label": "Homebrew",
+      "kind": "package-manager",
+      "description": "Gestor de paquetes; disponibilidad de fórmulas y nivel de soporte dependen del host.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://docs.brew.sh/Installation",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "platforms": [
+        "darwin",
+        "linux"
+      ]
+    },
+    {
+      "id": "apt",
+      "label": "APT",
+      "kind": "package-manager",
+      "description": "Gestor de paquetes de Debian/Ubuntu y derivados.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://manpages.debian.org/apt",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "platforms": [
+        "linux"
+      ]
+    },
+    {
+      "id": "dnf",
+      "label": "DNF",
+      "kind": "package-manager",
+      "description": "Gestor de paquetes usado por Fedora y distribuciones relacionadas.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://dnf.readthedocs.io/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "platforms": [
+        "linux"
+      ]
+    },
+    {
+      "id": "pnpm",
+      "label": "pnpm",
+      "kind": "package-manager",
+      "description": "Alternativa de gestor JavaScript; no se instala junto a otros sin necesidad.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://pnpm.io/installation",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "node",
+          "reason": "Runtime del gestor según versión seleccionada."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "yarn",
+      "label": "Yarn",
+      "kind": "package-manager",
+      "description": "Alternativa de gestor JavaScript; selección por lockfile del proyecto.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://yarnpkg.com/getting-started/install",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "node",
+          "reason": "Runtime del gestor según versión seleccionada."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "pip",
+      "label": "pip",
+      "kind": "package-manager",
+      "description": "Gestión de paquetes Python dentro del entorno del proyecto.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://pip.pypa.io/en/stable/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "python",
+          "reason": "Intérprete del entorno en que corre pip."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "uv",
+      "label": "uv",
+      "kind": "package-manager",
+      "description": "Gestor de proyectos y entornos Python; no se autoriza descargar intérpretes desde el doctor.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://docs.astral.sh/uv/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "cargo",
+      "label": "Cargo",
+      "kind": "package-manager",
+      "description": "Gestor de paquetes y build de Rust.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://doc.rust-lang.org/cargo/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "rust",
+          "reason": "Compilador para construir proyectos Rust."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "rustup",
+      "label": "rustup",
+      "kind": "package-manager",
+      "description": "Gestión de toolchains Rust; no se ejecuta para instalar desde el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://rust-lang.github.io/rustup/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "maven",
+      "label": "Maven",
+      "kind": "package-manager",
+      "description": "Build Java; preferir wrapper del proyecto cuando exista.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://maven.apache.org/install.html",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "java",
+          "reason": "JDK compatible con Maven y el proyecto; java -version solo acredita runtime."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "gradle",
+      "label": "Gradle",
+      "kind": "package-manager",
+      "description": "Build JVM/Android; preferir wrapper y verificar matriz JDK/Gradle.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://docs.gradle.org/current/userguide/compatibility.html",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "java",
+          "reason": "JDK según la matriz de la versión Gradle elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "php",
+      "label": "PHP",
+      "kind": "runtime",
+      "description": "Runtime PHP; extensiones y SAPI se seleccionan según proyecto.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://www.php.net/manual/en/install.php",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "ruby",
+      "label": "Ruby",
+      "kind": "runtime",
+      "description": "Runtime Ruby; gestor y dependencias se eligen por proyecto.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://www.ruby-lang.org/en/documentation/installation/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "dart",
+      "label": "Dart",
+      "kind": "runtime",
+      "description": "SDK Dart; puede venir incluido con Flutter y no necesita duplicarse.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://dart.dev/get-dart",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "swift",
+      "label": "Swift",
+      "kind": "compiler",
+      "description": "Toolchain Swift; plataformas y SDKs dependen del tipo de aplicación.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://www.swift.org/install/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "kotlin",
+      "label": "Kotlin",
+      "kind": "compiler",
+      "description": "Herramientas Kotlin; esta entrada documenta el caso JVM.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://kotlinlang.org/docs/command-line.html",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "java",
+          "reason": "JDK para el flujo JVM descrito."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "kubectl",
+      "label": "kubectl",
+      "kind": "infrastructure",
+      "description": "Cliente Kubernetes; no crea un cluster.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://kubernetes.io/docs/tasks/tools/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "helm",
+      "label": "Helm",
+      "kind": "infrastructure",
+      "description": "Gestión de charts; acceso al cluster se configura aparte.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://helm.sh/docs/intro/install/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "opentofu",
+      "label": "OpenTofu",
+      "kind": "infrastructure",
+      "description": "Alternativa IaC; no administrar el mismo recurso simultáneamente con otra herramienta.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://opentofu.org/docs/intro/install/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "ansible",
+      "label": "Ansible",
+      "kind": "infrastructure",
+      "description": "Automatización; distinguir nodo de control de nodo administrado.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "android-sdk",
+      "label": "Android SDK",
+      "kind": "sdk",
+      "description": "SDK, build tools y platform tools seleccionados por proyecto; adb no prueba este conjunto completo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://developer.android.com/tools",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "android-studio",
+      "label": "Android Studio",
+      "kind": "ide",
+      "description": "IDE opcional: no es requisito universal para builds por CLI.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://developer.android.com/studio/install",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "xcode",
+      "label": "Xcode",
+      "kind": "ide",
+      "description": "Herramientas de Apple; versiones de macOS/SDK y licencias requieren revisión separada.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/support/xcode/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": [],
+      "platforms": [
+        "darwin"
+      ]
+    },
+    {
+      "id": "esp-idf",
+      "label": "ESP-IDF",
+      "kind": "sdk",
+      "description": "SDK ESP32 con toolchains específicos de placa y versión.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "platformio",
+      "label": "PlatformIO",
+      "kind": "utility",
+      "description": "Entornos embebidos; puede descargar toolchains únicamente en una operación autorizada.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://docs.platformio.org/en/latest/core/installation/index.html",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "arduino-ide",
+      "label": "Arduino IDE",
+      "kind": "ide",
+      "description": "IDE opcional para proyectos Arduino; no sustituye validar placa y hardware.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://docs.arduino.cc/software/ide/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "golangci-lint",
+      "label": "golangci-lint",
+      "kind": "quality",
+      "description": "Linters Go; verificar compatibilidad con la versión de Go y configuración del proyecto.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://golangci-lint.run/docs/welcome/install/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "go",
+          "reason": "Toolchain del código analizado."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "govulncheck",
+      "label": "govulncheck",
+      "kind": "quality",
+      "description": "Análisis de vulnerabilidades Go; puede requerir red durante el análisis, fuera del doctor.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://go.dev/doc/security/vuln/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "go",
+          "reason": "Análisis del módulo Go."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "gitleaks",
+      "label": "Gitleaks",
+      "kind": "quality",
+      "description": "Escaneo de secretos; no se ejecuta automáticamente por consultar esta entrada.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://github.com/gitleaks/gitleaks",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "trivy",
+      "label": "Trivy",
+      "kind": "quality",
+      "description": "Escáner de dependencias, imágenes y configuración; bases de vulnerabilidades requieren gestión aparte.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://trivy.dev/latest/docs/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "postgresql-server",
+      "label": "Servidor PostgreSQL",
+      "kind": "database-service",
+      "description": "Servicio de base de datos; puede ser remoto o contenedorizado y no se presupone local.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://www.postgresql.org/docs/current/installation.html",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [
+        {
+          "id": "postgresql",
+          "reason": "Cliente administrativo opcional; puede existir en otra máquina."
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "id": "mysql-server",
+      "label": "Servidor MySQL",
+      "kind": "database-service",
+      "description": "Servicio MySQL, separado de la CLI cliente.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://dev.mysql.com/doc/refman/en/installing.html",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [
+        {
+          "id": "mysql",
+          "reason": "Cliente administrativo opcional."
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "id": "mariadb",
+      "label": "Servidor MariaDB",
+      "kind": "database-service",
+      "description": "Servidor MariaDB; compatibilidad con MySQL se revisa por aplicación.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://mariadb.com/docs/server",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "mongodb",
+      "label": "MongoDB",
+      "kind": "database-service",
+      "description": "Servicio de documentos; determinar edición y destino antes de instalar.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://www.mongodb.com/docs/manual/installation/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "redis",
+      "label": "Redis",
+      "kind": "database-service",
+      "description": "Servicio de estructuras de datos; verificar distribución, versión y licencia para el caso.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://redis.io/docs/latest/operate/oss_and_stack/install/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "typescript",
+      "label": "TypeScript",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://www.typescriptlang.org/download/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "node",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "react",
+      "label": "React",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://react.dev/learn/creating-a-react-app",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "node",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "nextjs",
+      "label": "Next.js",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://nextjs.org/docs/app/getting-started/installation",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "node",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "vue",
+      "label": "Vue",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://vuejs.org/guide/quick-start.html",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "node",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "nuxt",
+      "label": "Nuxt",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://nuxt.com/docs/getting-started/installation",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "node",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "angular",
+      "label": "Angular",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://angular.dev/installation",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "node",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "svelte",
+      "label": "Svelte",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://svelte.dev/docs/kit/creating-a-project",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "node",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "vite",
+      "label": "Vite",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://vite.dev/guide/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "node",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "tailwind",
+      "label": "Tailwind CSS",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://tailwindcss.com/docs/installation",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "node",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "nestjs",
+      "label": "NestJS",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://docs.nestjs.com/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "node",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "express",
+      "label": "Express",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://expressjs.com/en/starter/installing.html",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "node",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "fastify",
+      "label": "Fastify",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://fastify.dev/docs/latest/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "node",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "fastapi",
+      "label": "FastAPI",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://fastapi.tiangolo.com/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "python",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "django",
+      "label": "Django",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://docs.djangoproject.com/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "python",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "flask",
+      "label": "Flask",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://flask.palletsprojects.com/en/stable/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "python",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "springboot",
+      "label": "Spring Boot",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://docs.spring.io/spring-boot/system-requirements.html",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "java",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "aspnetcore",
+      "label": "ASP.NET Core",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://learn.microsoft.com/aspnet/core/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "dotnet",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "laravel",
+      "label": "Laravel",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://laravel.com/docs/installation",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "php",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "chi",
+      "label": "Chi",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://github.com/go-chi/chi",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "go",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "gin",
+      "label": "Gin",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://gin-gonic.com/docs/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "go",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "echo",
+      "label": "Echo",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://echo.labstack.com/docs",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "go",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    },
+    {
+      "id": "fiber",
+      "label": "Fiber",
+      "kind": "project-package",
+      "description": "Dependencia de proyecto; no se instala globalmente ni se selecciona una versión por consultar el catálogo.",
+      "availability": "documented",
+      "sources": [
+        {
+          "url": "https://docs.gofiber.io/",
+          "purpose": "documentation"
+        }
+      ],
+      "versionPolicy": {
+        "state": "unassessed",
+        "note": "La compatibilidad depende de la versión, plataforma y proyecto elegidos; no se ha declarado un rango."
+      },
+      "dependencies": [
+        {
+          "id": "go",
+          "reason": "Runtime o toolchain del flujo de desarrollo local; confirmar requisitos de la versión elegida."
+        }
+      ],
+      "optionalDependencies": [],
+      "conflicts": []
+    }
+  ]
+}

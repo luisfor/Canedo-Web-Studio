@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "combinations": [
+    {
+      "id": "A",
+      "name": "CRM y canales Meta",
+      "request": "CRM omnicanal WhatsApp Messenger Instagram",
+      "expected": "ready"
+    },
+    {
+      "id": "B",
+      "name": "CRM TikTok e IA",
+      "request": "CRM TikTok chatbot",
+      "expected": "ready"
+    },
+    {
+      "id": "C",
+      "name": "POS y CRM",
+      "request": "productos inventario ventas caja CRM roles",
+      "expected": "ready"
+    },
+    {
+      "id": "D",
+      "name": "E-commerce y pagos",
+      "request": "ecommerce pagos inventario CRM",
+      "expected": "ready"
+    },
+    {
+      "id": "E",
+      "name": "Agenda asistida",
+      "request": "agenda chatbot recordatorios",
+      "expected": "ready"
+    },
+    {
+      "id": "F",
+      "name": "Marketing IA y redes",
+      "request": "marketing contenido CRM redes sociales chatbot",
+      "expected": "ready"
+    },
+    {
+      "id": "G",
+      "name": "ERP y facturación",
+      "request": "compras ventas inventario caja facturacion CRM",
+      "expected": "ready"
+    },
+    {
+      "id": "H",
+      "name": "SaaS CRM omnicanal IA",
+      "request": "saas multiempresa suscripciones cuotas CRM omnicanal whatsapp messenger instagram chatbot",
+      "expected": "ready"
+    },
+    {
+      "id": "I",
+      "name": "Tienda y CRM social",
+      "request": "tienda inventario compras ventas caja whatsapp instagram chatbot",
+      "expected": "ready"
+    }
+  ]
+}

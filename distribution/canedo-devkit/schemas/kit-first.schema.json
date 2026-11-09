@@ -1,0 +1,297 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "digest"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "digest": {
+          "$ref": "#/definitions/hash"
+        }
+      }
+    },
+    "inspection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inspectionId",
+        "schemaVersion",
+        "kind",
+        "targetId",
+        "scenario",
+        "files",
+        "signals",
+        "records",
+        "limitations",
+        "complete",
+        "executesProjectCode"
+      ],
+      "properties": {
+        "inspectionId": {
+          "$ref": "#/definitions/hash"
+        },
+        "schemaVersion": {
+          "const": 1
+        },
+        "kind": {
+          "const": "project-inspection"
+        },
+        "targetId": {
+          "$ref": "#/definitions/hash"
+        },
+        "scenario": {
+          "enum": [
+            "new",
+            "existing",
+            "previously-generated"
+          ]
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/file"
+          }
+        },
+        "signals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "category",
+              "id",
+              "evidence",
+              "certainty"
+            ],
+            "properties": {
+              "category": {
+                "enum": [
+                  "language",
+                  "framework",
+                  "database",
+                  "component",
+                  "capability"
+                ]
+              },
+              "id": {
+                "type": "string"
+              },
+              "evidence": {
+                "type": "string"
+              },
+              "certainty": {
+                "enum": [
+                  "declared",
+                  "observed-file",
+                  "inferred"
+                ]
+              }
+            }
+          }
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "path"
+            ],
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "executesProjectCode": {
+          "const": false
+        }
+      }
+    },
+    "discovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "discoveryId",
+        "schemaVersion",
+        "kind",
+        "kit",
+        "catalogs",
+        "policy"
+      ],
+      "properties": {
+        "discoveryId": {
+          "$ref": "#/definitions/hash"
+        },
+        "schemaVersion": {
+          "const": 1
+        },
+        "kind": {
+          "const": "kit-discovery"
+        },
+        "kit": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "version",
+            "fingerprint"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            },
+            "fingerprint": {
+              "$ref": "#/definitions/hash"
+            }
+          }
+        },
+        "catalogs": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "tools",
+            "installationRecipes",
+            "setupProfiles",
+            "skills",
+            "diagnosticProfiles",
+            "composition",
+            "generators",
+            "commercial"
+          ],
+          "properties": {
+            "tools": {
+              "type": "object"
+            },
+            "installationRecipes": {
+              "type": "object"
+            },
+            "setupProfiles": {
+              "type": "object"
+            },
+            "skills": {
+              "type": "array"
+            },
+            "diagnosticProfiles": {
+              "type": "array"
+            },
+            "composition": {
+              "type": "object"
+            },
+            "generators": {
+              "type": "array"
+            },
+            "commercial": {
+              "type": "object"
+            }
+          }
+        },
+        "policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "order",
+            "executionAllowed",
+            "externalCodeImportAllowed",
+            "existingDestinations",
+            "scope"
+          ],
+          "properties": {
+            "id": {
+              "const": "kit-first-v1"
+            },
+            "order": {
+              "const": [
+                "discover",
+                "inspect",
+                "assess-reuse",
+                "plan",
+                "validate",
+                "generate"
+              ]
+            },
+            "executionAllowed": {
+              "const": false
+            },
+            "externalCodeImportAllowed": {
+              "const": false
+            },
+            "existingDestinations": {
+              "const": "incremental-plan-required"
+            },
+            "scope": {
+              "const": "agent-api-operations-only"
+            }
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "kind",
+        "evidenceId",
+        "agent",
+        "discovery",
+        "inspection"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "kind": {
+          "const": "kit-first-evidence"
+        },
+        "evidenceId": {
+          "$ref": "#/definitions/hash"
+        },
+        "agent": {
+          "enum": [
+            "codex-cli-json",
+            "generic-cli-json"
+          ]
+        },
+        "discovery": {
+          "$ref": "#/definitions/discovery"
+        },
+        "inspection": {
+          "$ref": "#/definitions/inspection"
+        }
+      }
+    }
+  },
+  "$ref": "#/definitions/evidence"
+}

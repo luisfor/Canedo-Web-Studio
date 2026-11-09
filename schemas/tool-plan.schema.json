@@ -1,0 +1,654 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Plan de herramientas, solo revisión",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "planId",
+    "schemaVersion",
+    "plannerVersion",
+    "catalogVersion",
+    "catalogDigest",
+    "capabilitiesDigest",
+    "request",
+    "observation",
+    "items",
+    "blockers",
+    "decisions",
+    "status",
+    "ok",
+    "executionAllowed",
+    "approval",
+    "scope",
+    "note"
+  ],
+  "properties": {
+    "planId": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "plannerVersion": {
+      "const": "1.0.0"
+    },
+    "catalogVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "catalogDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "capabilitiesDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile",
+        "tools",
+        "exclude",
+        "versions",
+        "manager"
+      ],
+      "properties": {
+        "profile": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,63}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tools": {
+          "type": "array",
+          "maxItems": 1000,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          }
+        },
+        "exclude": {
+          "type": "array",
+          "maxItems": 1000,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          }
+        },
+        "versions": {
+          "type": "object",
+          "maxProperties": 1000,
+          "propertyNames": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$"
+          }
+        },
+        "manager": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,63}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "source",
+        "system",
+        "checks",
+        "packageManagers"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 2
+        },
+        "source": {
+          "enum": [
+            "live-doctor",
+            "provided-report"
+          ]
+        },
+        "system": {
+          "type": "object",
+          "required": [
+            "platform",
+            "architecture",
+            "version",
+            "release",
+            "distribution"
+          ],
+          "properties": {
+            "platform": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]{1,32}$"
+            },
+            "architecture": {
+              "type": "string",
+              "pattern": "^[a-z0-9_-]{1,32}$"
+            },
+            "version": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 100
+            },
+            "release": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 100
+            },
+            "distribution": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "properties": {
+                "id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "maxLength": 100
+                },
+                "version": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "maxLength": 100
+                },
+                "like": {
+                  "type": "array",
+                  "maxItems": 30,
+                  "items": {
+                    "type": "string",
+                    "maxLength": 80
+                  }
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "version",
+                "like"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "checks": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": {
+            "type": "object",
+            "required": [
+              "tool",
+              "status",
+              "version",
+              "compatibility"
+            ],
+            "properties": {
+              "tool": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$"
+              },
+              "status": {
+                "enum": [
+                  "detected",
+                  "missing",
+                  "unverifiable",
+                  "incompatible",
+                  "unsupported",
+                  "error"
+                ]
+              },
+              "version": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 80,
+                "pattern": "^\\d[\\w.+-]{0,79}$"
+              },
+              "compatibility": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "status",
+                  "reason"
+                ],
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "not-assessed",
+                      "compatible",
+                      "incompatible",
+                      "unverifiable"
+                    ]
+                  },
+                  "reason": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]+$",
+                    "maxLength": 80
+                  }
+                }
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "detected",
+                        "incompatible"
+                      ]
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "version": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "status": {
+                      "const": "missing"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "version": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            ],
+            "additionalProperties": false
+          }
+        },
+        "packageManagers": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "status",
+              "version"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$"
+              },
+              "status": {
+                "enum": [
+                  "detected",
+                  "missing",
+                  "unverifiable",
+                  "incompatible",
+                  "unsupported",
+                  "error"
+                ]
+              },
+              "version": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 80,
+                "pattern": "^\\d[\\w.+-]{0,79}$"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    "items": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tool",
+          "label",
+          "kind",
+          "role",
+          "intent",
+          "current",
+          "targetVersion",
+          "targetCompatibility",
+          "ownership",
+          "scope",
+          "selectedProvider",
+          "providerCandidates",
+          "dependencies",
+          "optionalDependencies",
+          "sources",
+          "recipeStatus"
+        ],
+        "properties": {
+          "tool": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "kind": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "role": {
+            "enum": [
+              "requested",
+              "dependency"
+            ]
+          },
+          "intent": {
+            "enum": [
+              "reuse",
+              "install",
+              "review-existing",
+              "inspect",
+              "choose-deployment",
+              "blocked"
+            ]
+          },
+          "current": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "status",
+              "version",
+              "compatibility"
+            ],
+            "properties": {
+              "status": {
+                "enum": [
+                  "detected",
+                  "missing",
+                  "unverifiable",
+                  "incompatible",
+                  "unsupported",
+                  "error"
+                ]
+              },
+              "version": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 80,
+                "pattern": "^\\d[\\w.+-]{0,79}$"
+              },
+              "compatibility": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "status",
+                  "reason"
+                ],
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "not-assessed",
+                      "compatible",
+                      "incompatible",
+                      "unverifiable"
+                    ]
+                  },
+                  "reason": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]+$",
+                    "maxLength": 80
+                  }
+                }
+              }
+            }
+          },
+          "targetVersion": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^\\d+\\.\\d+\\.\\d+$"
+          },
+          "targetCompatibility": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "status",
+              "reason"
+            ],
+            "properties": {
+              "status": {
+                "enum": [
+                  "not-assessed",
+                  "compatible",
+                  "incompatible",
+                  "unverifiable"
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]+$",
+                "maxLength": 80
+              }
+            }
+          },
+          "ownership": {
+            "enum": [
+              "not-found",
+              "pre-existing-or-unknown"
+            ]
+          },
+          "scope": {
+            "enum": [
+              "project",
+              "undecided",
+              "user-or-system-pending"
+            ]
+          },
+          "selectedProvider": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "providerCandidates": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "presence",
+                "recipeVerified"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                },
+                "presence": {
+                  "enum": [
+                    "present",
+                    "absent",
+                    "unknown"
+                  ]
+                },
+                "recipeVerified": {
+                  "const": false
+                }
+              }
+            }
+          },
+          "dependencies": {
+            "type": "array",
+            "maxItems": 1000,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,63}$"
+            }
+          },
+          "optionalDependencies": {
+            "type": "array",
+            "maxItems": 1000,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,63}$"
+            }
+          },
+          "sources": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "string",
+              "pattern": "^https://",
+              "maxLength": 600
+            }
+          },
+          "recipeStatus": {
+            "const": "not-implemented"
+          }
+        }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "maxItems": 5000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "tool",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "tool": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "maxItems": 5000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "tool",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "tool": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      }
+    },
+    "status": {
+      "enum": [
+        "blocked",
+        "needs-decisions",
+        "reviewable"
+      ]
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "executionAllowed": {
+      "const": false
+    },
+    "approval": {
+      "const": "not-requested"
+    },
+    "scope": {
+      "const": "review-only"
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 700
+    }
+  }
+}
