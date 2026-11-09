@@ -27,6 +27,7 @@ node_modules/
 
 # Scratch AI scripts
 scratch/
+.devkit-cache/
 
 # Archivos personales del sistema y resultados locales
 .DS_Store
@@ -36,3 +37,7 @@ scratch/
 *.p12
 *.pfx
 prototype_satori.png
+
+# Respaldos temporales de despliegues y migraciones
+backup_pre_*/
+automatismos/**/backup_pre_*/
