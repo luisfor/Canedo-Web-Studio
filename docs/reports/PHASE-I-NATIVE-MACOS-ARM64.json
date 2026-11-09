@@ -1,0 +1,71 @@
+{
+  "testedOn": "2026-11-02",
+  "schemaVersion": 1,
+  "kind": "native-backend-verification",
+  "host": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "nodeVersion": "25.2.1"
+  },
+  "ok": true,
+  "checks": [
+    {
+      "stack": "node",
+      "templateVersion": "1.1.0",
+      "requestedRuntime": "24.22.2",
+      "runtimeVersion": "25.2.1",
+      "exactRuntimeMatch": false,
+      "sourceDigest": "00a7502f68b6f9fe6b192210838fde18459551c36469169be463bcf941f3bc98",
+      "syntaxPassed": true,
+      "status": "passed",
+      "httpHealth": 200,
+      "httpUnknownRoute": 404,
+      "healthcheckExitCode": 0,
+      "binding": "loopback-ephemeral",
+      "serverStopped": true
+    },
+    {
+      "stack": "python",
+      "templateVersion": "1.1.0",
+      "requestedRuntime": "3.13.18",
+      "runtimeVersion": "3.14.4",
+      "exactRuntimeMatch": false,
+      "sourceDigest": "1312284f30836541d6e708098a38c13ae371620b51910a4920359903bf13eb0a",
+      "syntaxPassed": true,
+      "status": "passed",
+      "httpHealth": 200,
+      "httpUnknownRoute": 404,
+      "healthcheckExitCode": 0,
+      "binding": "loopback-ephemeral",
+      "serverStopped": true
+    },
+    {
+      "stack": "java",
+      "templateVersion": "1.1.0",
+      "requestedRuntime": "21.0.8",
+      "runtimeVersion": "21.0.7",
+      "exactRuntimeMatch": false,
+      "sourceDigest": "dcdbf371c7130b5fc35a22409826f0f19f853a1a27b6e2d778f613b54bcdda29",
+      "compilerVersion": "21.0.7",
+      "targetRelease": 21,
+      "compilationPassed": true,
+      "legacyTemplateCompilationPassed": true,
+      "status": "passed",
+      "httpHealth": 200,
+      "httpUnknownRoute": 404,
+      "healthcheckExitCode": 0,
+      "binding": "loopback-ephemeral",
+      "serverStopped": true
+    }
+  ],
+  "temporaryFilesRemoved": true,
+  "globalChanges": false,
+  "installationsPerformed": false,
+  "containersStarted": false,
+  "limitations": [
+    "Procesos HTTP temporales solo en 127.0.0.1 y puertos asignados por el sistema.",
+    "No certifica imágenes Docker ni coincidencia exacta con los SDK solicitados; revisa exactRuntimeMatch.",
+    "No valida Windows/Linux/macOS Intel si el host actual es distinto.",
+    "Go/.NET y pruebas de motores de datos necesitan herramientas/entornos adicionales; no se instalan."
+  ]
+}

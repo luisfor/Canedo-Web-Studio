@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "kind": "composition-native-verification",
+  "ok": true,
+  "timestamp": "2026-11-02T07:22:47.117Z",
+  "host": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "v25.2.1"
+  },
+  "declaredProjectNode": "24.22.2",
+  "checks": [
+    {
+      "architecture": "modular-monolith",
+      "planId": "fd3e9e71801a4fd850c63004bdfb3a1502b0f8cd455bb965dbc8fd6f42459ece",
+      "ok": true,
+      "files": 38,
+      "planValidated": true,
+      "integrityVerified": true,
+      "tests": 5,
+      "passed": 5,
+      "skipped": 0,
+      "exitCode": 0,
+      "contractScope": "generated-openapi-3.1-subset-and-all-payload-schemas",
+      "composeSchemaValidated": true,
+      "localHttpExecuted": true,
+      "sqliteTransactionsExecuted": true
+    },
+    {
+      "architecture": "independent-services",
+      "planId": "70a4d19af0ecf674ba345eb79c3ce92be4776d187e7b4e9140ac097fc473674a",
+      "ok": true,
+      "files": 38,
+      "planValidated": true,
+      "integrityVerified": true,
+      "tests": 5,
+      "passed": 5,
+      "skipped": 0,
+      "exitCode": 0,
+      "contractScope": "generated-openapi-3.1-subset-and-all-payload-schemas",
+      "composeSchemaValidated": true,
+      "localHttpExecuted": true,
+      "sqliteTransactionsExecuted": true
+    }
+  ],
+  "externalProviders": "disabled; test adapters only",
+  "docker": {
+    "schemaValidated": true,
+    "engineExecuted": false,
+    "imagesDownloaded": false,
+    "containersStarted": false
+  },
+  "externalRepositoriesDownloaded": false,
+  "dependenciesInstalled": false,
+  "globalConfigurationChanged": false,
+  "otherPlatforms": "not verified by this local run",
+  "scope": "Generated initial backend and contracts; no UI or production/provider certification",
+  "temporaryDataRemoved": true
+}

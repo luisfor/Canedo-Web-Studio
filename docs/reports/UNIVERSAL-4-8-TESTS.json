@@ -1,0 +1,32 @@
+{
+  "host": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "v25.2.1"
+  },
+  "fullRegression": {
+    "command": "npm run test:kit",
+    "passed": 418,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 18822.939833,
+    "localhostPermission": true
+  },
+  "followupEfficiency": {
+    "command": "npm run test:efficiency",
+    "passed": 12,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 1987.565416,
+    "changesAfterFullRegression": [
+      "bounded checkpoint receipt",
+      "explicit Python and ESM parser test"
+    ]
+  },
+  "realAgentClientsVerified": [],
+  "nativePlatformsVerified": [
+    "darwin-arm64"
+  ],
+  "dependenciesInstalled": false,
+  "externalServicesUsed": false
+}

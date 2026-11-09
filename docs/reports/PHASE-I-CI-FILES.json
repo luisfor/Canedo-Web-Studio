@@ -1,0 +1,293 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Reviewable allowlist for a future CI validation branch, not an authorization or commit",
+  "baseCommit": "3ebb378a61c3461fb09bbada490a4550cb8e7f6c",
+  "proposedBranch": "codex/fase-i-validacion",
+  "fileCount": 55,
+  "files": [
+    {
+      "path": ".github/workflows/kit-validation.yml",
+      "bytes": 1612,
+      "sha256": "e3635713dc78227f45c1bc69e59f54567f2f681c09e2303a8db8591db60d2b71"
+    },
+    {
+      "path": "catalog/install-recipes/manifest.json",
+      "bytes": 6908,
+      "sha256": "4d99f1cc17f25f279e707721c0d2ae9fe899636e564a5c02a564e4f80ffc9e84"
+    },
+    {
+      "path": "catalog/profiles/manifest.json",
+      "bytes": 2515,
+      "sha256": "b8e53b2e7eeb3b716466200a67b8662184faf59cd6aa33574bb9b15ce03825c4"
+    },
+    {
+      "path": "catalog/tools/manifest.json",
+      "bytes": 61499,
+      "sha256": "bbec1ac72d7dc39abc1e41aa275a39a3054ed79a35d8d8580d284c55a362e5bb"
+    },
+    {
+      "path": "package.json",
+      "bytes": 2428,
+      "sha256": "d36d6584a2a5ed5d4bb9e8a2c51a8f69f952bcabb2d4ad30426811b7122fdfa4"
+    },
+    {
+      "path": "schemas/command-plan.schema.json",
+      "bytes": 10405,
+      "sha256": "3e75c3ee5b7bb59739efc286823434747863521f01659d792b57a7463cbe53be"
+    },
+    {
+      "path": "schemas/diagnostic-report.schema.json",
+      "bytes": 3973,
+      "sha256": "0f5fcb3dbed3f39b9c6c15fea6ba55049299d50fd26bfb96e38de3aab29fbfa9"
+    },
+    {
+      "path": "schemas/install-recipes.schema.json",
+      "bytes": 10407,
+      "sha256": "2043febe7aeac260466da028cebaa507f234e2f30c1e2bcb63720d9a7aa550b9"
+    },
+    {
+      "path": "schemas/tool-catalog.schema.json",
+      "bytes": 8505,
+      "sha256": "833d5d00d34f71468446ce29a743294306d37dc5676647caa44f1c5240418fed"
+    },
+    {
+      "path": "schemas/tool-plan.schema.json",
+      "bytes": 15941,
+      "sha256": "272c845a5bf17083e537ef1ff8d00c7ea67461e8eb9d5f5ab4f79e2a8ff4c7be"
+    },
+    {
+      "path": "schemas/vendor/compose-spec.LICENSE",
+      "bytes": 10765,
+      "sha256": "7c87873291f289713ac5df48b1f2010eb6963752bbd6b530416ab99fc37914a8"
+    },
+    {
+      "path": "schemas/vendor/compose-spec.NOTICE",
+      "bytes": 76,
+      "sha256": "b7b844543ed029ff0cc2bded0e951adc4c9240cc6366dea81c882b33534f484a"
+    },
+    {
+      "path": "schemas/vendor/compose-spec.json",
+      "bytes": 91346,
+      "sha256": "af3567ba304f132a87389c499bba66676fcf132d95c16323f49e08553edbdad4"
+    },
+    {
+      "path": "schemas/vendor/compose-spec.provenance.json",
+      "bytes": 501,
+      "sha256": "2e9000b0af74c6b1e7a14275df35f2fc5fcd7a4218ae3386120c23ee5ee825b9"
+    },
+    {
+      "path": "scripts/commands/catalog.js",
+      "bytes": 2994,
+      "sha256": "1309a7140592724896caa0d405fd777c53f1b725a17ad2bf45a8984f21547681"
+    },
+    {
+      "path": "scripts/commands/plan.js",
+      "bytes": 19120,
+      "sha256": "4d84ad9482bafb1b327a42bc8f4c219042449ed87ca1fe2a03c13e1012177a02"
+    },
+    {
+      "path": "scripts/commands/policy.js",
+      "bytes": 887,
+      "sha256": "073b454b67c12729385479d83ed4a237aea03880c2f34ab435bcdf40782b452e"
+    },
+    {
+      "path": "scripts/commands/render.js",
+      "bytes": 706,
+      "sha256": "ef22e997783412f438b5ff6592eba70ecdb63bb093b527ac2aa9e722d9a01853"
+    },
+    {
+      "path": "scripts/commands/schema.js",
+      "bytes": 153,
+      "sha256": "181d57ca10c94a9c6b43ebefaaa436ca70bdf6f89fdd89af775f42ac0aa13ba1"
+    },
+    {
+      "path": "scripts/docker/backends-v1.js",
+      "bytes": 6075,
+      "sha256": "f433304a4f2435c95c0cd7f6323e276189c7ab701844e847e0f38de06741b5c8"
+    },
+    {
+      "path": "scripts/docker/backends.js",
+      "bytes": 6823,
+      "sha256": "57a6092429cc931e2c2ac62a2b686701885258e0b71a5f8767343cafa15a2c53"
+    },
+    {
+      "path": "scripts/docker/doctor.js",
+      "bytes": 3928,
+      "sha256": "318bdafb8cc398b43745c73b6cc5efc724370a39659801ce89f0e2df52d1af93"
+    },
+    {
+      "path": "scripts/docker/generate.js",
+      "bytes": 10010,
+      "sha256": "8ab6cc99eefd3a16ef083334c9cf38860c5c68fe6c831267059acfb45d06e95d"
+    },
+    {
+      "path": "scripts/docker/operations.js",
+      "bytes": 4595,
+      "sha256": "e6665234b166fe2cb4002963ee0ef626002b7225feaac39deaa36e1905173155"
+    },
+    {
+      "path": "scripts/docker/schema.js",
+      "bytes": 986,
+      "sha256": "3bfafb6f2a1ba1b7b8b11762070527060adbacc148d6dc245daccc674108bd7e"
+    },
+    {
+      "path": "scripts/doctor/environment.js",
+      "bytes": 14928,
+      "sha256": "1da6926056e331b11d7fb5b5ee3b28c0db18b0ba9b0310022c03878920f9989c"
+    },
+    {
+      "path": "scripts/installers/archive-engine.js",
+      "bytes": 13797,
+      "sha256": "7a4f712cdf65edaf666d2e023aa12c2d2b5a1c61bbc8e5d5092f671c91053ef0"
+    },
+    {
+      "path": "scripts/installers/archive-recipes.js",
+      "bytes": 6248,
+      "sha256": "1b814e8964720c27a1bbf0e6afff84f1ba22e3ba425985d3551c1a64b07ebd60"
+    },
+    {
+      "path": "scripts/installers/filesystem.js",
+      "bytes": 5416,
+      "sha256": "e490507cbbd1a2b4f1f6e610c404f68b05d5c8e6c7b8ffe6fbca61e0a0f4b2ef"
+    },
+    {
+      "path": "scripts/installers/go.js",
+      "bytes": 11332,
+      "sha256": "bf4c95e7a63cf41f5e651d825246181c96baf666d314a919b051211b446bb170"
+    },
+    {
+      "path": "scripts/installers/index.js",
+      "bytes": 3359,
+      "sha256": "19215b78c265736130e99761bd799f619b43c9e14bf8fabff3cbe1d63a31128e"
+    },
+    {
+      "path": "scripts/installers/transport.js",
+      "bytes": 4496,
+      "sha256": "74fdf0a726693a38f8083d01f5c44bc1577d3240a55eec8e2154a70dc68585af"
+    },
+    {
+      "path": "scripts/kit.js",
+      "bytes": 16727,
+      "sha256": "c29ccbf7e623e5a20f93e1cfc0abdb53ef28b1f6fb2400e9587bec0d99189151"
+    },
+    {
+      "path": "scripts/planner/plan.js",
+      "bytes": 14191,
+      "sha256": "327d4a83598292437f9ff00568ab11d0e719841273da4a2ed9b4eb3a5aa9edbc"
+    },
+    {
+      "path": "scripts/tools/catalog.js",
+      "bytes": 8418,
+      "sha256": "eceb6694651c8a2bc46844757d1adb1ee52597c139497eca6cc6f6c607d5c845"
+    },
+    {
+      "path": "scripts/workspace/cli.js",
+      "bytes": 6872,
+      "sha256": "fa51f24fb1494b5d4e2a28717589b0625d1eeb9aa0950e8fc02dd55b8c135881"
+    },
+    {
+      "path": "scripts/workspace/compose-check.js",
+      "bytes": 3612,
+      "sha256": "e2eebe65eee9d990dedaa60998ae33d9e3d367fea02eea9aba5fca2a654bf3ee"
+    },
+    {
+      "path": "scripts/workspace/environment.js",
+      "bytes": 5028,
+      "sha256": "f293358f3d79100cd364dbd4626b54fe1e9e306849dad843f973cd15e9d6ff0e"
+    },
+    {
+      "path": "scripts/workspace/files.js",
+      "bytes": 2957,
+      "sha256": "cccd3b45fec9379d16b889ae113756545cb9f593e78101cfbcceb96c146bb408"
+    },
+    {
+      "path": "scripts/workspace/native-check.js",
+      "bytes": 9895,
+      "sha256": "cc0603fd8151866fa43d925b70c78cfb6ed02ae8f9c5241873d4c0d9c895f1bc"
+    },
+    {
+      "path": "scripts/workspace/profiles.js",
+      "bytes": 1548,
+      "sha256": "94255430f37455354dc4a49a816abb72d642bb07816acc76a63415d24415177b"
+    },
+    {
+      "path": "scripts/workspace/project.js",
+      "bytes": 7779,
+      "sha256": "616c36f4e435eb4333bfcece0df873e42b6f2383d7ac61a5b5393dfb147c26a9"
+    },
+    {
+      "path": "scripts/workspace/verify.js",
+      "bytes": 3721,
+      "sha256": "bc8a4fbe745f65a2f6259841e5d42914b025640eeaf871be6e1806942e85f393"
+    },
+    {
+      "path": "tests/kit/archive-installers.test.js",
+      "bytes": 22787,
+      "sha256": "ca328c9c44adb3fd2d5681a8aaabaf16aacff87d8e29415b2801f2cd1e5d98b9"
+    },
+    {
+      "path": "tests/kit/cli.test.js",
+      "bytes": 3528,
+      "sha256": "d8faffe5211ed1392013eef792fa933826d6df91c5f56d1660030745d5db5f0e"
+    },
+    {
+      "path": "tests/kit/environment.test.js",
+      "bytes": 12613,
+      "sha256": "f06c093d2811d57a874835f2e1d33476aa312675ade334c375968edd9ce27c96"
+    },
+    {
+      "path": "tests/kit/installers.test.js",
+      "bytes": 18264,
+      "sha256": "6e84850c0943c0bf938bb53f40f65cd148cb753f7aa7f95974c930851ca263da"
+    },
+    {
+      "path": "tests/kit/manual-commands.test.js",
+      "bytes": 15522,
+      "sha256": "21f5b3a29d90fa2815461809655575d315e47aa8d60850ea6d80f19321f087bb"
+    },
+    {
+      "path": "tests/kit/native-i.test.js",
+      "bytes": 5812,
+      "sha256": "676bd02309fab06278b4a98e3a8d78757563550dc586bbfbbef8f682b13cfa80"
+    },
+    {
+      "path": "tests/kit/planner.test.js",
+      "bytes": 12106,
+      "sha256": "e67054a6692ceb4b2f2167f6bb50b619458ce4fb876d53b552241083964b97ae"
+    },
+    {
+      "path": "tests/kit/tool-catalog.test.js",
+      "bytes": 9583,
+      "sha256": "000e5a290a77eaefa05e83d499018749713bfbe4c53343c4da3e4393944943ce"
+    },
+    {
+      "path": "tests/kit/workspace-f.test.js",
+      "bytes": 5636,
+      "sha256": "e0b3c9b07bbc814aee9a1c6653bfc0f1dd13f0609671d9285d1c6764516583b6"
+    },
+    {
+      "path": "tests/kit/workspace-g.test.js",
+      "bytes": 5913,
+      "sha256": "118348276b4ec0cbf38a4a64c588be4e580b5038644d2a65d9c287e902928b0b"
+    },
+    {
+      "path": "tests/kit/workspace-h.test.js",
+      "bytes": 8026,
+      "sha256": "4a2cbbdfb91edf4a3d54373b20e5d095a71d30240e0e31c5092e30ce7538aefb"
+    },
+    {
+      "path": "tests/kit/workspace-i.test.js",
+      "bytes": 6030,
+      "sha256": "5852447afb73e55d4e634a3db0f899ac4797db50f15f3fc844c39abdfb715c4a"
+    }
+  ],
+  "excluded": [
+    "customer projects",
+    "personal configuration",
+    "secrets",
+    "attachments",
+    "local reports",
+    "website changes unrelated to kit validation"
+  ],
+  "published": false
+}

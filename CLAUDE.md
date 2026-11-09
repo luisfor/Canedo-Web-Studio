@@ -24,6 +24,8 @@ Continúa desde los entregables existentes; conserva datos y cambios del usuario
 
 ## Diagnóstico y entrega
 
+Aplica KIT-FIRST mediante las [interfaces estructuradas](docs/integrations/agents.md): consulta catálogos/versión, inspecciona el destino y revisa reutilización antes de generar. No regeneres proyectos existentes; usa su memoria y planes incrementales y preserva personalizaciones. La configuración MCP de ejemplo requiere instalación/configuración manual elegida por el usuario; no la escribas globalmente ni declares un cliente conectado sin verificarlo.
+
 Inspecciona el error y su causa antes de reintentar. Para páginas que requieren JavaScript, usa un navegador compatible si la tarea exige observar su comportamiento. No confundas HTML descargado sin renderizar con la página final.
 
 Ejecuta checks adecuados al cambio. Para catálogo/CLI usa `npm run kit:validate` y `npm run test:kit`. Distingue revisión, compilación, simulación y prueba real.

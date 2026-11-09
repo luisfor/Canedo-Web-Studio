@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "kind": "universal-improvements-1-3-verification",
+  "timestamp": "2026-11-02T18:39:50.778Z",
+  "host": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "v25.2.1"
+  },
+  "technicalKit": {
+    "name": "canedo-web-studio-v1-usandolo-actualmente",
+    "version": "1.0.0",
+    "fingerprint": "059e39322d82d06d018839b119f65e741fd147c95474e2e313b3c34f10936b94"
+  },
+  "regression": {
+    "command": "npm run test:kit",
+    "tests": 407,
+    "passed": 407,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "universal": {
+    "command": "npm run test:universal",
+    "tests": 25,
+    "passed": 25,
+    "failed": 0,
+    "skipped": 0
+  },
+  "catalogValidation": {
+    "command": "npm run kit:validate",
+    "ok": true
+  },
+  "diffWhitespaceCheck": {
+    "command": "git diff --check",
+    "ok": true
+  },
+  "scope": "Local planning, resource bridge and KIT-FIRST tests; original regressions use temporary fixtures. No client/SDK/production certification.",
+  "otherPlatforms": "simulated observations only; no native Windows/Linux execution",
+  "dependenciesInstalled": false,
+  "repositoriesDownloaded": false,
+  "containersStarted": false,
+  "commitsCreated": false,
+  "pushed": false,
+  "deployed": false,
+  "explicitNativeDiagnostic": {
+    "command": "node scripts/devkit.js plan \"Crear API Python FastAPI\" --diagnose --version python=3.14.4 --manager pip --json",
+    "exitCode": 0,
+    "kind": "technical-project-plan",
+    "status": "needs-decisions",
+    "host": {
+      "platform": "darwin",
+      "architecture": "arm64",
+      "version": "27.0.1",
+      "release": "27.0.0",
+      "distribution": null
+    },
+    "diagnosticMode": "live-doctor",
+    "checks": [
+      {
+        "tool": "python",
+        "status": "detected",
+        "version": "3.14.4",
+        "compatibility": {
+          "status": "compatible",
+          "reason": "inside-declared-range"
+        }
+      }
+    ],
+    "environmentPlans": [
+      {
+        "stack": "python",
+        "profile": "backend",
+        "files": [
+          ".python-version",
+          "requirements.txt",
+          "pyproject.toml",
+          ".gitignore"
+        ]
+      }
+    ],
+    "installationCommandsExecuted": false,
+    "targetCreated": false,
+    "validation": {
+      "ok": true,
+      "scope": "advisory-plan-only",
+      "executionAllowed": false
+    }
+  }
+}

@@ -28,8 +28,7 @@ Detecta el sistema operativo y comprueba, con ✓/✗ por línea:
 - Node.js (`node -v` y `npm -v`) — necesario para los despliegues de Cloudflare (Wrangler).
 - Python (`python3 --version`) — necesario para los scripts de recolección de Openverse.
 
-Si falta algo esencial, instálalo tú o elige la alternativa que sí exista —
-nunca mandes al usuario a la terminal.
+Si falta algo esencial, informa el diagnóstico y presenta las alternativas. No instales ni modifiques herramientas sin mostrar un plan y obtener autorización explícita. Si Node está disponible, puedes ampliar el diagnóstico con `node scripts/kit.js doctor --tool node --tool npm --tool python`; consulta `docs/ENVIRONMENT-DOCTOR.md`. Esta comprobación no instala herramientas.
 
 ## 4 · Prepara el terreno
 
