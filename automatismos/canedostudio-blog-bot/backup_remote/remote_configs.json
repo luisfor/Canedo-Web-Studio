@@ -1,0 +1,24 @@
+{
+  "canedostudio-blog-bot": {
+    "script_id": "canedostudio-blog-bot",
+    "created_on": "2026-08-16T05:53:22.795853Z",
+    "modified_on": "2026-08-18T02:37:38.7225Z",
+    "crons": ["0 12,22 * * *"],
+    "bindings": [
+      { "name": "AI", "type": "ai" },
+      { "name": "BLOG_POSTS", "type": "kv_namespace", "namespace_id": "1a3b08427d144d51af218578387e09b5" },
+      { "name": "BOT_TOKEN", "type": "secret_text" },
+      { "name": "MAKE_WEBHOOK_URL", "type": "secret_text" }
+    ]
+  },
+  "ejemplo-blog-bot": {
+    "script_id": "ejemplo-blog-bot",
+    "created_on": "2026-09-07T15:57:16.304763Z",
+    "modified_on": "2026-09-08T03:26:12.050462Z",
+    "crons": ["0 12,22 * * *"],
+    "bindings": [
+      { "name": "AI", "type": "ai" },
+      { "name": "BLOG_POSTS", "type": "kv_namespace", "namespace_id": "1a3b08427d144d51af218578387e09b5" }
+    ]
+  }
+}

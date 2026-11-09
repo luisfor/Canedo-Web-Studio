@@ -1,0 +1,20 @@
+name = "canedostudio-blog-bot"
+main = "src/index.js"
+compatibility_date = "2025-08-01"
+workers_dev = true
+
+[ai]
+binding = "AI"
+
+[[kv_namespaces]]
+binding = "BLOG_POSTS"
+id = "1a3b08427d144d51af218578387e09b5"
+
+[[d1_databases]]
+binding = "BLOG_DB"
+database_name = "canedostudio-blog"
+database_id = "d083c7a5-a0fc-4e84-8dd5-d3bb278ccdf0"
+
+[triggers]
+crons = ["0 12,22 * * *"]
+
