@@ -38,3 +38,14 @@ test('doctor informa CLIs ausentes y strict falla sin instalar nada', () => {
   const info = spawnSync(process.execPath, [cli, 'doctor', '--profile', 'react', '--json'], options);
   assert.equal(info.status, 0); assert.equal(JSON.parse(info.stdout).ok, false);
 });
+test('doctor admite herramientas concretas sin exigir un perfil nuevo', () => {
+  const result = run('doctor', '--tool', 'node', '--json');
+  assert.equal(result.status, 0); const report = JSON.parse(result.stdout);
+  assert.equal(report.schemaVersion, 2); assert.deepEqual(report.checks.map(c => c.tool), ['node']);
+  assert.equal(report.system.platform, process.platform); assert.equal(report.permissions.elevationRequested, false);
+});
+test('doctor rechaza mezclar perfil y herramienta o nombres arbitrarios', () => {
+  assert.equal(run('doctor', '--tool', 'node', '--profile', 'react').status, 1);
+  assert.equal(run('doctor', '--tool', 'node;echo bad').status, 1);
+  assert.equal(run('catalog', '--tool', 'node').status, 1);
+});

@@ -1,0 +1,45 @@
+name: Kit manual validation
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/**'
+      - 'tests/kit/**'
+      - 'catalog/**'
+      - 'config/**'
+      - '.agents/**'
+      - 'schemas/**'
+      - 'package*.json'
+      - '.github/workflows/kit-validation.yml'
+permissions:
+  contents: read
+jobs:
+  validate:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest, macos-15-intel]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: 'true'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24.22.2'
+      - name: Project dependencies only, without install scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run kit:validate
+      - run: npm run test:kit
+      - name: Host verification, no engine probe or container startup
+        run: npm run kit:verify -- runtime --docker --json
+      - name: Real native Node HTTP checks on loopback, no container
+        run: npm run kit:verify -- native --stacks node --require-all --json
+      - name: Existing Python and Java only, absent SDKs reported as skipped
+        run: npm run kit:verify -- native --stacks python,java --json
+      - name: Native Compose parser in Linux runner, no images or containers
+        if: runner.os == 'Linux'
+        run: npm run kit:verify -- compose --require-docker --json
