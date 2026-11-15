@@ -21,6 +21,7 @@ import {
   generateManualDraft,
   modifyDraftWithInstructions,
   regenerateDraft,
+  approveDraftOnly,
   publishApprovedDraft,
   discardDraft
 } from "./modules/blog/service.js";
@@ -204,15 +205,6 @@ export default {
     const msgId = cq.message?.message_id;
     const token = env.BOT_TOKEN_SECRETO;
 
-    await answerCallbackQuery(token, cq.id);
-
-    // Navegación: Menú principal
-    if (data === "menu:main") {
-      const menu = renderMainMenu();
-      await editTelegramMessage(token, chatId, msgId, menu.text, { replyMarkup: menu.replyMarkup });
-      return { ok: true, route: "main_menu" };
-    }
-
     // Blog: Consulta en tiempo real del estado de un Job (Solo lectura, CERO Workers AI)
     if (data.startsWith("job:status:")) {
       const targetJobId = data.replace("job:status:", "");
@@ -261,10 +253,56 @@ export default {
         statusSummary += `\n\nMotivo del fallo:\n${job.error_message.slice(0, 150)}`;
       }
 
-      // Mostrar popup interactivo inmediato sin recargar la pantalla
+      // Responder callback popup una sola vez
       await answerCallbackQuery(token, cq.id, statusSummary, true);
+
+      // Si el trabajo ya está completado y tiene un draftId asociado, actualizar el mensaje en el chat con la ficha completa del borrador
+      if (job.status === "completed" && job.result_json) {
+        try {
+          const resObj = JSON.parse(job.result_json);
+          if (resObj?.draftId) {
+            const draft = await getDraftById(env.BLOG_DB, resObj.draftId);
+            if (draft) {
+              const publishEnabled = String(env.ADMIN_PUBLISH_ENABLED).toLowerCase() === "true";
+              const actionButtons = [];
+              if (draft.status === "draft") {
+                actionButtons.push({ text: "✅ Aprobar Borrador", callback_data: `draft:approve_only:${draft.id}` });
+              }
+              if (publishEnabled && (draft.status === "draft" || draft.status === "approved")) {
+                actionButtons.push({ text: "🚀 Publicar Artículo", callback_data: `draft:publish_direct:${draft.id}` });
+              }
+              actionButtons.push({ text: "🗑️ Descartar", callback_data: `draft:discard:${draft.id}` });
+
+              const previewText = `<b>📋 BORRADOR EDITORIAL GENERADO CON ÉXITO</b>\n\n` +
+                `• <b>Título:</b> ${escapeHtml(draft.title)}\n` +
+                `• <b>Categoría:</b> ${draft.tag}\n` +
+                `• <b>Extensión real:</b> ${draft.wordCount} palabras\n` +
+                `• <b>Estado:</b> <code>${draft.status}</code>\n` +
+                `• <b>Quality Gate:</b> Aprobado ✅\n\n` +
+                `<b>Resumen BLUF:</b>\n<i>${escapeHtml(draft.excerpt)}</i>\n\n` +
+                `<i>Estado de publicación: ${publishEnabled ? "🟢 Habilitada" : "🔒 Deshabilitada (ADMIN_PUBLISH_ENABLED=false)"}</i>`;
+
+              const replyMarkup = {
+                inline_keyboard: [
+                  actionButtons,
+                  [
+                    { text: "📖 Leer Completo", callback_data: `draft:read_full:${draft.id}` },
+                    { text: "✏️ Modificar", callback_data: `draft:modify_prompt:${draft.id}` }
+                  ],
+                  [{ text: "🔙 Volver al Menú", callback_data: "menu:blog" }]
+                ]
+              };
+              await editTelegramMessage(token, chatId, msgId, previewText, { replyMarkup }).catch(() => null);
+            }
+          }
+        } catch (_) {}
+      }
+
       return { ok: true, route: "job_status_checked", targetJobId, status: job.status, stage: job.current_stage };
     }
+
+    // Para el resto de callbacks, emitir answerCallbackQuery genérico para apagar el reloj
+    await answerCallbackQuery(token, cq.id);
 
     // Navegación: Módulo Blog
     if (data === "menu:blog") {
@@ -384,19 +422,28 @@ export default {
         `<b>Resumen BLUF:</b>\n<i>${escapeHtml(draft.excerpt)}</i>\n\n` +
         `Elige una acción para gestionar este artículo:`;
 
-      const inline_keyboard = [
-        [
-          { text: "📖 Leer Completo", callback_data: `draft:read_full:${draft.id}` },
-          { text: "✏️ Modificar con IA", callback_data: `draft:modify_prompt:${draft.id}` }
-        ],
-        [
-          { text: "🔄 Regenerar", callback_data: `draft:regen_confirm:${draft.id}` },
-          { text: "🗑️ Descartar", callback_data: `draft:discard_confirm:${draft.id}` }
-        ],
-        [
-          { text: "🔙 Volver a Borradores", callback_data: "blog:drafts:0" }
-        ]
-      ];
+      const publishEnabled = String(env.ADMIN_PUBLISH_ENABLED).toLowerCase() === "true";
+      const actionRow = [];
+      if (draft.status === "draft") {
+        actionRow.push({ text: "✅ Aprobar Borrador", callback_data: `draft:approve_only:${draft.id}` });
+      }
+      if (publishEnabled && (draft.status === "draft" || draft.status === "approved")) {
+        actionRow.push({ text: "🚀 Publicar Artículo", callback_data: `draft:publish_direct:${draft.id}` });
+      }
+
+      const inline_keyboard = [];
+      if (actionRow.length > 0) inline_keyboard.push(actionRow);
+      inline_keyboard.push([
+        { text: "📖 Leer Completo", callback_data: `draft:read_full:${draft.id}` },
+        { text: "✏️ Modificar con IA", callback_data: `draft:modify_prompt:${draft.id}` }
+      ]);
+      inline_keyboard.push([
+        { text: "🔄 Regenerar", callback_data: `draft:regen_confirm:${draft.id}` },
+        { text: "🗑️ Descartar", callback_data: `draft:discard_confirm:${draft.id}` }
+      ]);
+      inline_keyboard.push([
+        { text: "🔙 Volver a Borradores", callback_data: "blog:drafts:0" }
+      ]);
 
       await editTelegramMessage(token, chatId, msgId, previewText, { replyMarkup: { inline_keyboard } });
       return { ok: true, route: "draft_view", draftId };
@@ -610,10 +657,75 @@ export default {
       return { ok: true, route: "blog_topic_prompt", articleType: selectedTypeNum };
     }
 
-    // Blog: Aprobación de borrador
-    if (data.startsWith("draft:approve:")) {
-      const draftId = data.replace("draft:approve:", "");
-      await editTelegramMessage(token, chatId, msgId, `<b>⏳ Publicando artículo aprobado...</b>\nGenerando portada con Flux y persistiendo en D1 y KV...`);
+    // Blog: Aprobación exclusiva de borrador (Sin publicar, no requiere ADMIN_PUBLISH_ENABLED=true)
+    if (data.startsWith("draft:approve_only:")) {
+      const draftId = data.replace("draft:approve_only:", "");
+      try {
+        const approvedDraft = await approveDraftOnly(env, draftId, userId);
+        await logAdminAction(env.BLOG_DB, {
+          userId,
+          username,
+          action: "BLOG_DRAFT_APPROVE_ONLY",
+          entityId: draftId,
+          details: { title: approvedDraft.title, words: approvedDraft.wordCount },
+          ip
+        });
+
+        const publishEnabled = String(env.ADMIN_PUBLISH_ENABLED).toLowerCase() === "true";
+        const actionRow = [];
+        if (publishEnabled) {
+          actionRow.push({ text: "🚀 Publicar Artículo", callback_data: `draft:publish_direct:${draftId}` });
+        }
+        actionRow.push({ text: "🗑️ Descartar", callback_data: `draft:discard_confirm:${draftId}` });
+
+        const approvedText = `<b>✅ BORRADOR APROBADO EXITOSAMENTE</b>\n\n` +
+          `• <b>Título:</b> ${escapeHtml(approvedDraft.title)}\n` +
+          `• <b>Categoría:</b> ${approvedDraft.tag}\n` +
+          `• <b>Extensión:</b> ${approvedDraft.wordCount} palabras\n` +
+          `• <b>Estado:</b> <code>approved</code>\n\n` +
+          `El borrador ha quedado formalmente aprobado en la base de datos D1.\n` +
+          `<i>Publicación: ${publishEnabled ? "🟢 Habilitada" : "🔒 Deshabilitada en producción (ADMIN_PUBLISH_ENABLED=false)"}</i>`;
+
+        const replyMarkup = {
+          inline_keyboard: [
+            actionRow,
+            [
+              { text: "📖 Leer Completo", callback_data: `draft:read_full:${draftId}` },
+              { text: "🔙 Volver a Borradores", callback_data: "blog:drafts:0" }
+            ]
+          ]
+        };
+
+        await editTelegramMessage(token, chatId, msgId, approvedText, { replyMarkup });
+        return { ok: true, route: "draft_approved_only", draftId };
+      } catch (err) {
+        await editTelegramMessage(token, chatId, msgId, `<b>❌ Error al aprobar:</b> ${escapeHtml(err.message)}`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🔙 Volver", callback_data: `draft:view:${draftId}` }]] }
+        });
+        return { ok: false, error: err.message };
+      }
+    }
+
+    // Blog: Publicación de artículo (Requiere ADMIN_PUBLISH_ENABLED=true)
+    if (data.startsWith("draft:publish_direct:") || data.startsWith("draft:approve:")) {
+      const draftId = data.replace("draft:publish_direct:", "").replace("draft:approve:", "");
+      const publishEnabled = String(env.ADMIN_PUBLISH_ENABLED).toLowerCase() === "true";
+
+      if (!publishEnabled) {
+        const disabledText = `<b>🔒 PUBLICACIÓN DESHABILITADA</b>\n\n` +
+          `La publicación en producción está protegida (<code>ADMIN_PUBLISH_ENABLED=false</code>).\n\n` +
+          `El borrador se encuentra a salvo en D1 y puede ser aprobado formalmente con el botón <b>✅ Aprobar Borrador</b>.`;
+        const replyMarkup = {
+          inline_keyboard: [
+            [{ text: "✅ Aprobar Borrador", callback_data: `draft:approve_only:${draftId}` }],
+            [{ text: "🔙 Volver al Borrador", callback_data: `draft:view:${draftId}` }]
+          ]
+        };
+        await editTelegramMessage(token, chatId, msgId, disabledText, { replyMarkup });
+        return { ok: true, route: "draft_publish_blocked", draftId };
+      }
+
+      await editTelegramMessage(token, chatId, msgId, `<b>⏳ Publicando artículo en producción...</b>\nGenerando portada con Flux y persistiendo en D1 y KV...`);
 
       // 1. Crear Job persistente en D1
       const jobId = "job_pub_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7);
@@ -868,19 +980,29 @@ export default {
             ip
           });
 
+          const publishEnabled = String(env.ADMIN_PUBLISH_ENABLED).toLowerCase() === "true";
+          const actionRow = [
+            { text: "✅ Aprobar Borrador", callback_data: `draft:approve_only:${draft.id}` }
+          ];
+          if (publishEnabled) {
+            actionRow.push({ text: "🚀 Publicar Artículo", callback_data: `draft:publish_direct:${draft.id}` });
+          }
+          actionRow.push({ text: "🗑️ Descartar", callback_data: `draft:discard:${draft.id}` });
+
           const previewText = `<b>📋 BORRADOR EDITORIAL GENERADO CON ÉXITO</b>\n\n` +
             `• <b>Título:</b> ${escapeHtml(draft.title)}\n` +
             `• <b>Categoría:</b> ${draft.tag}\n` +
             `• <b>Extensión real:</b> ${draft.wordCount} palabras\n` +
             `• <b>Quality Gate:</b> Aprobado ✅\n\n` +
             `<b>Resumen BLUF:</b>\n<i>${escapeHtml(draft.excerpt)}</i>\n\n` +
-            `¿Deseas autorizar su publicación en producción?`;
+            `<i>Estado de publicación: ${publishEnabled ? "🟢 Habilitada" : "🔒 Deshabilitada (ADMIN_PUBLISH_ENABLED=false)"}</i>`;
 
           const replyMarkup = {
             inline_keyboard: [
+              actionRow,
               [
-                { text: "🚀 Aprobar y Publicar", callback_data: `draft:approve:${draft.id}` },
-                { text: "🗑️ Descartar", callback_data: `draft:discard:${draft.id}` }
+                { text: "📖 Leer Completo", callback_data: `draft:read_full:${draft.id}` },
+                { text: "✏️ Modificar", callback_data: `draft:modify_prompt:${draft.id}` }
               ],
               [
                 { text: "🔙 Volver al Menú", callback_data: "menu:blog" }
@@ -1058,19 +1180,29 @@ export default {
             ip
           });
 
+          const publishEnabled = String(env.ADMIN_PUBLISH_ENABLED).toLowerCase() === "true";
+          const actionRow = [
+            { text: "✅ Aprobar Borrador", callback_data: `draft:approve_only:${draft.id}` }
+          ];
+          if (publishEnabled) {
+            actionRow.push({ text: "🚀 Publicar Artículo", callback_data: `draft:publish_direct:${draft.id}` });
+          }
+          actionRow.push({ text: "🗑️ Descartar", callback_data: `draft:discard:${draft.id}` });
+
           const previewText = `<b>📋 BORRADOR EDITORIAL GENERADO (RECUPERADO CON ÉXITO)</b>\n\n` +
             `• <b>Título:</b> ${escapeHtml(draft.title)}\n` +
             `• <b>Categoría:</b> ${draft.tag}\n` +
             `• <b>Extensión real:</b> ${draft.wordCount} palabras\n` +
             `• <b>Quality Gate:</b> Aprobado ✅\n\n` +
             `<b>Resumen BLUF:</b>\n<i>${escapeHtml(draft.excerpt)}</i>\n\n` +
-            `¿Deseas autorizar su publicación en producción?`;
+            `<i>Estado de publicación: ${publishEnabled ? "🟢 Habilitada" : "🔒 Deshabilitada (ADMIN_PUBLISH_ENABLED=false)"}</i>`;
 
           const replyMarkup = {
             inline_keyboard: [
+              actionRow,
               [
-                { text: "🚀 Aprobar y Publicar", callback_data: `draft:approve:${draft.id}` },
-                { text: "🗑️ Descartar", callback_data: `draft:discard:${draft.id}` }
+                { text: "📖 Leer Completo", callback_data: `draft:read_full:${draft.id}` },
+                { text: "✏️ Modificar", callback_data: `draft:modify_prompt:${draft.id}` }
               ],
               [{ text: "🔙 Volver al Menú", callback_data: "menu:blog" }]
             ]

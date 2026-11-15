@@ -221,6 +221,19 @@ export async function regenerateDraft(env, { draftId, userId }) {
   return await getDraftById(env.BLOG_DB, draftId);
 }
 
+export async function approveDraftOnly(env, draftId, userId) {
+  if (!env.BLOG_DB) throw new Error("BLOG_DB no disponible");
+  const draft = await getDraftById(env.BLOG_DB, draftId);
+  if (!draft) throw new Error("Borrador no encontrado");
+  if (draft.status === "approved") return draft;
+  if (draft.status === "published") throw new Error("El borrador ya fue publicado previamente");
+  if (draft.status === "discarded") throw new Error("El borrador fue descartado y no puede aprobarse");
+
+  const approved = await markDraftApproved(env.BLOG_DB, draftId, userId);
+  if (!approved) throw new Error("No fue posible cambiar el estado a aprobado (concurrencia o ya procesado)");
+  return await getDraftById(env.BLOG_DB, draftId);
+}
+
 export async function publishApprovedDraft(env, draftId, userId) {
   // Guard de seguridad obligatorio: Bloqueo de publicación en backend
   const publishEnabled = String(env.ADMIN_PUBLISH_ENABLED).toLowerCase() === "true";
