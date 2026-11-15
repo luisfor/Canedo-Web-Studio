@@ -1,0 +1,19 @@
+{
+  "name": "canedo-admin",
+  "version": "1.0.0",
+  "description": "Worker central para administración unificada de Canedo Studio vía Telegram",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  },
+  "keywords": [
+    "telegram",
+    "admin",
+    "canedo-studio",
+    "cloudflare-worker"
+  ],
+  "author": "Canedo Studio",
+  "license": "UNLICENSED"
+}
+

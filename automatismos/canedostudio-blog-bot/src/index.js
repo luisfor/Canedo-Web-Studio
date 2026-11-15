@@ -1,5 +1,7 @@
 import { persistPost } from "./d1_adapter.js";
 import { validateEnrichedArticleData, VALID_SERVICE_KEYS } from "./seo/service_mapping.js";
+import { generateRobustArticle, parseMarkdownToBlocks } from "./editorial_pipeline.js";
+import { resolveArticleType, getBlogBotEligibleTypes } from "./article_types.js";
 /* Robot redactor del blog de Canedo Studio.
    7:00 AM y 5:00 PM todos los días (hora Colombia): escribe un artículo
    con IA, le genera portada con IA, lo guarda en KV y avisa por email.
@@ -19,6 +21,10 @@ import { validateEnrichedArticleData, VALID_SERVICE_KEYS } from "./seo/service_m
 import { TOPICS } from "./topics.js";
 
 const MODEL_TEXT = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
+const BRIEF_THRESHOLD = 70;
+const QUALITY_GATE_THRESHOLD = 70;
+const MIN_EDITORIAL_WORDS = 650;
+const MAX_EDITORIAL_WORDS = 900;
 const MODEL_IMG = "@cf/black-forest-labs/flux-1-schnell";
 const MAX_POSTS = 30;
 const MAX_HISTORY = 300;   // títulos generados recordados (anti-repetición)
@@ -55,9 +61,12 @@ const RSS_FEEDS = [
 const SYSTEM_PROMPT = `Eres el redactor jefe del blog "Insights" de Canedo Studio, una agencia de automatización con IA para empresas.
 Estilo: español neutro, cercano y ejecutivo; tutea al lector; persuasivo pero honesto; frases claras, cero jerga técnica sin explicar.
 REGLAS DURAS:
-- NUNCA inventes cifras concretas, estadísticas, casos de clientes, testimonios ni empresas de ejemplo con nombre. Habla de tendencias generales y sentido común.
+- NUNCA inventes cifras concretas, estadísticas falsas, porcentajes sin fuente, nombres comerciales inventados ni testimonios ficticios. Habla de realidades operativas y sentido común de negocio.
+- EJEMPLOS OBLIGATORIOS: Desarrolla ejemplos prácticos basados en tipos o arquetipos de negocios cotidianos (por ejemplo: un taller mecánico, una clínica dental, un despacho contable, un restaurante o una tienda local), describiendo la fricción operativa real que viven y cómo se resuelve.
+- TÍTULO: Debe basarse fielmente en la promesa y gancho comercial del tema curado recibido, sin desvirtuar su enfoque ni convertirlo en un título genérico o engañoso.
 - No menciones a Canedo Studio en primera persona todo el rato; como mucho una mención natural al final.
-- Extensión total del contenido: entre 650 y 900 palabras.
+- EXTENSIÓN ESTRICTA: El cuerpo editorial (la suma de los párrafos en "content") debe tener OBLIGATORIAMENTE entre 650 y 900 palabras reales. Un texto de 300 o 400 palabras será rechazado automáticamente por el Quality Gate. Cada sección debe estar bien desarrollada con argumentos y aplicaciones prácticas.
+- CERO REPETICIÓN: Cada párrafo debe aportar un argumento o matiz nuevo. Está TERMINANTEMENTE PROHIBIDO repetir párrafos o duplicar el resumen ejecutivo dentro del cuerpo del artículo o en la conclusión.
 - Devuelves ÚNICAMENTE un JSON válido, sin markdown, sin comentarios, con esta forma exacta:
 {
   "title": "...",
@@ -77,7 +86,11 @@ Donde "tag" es UNA de: Estrategia, Chatbots, Reseñas, Automatización, Diseño 
 "targetService" debe ser la clave del servicio más afín al tema (diseno_web, chatbots_ia, automatizacion_resenas, blog_automatizado o contacto_estrategico).
 "faqs" es opcional pero muy recomendado: máximo 2 preguntas útiles y sin clichés.
 "content" es una lista de 8 a 14 bloques. type puede ser "p" (párrafo), "h2" (subtítulo) o "quote" (una sola cita potente por artículo como máximo).
-Estructura recomendada: arranque con una verdad incómoda, desarrollo con 2-3 subtítulos, y cierre con una idea accionable. El último bloque puede sugerir con naturalidad que una llamada de diagnóstico aclara si encaja en el negocio del lector.`;
+Estructura obligatoria:
+1. Apertura directa: Plantea el dilema comercial o la verdad incómoda del negocio.
+2. Desarrollo en profundidad (2-3 subtítulos h2): Explica las causas de fondo y analiza al menos dos escenarios de sectores cotidianos (ej. clínica dental, taller, asesoría) detallando cómo sufren el problema en su día a día.
+3. Solución práctica y trade-offs: Qué medidas inmediatas tomar y qué sacrificios o cambios operativos implica.
+4. Conclusión fresca y llamada a la acción: Cierre que resume el aprendizaje con palabras distintas (sin repetir párrafos anteriores) y sugiere con naturalidad cómo un diagnóstico estratégico de Canedo Studio ayuda a resolverlo.`;
 
 
 const BRIEF_PROMPT = `Eres el Director Editorial del blog "Insights" de Canedo Studio.
@@ -111,33 +124,30 @@ Devuelve ÚNICAMENTE un JSON válido con la siguiente estructura:
 }
 Solo JSON, sin markdown.`;
 
-const AUDIT_PROMPT = `Eres el Critical Editor (Auditor Premium) del blog "Insights".
-Tu tarea es auditar un artículo contra su Brief. Eres EXTREMADAMENTE SEVERO.
-Si el artículo usa clichés ("lleva tu negocio al siguiente nivel", "en el mundo digital de hoy"), o inventa datos/estadísticas falsas, penalízalo fuertemente.
-Evalúa las siguientes métricas (0 a 100):
-originality, usefulness, searchIntentMatch, technicalAccuracy, trust, depth, specificity, nonObviousness, thesisStrength, practicalValue, nuance, humanness, geoAnswerability, ctaRelevance, brandRelevance, commercialRelevance, languageConsistency, promiseFulfillment.
+const AUDIT_PROMPT = `Eres el Critical Editor (Auditor Editorial) del blog "Insights" de Canedo Studio.
+Evalúa si el artículo cumple el Brief y estándares editoriales.
+Califica de 0 a 100 las 4 métricas críticas:
+- nonObviousness: evita obviedades, aporta trade-offs o ángulos no trillados.
+- nuance: profundidad argumental y equilibrio sin exageraciones.
+- humanness: tono humano y cercano, sin lenguaje de folleto publicitario.
+- specificity: aplicabilidad concreta en la realidad de una pyme cotidiana.
 
-Para CADA métrica, devuelve un objeto con: { "score": 0-100, "evidence": "...", "problem": "...", "correction": "..." }
-
-Devuelve ÚNICAMENTE un JSON válido con esta estructura:
+Devuelve ÚNICAMENTE este JSON conciso (máximo 300 tokens):
 {
-  "approved": boolean,
+  "approved": true o false,
+  "score": 0 a 100,
   "metrics": {
-    "originality": { "score": 90, "evidence": "...", "problem": "...", "correction": "..." },
-    // (repite para TODAS las métricas)
-  },
-  "risks": {
-    "genericAiRisk": 0-100,
-    "duplicationRisk": 0-100,
-    "cannibalizationRisk": 0-100,
-    "claimCertaintyRisk": 0-100
+    "nonObviousness": { "score": 85, "evidence": "breve frase", "problem": "", "correction": "" },
+    "nuance": { "score": 85, "evidence": "breve frase", "problem": "", "correction": "" },
+    "humanness": { "score": 85, "evidence": "breve frase", "problem": "", "correction": "" },
+    "specificity": { "score": 85, "evidence": "breve frase", "problem": "", "correction": "" }
   },
   "reasons": [
-    // Lista de los peores fallos que justifican el rechazo (si approved=false)
-    { "metric": "...", "score": 0, "evidence": "...", "problem": "...", "correction": "..." }
+    // Si approved=false, incluye los motivos de rechazo
+    { "metric": "nonObviousness", "score": 50, "evidence": "...", "problem": "...", "correction": "..." }
   ]
 }
-Solo JSON, sin markdown.`;
+Solo JSON, sin bloques de código ni markdown.`;
 
 const TOPIC_PROMPT = `Eres el estratega de contenidos del blog "Insights" de Canedo Studio.
 Respondes ÚNICAMENTE con JSON válido, sin markdown ni comentarios, con esta forma exacta:
@@ -156,10 +166,16 @@ function slugify(text) {
 }
 
 function extractJson(raw) {
-  const start = raw.indexOf("{");
-  const end = raw.lastIndexOf("}");
+  if (typeof raw !== "string") throw new Error("Entrada inválida para parsear JSON");
+  // Limpieza defensiva contra bloques markdown ```json ... ```
+  let cleaned = raw.trim();
+  if (cleaned.startsWith("```")) {
+    cleaned = cleaned.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
+  }
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
   if (start === -1 || end === -1 || end <= start) throw new Error("La IA no devolvió JSON");
-  return JSON.parse(raw.slice(start, end + 1));
+  return JSON.parse(cleaned.slice(start, end + 1));
 }
 
 function sniffImage(bytes) {
@@ -193,52 +209,7 @@ function readTextResponse(res) {
 }
 
 async function generateArticle(env, brief, topic, attempt = 1, feedback = null, stats = null) {
-  if (stats) stats.writerCalls = (stats.writerCalls || 0) + 1;
-  let userPrompt = `Escribe el artículo del blog. NO inventes cifras, estadísticas, casos ni testimonios. Basate estrictamente en este Brief Editorial:
-${JSON.stringify(brief, null, 2)}`;
-  
-  if (attempt > 1 && feedback) {
-    userPrompt += `\n\nINTENTO ANTERIOR FALLIDO. FEEDBACK DEL AUDITOR:\n`;
-    userPrompt += JSON.stringify(feedback.reasons, null, 2);
-    userPrompt += `\n\nDebes corregir estos problemas estructurales y de profundidad en esta nueva versión.`;
-  }
-
-  userPrompt += `\n\nRecuerda: SOLO el JSON, sin nada más.`;
-
-  const res = await env.AI.run(MODEL_TEXT, {
-    messages: [
-      { role: "system", content: SYSTEM_PROMPT },
-      { role: "user", content: userPrompt },
-    ],
-    max_tokens: 2800,
-    temperature: 0.75,
-  });
-  const data = extractJson(readTextResponse(res));
-
-  if (!data.title || typeof data.title !== "string") throw new Error("JSON sin título");
-  const allowed = new Set(["p", "h2", "quote"]);
-  const content = (Array.isArray(data.content) ? data.content : [])
-    .filter((b) => b && typeof b.text === "string" && b.text.trim().length > 0)
-    .map((b) => ({ type: allowed.has(b.type) ? b.type : "p", text: b.text.trim() }));
-  if (content.length < 5) throw new Error("Artículo demasiado corto");
-  const tags = new Set(["Estrategia", "Chatbots", "Reseñas", "Automatización", "Diseño web"]);
-
-  // Validar y normalizar determinísticamente campos de SEO / AEO / GEO
-  const enriched = validateEnrichedArticleData(data, content);
-
-  return {
-    title: data.title.trim().slice(0, 120),
-    tag: tags.has(data.tag) ? data.tag : "Estrategia",
-    excerpt: (data.excerpt || content[0].text).trim().slice(0, 160),
-    content,
-    // Campos enriquecidos para AEO/GEO y Enlazado Interno (Fase 2C.2A y 2B)
-    seoVersion: enriched.cleaned.seoVersion,
-    executiveSummary: enriched.cleaned.executiveSummary,
-    targetService: enriched.cleaned.targetService,
-    customMetaDesc: enriched.cleaned.customMetaDesc,
-    faqs: enriched.cleaned.faqs,
-    relatedSlugs: enriched.cleaned.relatedSlugs || []
-  };
+  return await generateRobustArticle(env, brief, topic, attempt, feedback, stats);
 }
 
 
@@ -265,13 +236,14 @@ async function createEditorialBrief(env, topic, stats = null) {
         if (!brief.uniqueThesis || brief.uniqueThesis.trim().toLowerCase() === topic.tema.trim().toLowerCase()) throw new Error("uniqueThesis idéntica al tema");
         if (!brief.nonObviousInsight || !brief.tradeoff || !brief.requiredExamples || brief.requiredExamples.length === 0) throw new Error("Faltan campos críticos obligatorios");
         
-        // BRIEF GATE: Autoevaluación semántica (todos los scores deben ser >= 80)
+        // BRIEF GATE: Autoevaluación semántica calibrada (umbral >= 70)
         if (!brief.evaluation) throw new Error("Falta nodo de evaluación");
         const ev = brief.evaluation;
-        if ((ev.thesisSpecificity?.score || 0) < 80) throw new Error(`Tesis poco específica: ${ev.thesisSpecificity?.reason}`);
-        if ((ev.insightOriginality?.score || 0) < 80) throw new Error(`Insight no original: ${ev.insightOriginality?.reason}`);
-        if ((ev.businessProblemSpecificity?.score || 0) < 80) throw new Error(`Problema muy genérico: ${ev.businessProblemSpecificity?.reason}`);
-        if ((ev.tradeoffQuality?.score || 0) < 80) throw new Error(`Trade-off débil: ${ev.tradeoffQuality?.reason}`);
+        const bThreshold = (typeof env.BRIEF_THRESHOLD === "number") ? env.BRIEF_THRESHOLD : BRIEF_THRESHOLD;
+        if ((ev.thesisSpecificity?.score || 0) < bThreshold) throw new Error(`Tesis poco específica (${ev.thesisSpecificity?.score || 0} < ${bThreshold}): ${ev.thesisSpecificity?.reason}`);
+        if ((ev.insightOriginality?.score || 0) < bThreshold) throw new Error(`Insight no original (${ev.insightOriginality?.score || 0} < ${bThreshold}): ${ev.insightOriginality?.reason}`);
+        if ((ev.businessProblemSpecificity?.score || 0) < bThreshold) throw new Error(`Problema muy genérico (${ev.businessProblemSpecificity?.score || 0} < ${bThreshold}): ${ev.businessProblemSpecificity?.reason}`);
+        if ((ev.tradeoffQuality?.score || 0) < bThreshold) throw new Error(`Trade-off débil (${ev.tradeoffQuality?.score || 0} < ${bThreshold}): ${ev.tradeoffQuality?.reason}`);
         
         brief.approved = true;
         brief._failedBriefs = failedBriefs;
@@ -283,6 +255,22 @@ async function createEditorialBrief(env, topic, stats = null) {
       }
     } catch(e) {
       console.log(`Brief Gate falló (intento ${attempt}):`, e.message);
+      // Distinguir error técnico de IA (500, 504, timeout, network) vs rechazo editorial de contenido
+      const isTechnicalAiError =
+        e.message.includes("500") ||
+        e.message.includes("502") ||
+        e.message.includes("503") ||
+        e.message.includes("504") ||
+        e.message.includes("Timeout") ||
+        e.message.includes("unresponsive") ||
+        e.message.includes("fetch failed") ||
+        e.message.includes("network") ||
+        e.message.includes("rate limit");
+
+      if (isTechnicalAiError) {
+        throw new Error(`Workers AI Technical Failure: ${e.message}`);
+      }
+
       if (e.message.indexOf("Falta nodo") === -1 && !e.lastBrief) {
          failedBriefs.push({ attempt, brief: null, error: e.message });
       }
@@ -296,24 +284,229 @@ async function createEditorialBrief(env, topic, stats = null) {
   }
 }
 
+function countEditorialWords(article) {
+  if (!article || !Array.isArray(article.content)) {
+    return { totalWords: 0, bodyWords: 0, paragraphCount: 0, blocks: [] };
+  }
+  let bodyWords = 0;
+  let totalWords = 0;
+  let paragraphCount = 0;
+  const blocks = [];
+
+  for (const block of article.content) {
+    if (!block || typeof block.text !== "string") continue;
+    const cleanText = block.text.trim();
+    if (!cleanText) continue;
+
+    const words = cleanText.split(/\s+/).filter(Boolean);
+    const count = words.length;
+    totalWords += count;
+
+    if (block.type === "p" || block.type === "quote") {
+      bodyWords += count;
+      paragraphCount++;
+      blocks.push({ type: block.type, text: cleanText, wordCount: count });
+    }
+  }
+
+  return { totalWords, bodyWords, paragraphCount, blocks };
+}
+
+function normalizeForComparison(text) {
+  if (typeof text !== "string") return "";
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^\w\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function getWordTokens(text) {
+  return normalizeForComparison(text).split(" ").filter((w) => w.length > 0);
+}
+
+function checkDuplicateParagraphs(article) {
+  if (!article || !Array.isArray(article.content)) return { hasDuplicate: false, duplicates: [] };
+
+  const paragraphs = [];
+  if (typeof article.executiveSummary === "string" && article.executiveSummary.trim()) {
+    paragraphs.push({ source: "executiveSummary", text: article.executiveSummary.trim() });
+  }
+
+  article.content.forEach((b, idx) => {
+    if ((b.type === "p" || b.type === "quote") && typeof b.text === "string" && b.text.trim()) {
+      paragraphs.push({ source: `bloque_${idx}_${b.type}`, text: b.text.trim() });
+    }
+  });
+
+  const duplicates = [];
+
+  for (let i = 0; i < paragraphs.length; i++) {
+    const p1 = paragraphs[i];
+    const norm1 = normalizeForComparison(p1.text);
+    const tokens1 = getWordTokens(p1.text);
+
+    for (let j = i + 1; j < paragraphs.length; j++) {
+      const p2 = paragraphs[j];
+      const norm2 = normalizeForComparison(p2.text);
+      const tokens2 = getWordTokens(p2.text);
+
+      // Si alguno tiene menos de 10 palabras, omitir para evitar falsos positivos con frases breves
+      if (tokens1.length < 10 || tokens2.length < 10) continue;
+
+      // 1. Identidad exacta tras normalizar puntuación, mayúsculas y acentos
+      if (norm1 === norm2) {
+        duplicates.push({
+          type: "exact_duplicate",
+          sourceA: p1.source,
+          sourceB: p2.source,
+          similarity: 1.0,
+          preview: p1.text.slice(0, 100)
+        });
+        continue;
+      }
+
+      // 2. Similitud léxica Jaccard para redundancia sustancial
+      const set1 = new Set(tokens1);
+      const set2 = new Set(tokens2);
+      let intersection = 0;
+      for (const t of set1) {
+        if (set2.has(t)) intersection++;
+      }
+      const union = new Set([...set1, ...set2]).size;
+      const jaccard = union > 0 ? intersection / union : 0;
+
+      // Si comparten >= 70% de vocabulario único y longitudes comparables (ratio > 0.6)
+      const lengthRatio = Math.min(tokens1.length, tokens2.length) / Math.max(tokens1.length, tokens2.length);
+      if (jaccard >= 0.70 && lengthRatio >= 0.60) {
+        duplicates.push({
+          type: "high_redundancy",
+          sourceA: p1.source,
+          sourceB: p2.source,
+          similarity: Math.round(jaccard * 100) / 100,
+          preview: p1.text.slice(0, 100)
+        });
+      }
+    }
+  }
+
+  return {
+    hasDuplicate: duplicates.length > 0,
+    duplicates
+  };
+}
+
 async function auditArticle(env, article, brief, stats = null) {
   if (stats) stats.auditCalls = (stats.auditCalls || 0) + 1;
+
+  // Resolver el tipo de artículo para calibrar límites de palabras
+  const articleType = resolveArticleType(article?.articleType || brief?.articleType || 2);
+  const minWords = (typeof env.MIN_EDITORIAL_WORDS === "number") ? env.MIN_EDITORIAL_WORDS : articleType.minWords;
+  const maxWords = (typeof env.MAX_EDITORIAL_WORDS === "number") ? env.MAX_EDITORIAL_WORDS : articleType.maxWords;
+
+  // 1. DETERMINISTIC QUALITY GATE: Conteo determinista de palabras del cuerpo editorial
+  const wordStats = countEditorialWords(article);
+
+  let lengthViolation = null;
+  if (wordStats.bodyWords < minWords) {
+    lengthViolation = {
+      metric: "depth",
+      score: 0,
+      evidence: `Extensión insuficiente: ${wordStats.bodyWords} palabras en cuerpo editorial (mínimo requerido: ${minWords}). Párrafos: ${wordStats.paragraphCount}.`,
+      problem: "ArticleTooShort",
+      correction: `Desarrollar el artículo con mayor profundidad y ejemplos sectoriales para alcanzar al menos ${minWords} palabras.`
+    };
+  } else if (wordStats.bodyWords > maxWords) {
+    lengthViolation = {
+      metric: "depth",
+      score: 0,
+      evidence: `Extensión excesiva: ${wordStats.bodyWords} palabras en cuerpo editorial (máximo permitido: ${maxWords}).`,
+      problem: "ArticleTooLong",
+      correction: `Sintetizar y eliminar rodeos para mantenerse dentro del límite de ${maxWords} palabras.`
+    };
+  }
+
+  // 2. DETERMINISTIC QUALITY GATE: Detección de párrafos duplicados o redundancia sustancial
+  const duplicateCheck = checkDuplicateParagraphs(article);
+  let duplicateViolation = null;
+  if (duplicateCheck.hasDuplicate) {
+    const firstDup = duplicateCheck.duplicates[0];
+    duplicateViolation = {
+      metric: "originality",
+      score: 0,
+      evidence: `Párrafos duplicados o redundantes detectados entre ${firstDup.sourceA} y ${firstDup.sourceB} (similitud: ${firstDup.similarity * 100}%). Texto: "${firstDup.preview}..."`,
+      problem: "DuplicateParagraph",
+      correction: "Eliminar párrafos idénticos o reformular la sección con ideas y argumentos diferenciados."
+    };
+  }
+
+  // LLM Auditor semántico con reintento aislado
   const userPrompt = `Audita el siguiente artículo generado contra su Brief Editorial.\n\nBRIEF:\n${JSON.stringify(brief, null, 2)}\n\nARTÍCULO:\n${JSON.stringify(article, null, 2)}`;
-  const res = await env.AI.run(MODEL_TEXT, {
-    messages: [
-      { role: "system", content: AUDIT_PROMPT },
-      { role: "user", content: userPrompt }
-    ],
-    max_tokens: 1800,
-    temperature: 0.4
-  });
-  const audit = extractJson(readTextResponse(res));
+  let audit = null;
+  let lastAuditErr = null;
+
+  for (let auditAttempt = 1; auditAttempt <= 2; auditAttempt++) {
+    try {
+      const res = await env.AI.run(MODEL_TEXT, {
+        messages: [
+          { role: "system", content: AUDIT_PROMPT },
+          { role: "user", content: userPrompt }
+        ],
+        max_tokens: 600,
+        temperature: auditAttempt === 1 ? 0.2 : 0.1
+      });
+      const rawAudit = readTextResponse(res);
+      audit = extractJson(rawAudit);
+      if (audit && typeof audit.approved === "boolean") {
+        break;
+      }
+    } catch (auditErr) {
+      lastAuditErr = auditErr;
+      console.warn(`[AUDITOR AI WARN] Intento ${auditAttempt}/2 falló en auditor semántico:`, auditErr.message);
+    }
+  }
+
+  if (!audit) {
+    audit = {
+      approved: false,
+      score: 0,
+      metrics: {},
+      reasons: [{
+        metric: "auditorReliability",
+        score: 0,
+        evidence: `Fallo al auditar con LLM tras 2 intentos: ${lastAuditErr?.message || "Sin respuesta válida"}`,
+        problem: "AuditorParseError",
+        correction: "Reintentar auditoría editorial con salida estructurada válida."
+      }]
+    };
+  }
+  audit.reasons = audit.reasons || [];
+
+  // Aplicar violaciones deterministas duras de conteo y repetición
+  if (lengthViolation) {
+    audit.approved = false;
+    if (audit.metrics && audit.metrics.depth) {
+      audit.metrics.depth.score = 0;
+      audit.metrics.depth.evidence = lengthViolation.evidence;
+    }
+    audit.reasons.unshift(lengthViolation);
+  }
+
+  if (duplicateViolation) {
+    audit.approved = false;
+    if (audit.metrics && audit.metrics.originality) {
+      audit.metrics.originality.score = 0;
+      audit.metrics.originality.evidence = duplicateViolation.evidence;
+    }
+    audit.reasons.unshift(duplicateViolation);
+  }
   
-  // Deterministic checks override LLM approval
+  // Deterministic checks override LLM approval (clichés de marketing)
   const text = JSON.stringify(article).toLowerCase();
   if (text.includes("siguiente nivel") || text.includes("hoy en día") || text.includes("en el mundo digital")) {
      audit.approved = false;
-     audit.reasons = audit.reasons || [];
      audit.reasons.push({
        metric: "languageConsistency", score: 0, evidence: "Uso de clichés de marketing", problem: "Cliché", correction: "Eliminar frases trilladas."
      });
@@ -323,7 +516,6 @@ async function auditArticle(env, article, brief, stats = null) {
   const quantitativePattern = /(\d+\s*%)|(\b(un|el)\s+\d+\s*por\s*ciento\b)|(\b\d+\s*(veces|dólares|euros)\s+más\b)/i;
   if (quantitativePattern.test(text)) {
     audit.approved = false;
-    audit.reasons = audit.reasons || [];
     audit.reasons.push({
       metric: "factualIntegrity",
       score: 0,
@@ -333,11 +525,19 @@ async function auditArticle(env, article, brief, stats = null) {
     });
   }
   
-  // Check critical thresholds dynamically
+  // Check critical thresholds dynamically (umbral calibrado >= 70)
+  const qgThreshold = (typeof env.QUALITY_GATE_THRESHOLD === "number") ? env.QUALITY_GATE_THRESHOLD : QUALITY_GATE_THRESHOLD;
   const criticalMetrics = ["nonObviousness", "nuance", "humanness", "specificity"];
   for (const m of criticalMetrics) {
-    if (audit.metrics && audit.metrics[m] && audit.metrics[m].score < 80) {
+    if (audit.metrics && audit.metrics[m] && audit.metrics[m].score < qgThreshold) {
       audit.approved = false;
+      audit.reasons.push({
+        metric: m,
+        score: audit.metrics[m].score,
+        evidence: audit.metrics[m].evidence || `Puntuación ${audit.metrics[m].score} bajo umbral ${qgThreshold}`,
+        problem: `Sub-umbral en métrica crítica ${m}`,
+        correction: audit.metrics[m].correction || "Reforzar profundidad y autenticidad humana"
+      });
     }
   }
 
@@ -352,7 +552,11 @@ async function generateCover(topic) {
     "Scene: " + (topic.img || topic.tema);
   const result = await this.AI.run(MODEL_IMG, { prompt });
   let bytes;
-  if (result && typeof result.getReader === "function") {
+  if (result instanceof ArrayBuffer) {
+    bytes = result;
+  } else if (result && typeof result.arrayBuffer === "function") {
+    bytes = await result.arrayBuffer();
+  } else if (result && typeof result.getReader === "function") {
     bytes = await new Response(result).arrayBuffer();
   } else if (result && result.image) {
     const bin = atob(result.image);
@@ -487,8 +691,24 @@ Solo el JSON.`;
 /* ---------- Selección de tema: curados → RSS (mañanas) → IA ---------- */
 
 async function pickTopic(env, existingTitles, existingSlugs, state, hourUTC, modo) {
+  const nowMs = Date.now();
+  // Limpiar reservas expiradas (> 15 minutos = 900.000 ms)
+  const activeReservations = new Map();
+  if (state.topicReservations && typeof state.topicReservations === "object") {
+    for (const [tId, expMs] of Object.entries(state.topicReservations)) {
+      if (typeof expMs === "number" && expMs > nowMs) {
+        activeReservations.set(tId, expMs);
+      }
+    }
+  }
+
+  const excludedTopics = new Set([
+    ...(state.usedTopics || []),
+    ...activeReservations.keys()
+  ]);
+
   if (modo === "curado" || modo === "auto") {
-    const available = TOPICS.filter((t) => !(state.usedTopics || []).includes(t.id));
+    const available = TOPICS.filter((t) => !excludedTopics.has(t.id));
     const fresh = available.filter(
       (t) => !existingTitles.has(normTitle(t.tema)) && !existingSlugs.has(slugify(t.tema))
     );
@@ -509,7 +729,15 @@ async function pickTopic(env, existingTitles, existingSlugs, state, hourUTC, mod
   return { topic, source: "ia" };
 }
 
-/* ---------- Publicación ---------- */
+/* ---------- Publicación Defensiva ---------- */
+
+class EditorialSkipError extends Error {
+  constructor(message, details = {}) {
+    super(message);
+    this.name = "EditorialSkipError";
+    this.details = details;
+  }
+}
 
 async function publish(env, hourUTC, modo) {
   if (typeof hourUTC !== "number") hourUTC = new Date().getUTCHours();
@@ -526,81 +754,340 @@ async function publish(env, hourUTC, modo) {
   const existingTitles = new Set(posts.map((p) => normTitle(p.title)));
   const existingSlugs = new Set(posts.map((p) => p.slug));
 
-  const { topic, source } = await pickTopic(env, existingTitles, existingSlugs, state, hourUTC, modo);
-
-  const brief = await createEditorialBrief(env, topic);
-  
-  let article = null;
-  let auditResult = null;
-  let feedback = null;
-  
-  for (let attempt = 1; attempt <= 3; attempt++) {
+  // Sincronizar slugs y títulos existentes con Cloudflare D1 canónico para evitar duplicados
+  if (env.BLOG_DB && typeof env.BLOG_DB.prepare === "function") {
     try {
-      article = await generateArticle(env, brief, topic, attempt, feedback);
-      auditResult = await auditArticle(env, article, brief);
-      if (auditResult.approved) break;
-      feedback = auditResult;
-      article = null; // force retry
-    } catch(e) {
-      feedback = { reasons: [{ metric: "error", score: 0, evidence: "Exception", problem: e.message, correction: "Retry" }] };
-      article = null;
+      const d1Posts = await env.BLOG_DB.prepare(
+        "SELECT slug, title FROM blog_posts ORDER BY id DESC LIMIT 150"
+      ).all();
+      if (d1Posts && Array.isArray(d1Posts.results)) {
+        for (const row of d1Posts.results) {
+          if (row.slug) existingSlugs.add(row.slug);
+          if (row.title) existingTitles.add(normTitle(row.title));
+        }
+      }
+    } catch (d1Err) {
+      console.warn("[SYNC CANONICAL D1 WARN] No se pudo leer listado previo de D1, recurriendo a KV:", d1Err.message);
     }
   }
-  
-  if (!article) {
-     throw new Error("SKIP PUBLICATION: Quality Gate falló 3 veces.");
-  }
-  
-  const imgBytes = await generateCover.call(env, topic);
 
-  let slug = slugify(article.title);
-  if (existingSlugs.has(slug)) slug = slug + "-" + String(Date.now()).slice(-4);
+  const MAX_TOPIC_ATTEMPTS = 3;
+  const executionId = `exec_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+  const workerVersion = "phase_6m1_diagnostics";
+  let topic = null;
+  let source = null;
+  let brief = null;
+  let article = null;
+  let skippedTopicsCount = 0;
+  let lastSkipReason = null;
+  const topicAttemptsLog = [];
 
-  /* Guardia final: si el título que devolvió la IA ya existe, abortar
-     limpiamente (la siguiente pasada del cron elegirá otro tema) */
-  if (existingTitles.has(normTitle(article.title))) {
-    throw new Error("dup-title: ya existe un artículo con ese título");
-  }
+  const nowIso = new Date().toISOString();
 
-  const kind = sniffImage(imgBytes);
-  const coverKey = "img:covers/" + slug + "." + kind.ext;
-  await env.BLOG_POSTS.put(coverKey, imgBytes);
-
-  const words = article.content.map((b) => b.text).join(" ").split(/\s+/).length;
-  const post = {
-    slug,
-    title: article.title,
-    tag: article.tag,
-    date: new Date().toISOString().slice(0, 10),
-    readingTime: Math.max(3, Math.round(words / 200)) + " min",
-    cover: "/media/covers/" + slug + "." + kind.ext,
-    excerpt: article.excerpt,
-    content: article.content,
-    // Metadatos enriquecidos preservados en D1 / KV (Fase 2C.2A y 2B)
-    seoVersion: article.seoVersion || "2.0",
-    executiveSummary: article.executiveSummary || null,
-    targetService: article.targetService || null,
-    customMetaDesc: article.customMetaDesc || article.excerpt,
-    faqs: article.faqs || [],
-    relatedSlugs: article.relatedSlugs || []
+  // Helper para persistir de forma segura el estado en KV ante cualquier desenlace
+  const saveExecutionState = async (updates) => {
+    try {
+      Object.assign(state, updates);
+      await env.BLOG_POSTS.put("state", JSON.stringify(state));
+    } catch (kvErr) {
+      console.error("[OBSERVABILITY KV ERROR] No se pudo persistir el estado de ejecución en KV:", kvErr.message);
+      throw kvErr;
+    }
   };
 
-  // Persistencia segura: D1 permanente sin truncamiento + KV compatible
-  await persistPost(env, post, { enableD1: true, enableKV: true, kvLimit: MAX_POSTS });
+  try {
+    for (let topicAttempt = 1; topicAttempt <= MAX_TOPIC_ATTEMPTS; topicAttempt++) {
+      const currentTopicLog = {
+        topicAttempt,
+        topicId: null,
+        topicTheme: null,
+        source: null,
+        briefApproved: false,
+        briefFailureReason: null,
+        articleAttempts: []
+      };
 
-  /* Memoria anti-repetición */
-  if (source === "curado") state.usedTopics.push(topic.id);
-  if (source === "rss" && topic._headline) {
-    state.usedHeadlines.push(normTitle(topic._headline));
-    state.usedHeadlines = state.usedHeadlines.slice(-MAX_HEADLINES);
+      try {
+        const picked = await pickTopic(env, existingTitles, existingSlugs, state, hourUTC, modo);
+        topic = picked.topic;
+        source = picked.source;
+        currentTopicLog.topicId = topic?.id || null;
+        currentTopicLog.topicTheme = topic?.tema || null;
+        currentTopicLog.source = source;
+
+        // Registrar reserva temporal con expiración de 15 minutos en state
+        if (topic && topic.id && source === "curado") {
+          state.topicReservations = state.topicReservations || {};
+          state.topicReservations[topic.id] = Date.now() + 15 * 60 * 1000;
+          await saveExecutionState({ topicReservations: state.topicReservations });
+        }
+
+        // Seleccionar tipo de artículo (si no viene predefinido, usa Tipo 2 por defecto o elegibles en modo auto)
+        const selectedTypeCode = topic.articleType || 2;
+        const selectedType = resolveArticleType(selectedTypeCode);
+        topic.articleType = selectedType.code;
+        currentTopicLog.articleType = selectedType.id;
+
+        // Intentar generar y auditar el brief editorial
+        try {
+          brief = await createEditorialBrief(env, topic);
+          brief.articleType = selectedType.code;
+          currentTopicLog.briefApproved = true;
+        } catch (briefErr) {
+          currentTopicLog.briefApproved = false;
+          currentTopicLog.briefFailureReason = briefErr.message;
+          throw briefErr;
+        }
+
+        // Generación y auditoría del artículo con límite estricto de reintentos
+        let feedback = null;
+        for (let attempt = 1; attempt <= 3; attempt++) {
+          const attemptLog = {
+            attemptNumber: attempt,
+            stage: "generation",
+            success: false,
+            bodyWords: 0,
+            paragraphCount: 0,
+            hasDuplicateParagraphs: false,
+            auditScore: null,
+            metrics: {},
+            rejectionReasons: []
+          };
+
+          try {
+            const candidateArticle = await generateArticle(env, brief, topic, attempt, feedback);
+            const wordStats = countEditorialWords(candidateArticle);
+            attemptLog.bodyWords = wordStats.bodyWords;
+            attemptLog.paragraphCount = wordStats.paragraphCount;
+
+            const dupCheck = checkDuplicateParagraphs(candidateArticle);
+            attemptLog.hasDuplicateParagraphs = dupCheck.hasDuplicate;
+
+            attemptLog.stage = "audit";
+            const auditResult = await auditArticle(env, candidateArticle, brief);
+            attemptLog.auditScore = auditResult.score ?? (auditResult.approved ? 80 : 0);
+            
+            // Extraer métricas reales sin inventar puntuaciones
+            if (auditResult.metrics && typeof auditResult.metrics === "object") {
+              for (const [mName, mVal] of Object.entries(auditResult.metrics)) {
+                if (mVal && typeof mVal.score === "number") {
+                  attemptLog.metrics[mName] = mVal.score;
+                }
+              }
+            }
+
+            if (Array.isArray(auditResult.reasons)) {
+              attemptLog.rejectionReasons = auditResult.reasons.map(r => ({
+                metric: r.metric || "unknown",
+                problem: r.problem || "Unspecified",
+                evidence: (r.evidence || "").slice(0, 160)
+              }));
+            }
+
+            if (auditResult && auditResult.approved) {
+              attemptLog.success = true;
+              article = candidateArticle;
+              currentTopicLog.articleAttempts.push(attemptLog);
+              break;
+            }
+
+            feedback = auditResult;
+            currentTopicLog.articleAttempts.push(attemptLog);
+          } catch (e) {
+            attemptLog.stage = "exception";
+            attemptLog.rejectionReasons.push({
+              metric: "technical_or_format",
+              problem: e.name || "Error",
+              evidence: e.message.slice(0, 160)
+            });
+            currentTopicLog.articleAttempts.push(attemptLog);
+
+            const isTech =
+              e.message.includes("500") ||
+              e.message.includes("502") ||
+              e.message.includes("503") ||
+              e.message.includes("504") ||
+              e.message.includes("Timeout") ||
+              e.message.includes("unresponsive") ||
+              e.message.includes("fetch failed") ||
+              e.message.includes("network") ||
+              e.message.includes("rate limit");
+            if (isTech) {
+              throw new Error(`Workers AI Technical Failure: ${e.message}`);
+            }
+            feedback = { reasons: [{ metric: "error", score: 0, evidence: "Exception", problem: e.message, correction: "Retry" }] };
+          }
+        }
+
+        topicAttemptsLog.push(currentTopicLog);
+
+        if (!article) {
+          throw new EditorialSkipError(`Quality Gate no aprobado tras 3 intentos para el tema "${topic.tema}"`);
+        }
+
+        // Si llegamos aquí, tenemos brief y artículo aprobados
+        break;
+      } catch (err) {
+        if (!topicAttemptsLog.includes(currentTopicLog)) {
+          topicAttemptsLog.push(currentTopicLog);
+        }
+
+        if (err.name === "EditorialSkipError" || (err.message && err.message.startsWith("SKIP TOPIC"))) {
+          console.warn(`[EDITORIAL SKIP] Intento ${topicAttempt}/${MAX_TOPIC_ATTEMPTS} omitido: ${err.message}`);
+          skippedTopicsCount++;
+          lastSkipReason = err.message;
+
+          // PROTECCIÓN DEL CATÁLOGO FASE 6M.1:
+          // Un tema curado NO se consume definitivamente en usedTopics cuando el artículo o brief fallan.
+          // En su lugar, se añade a failedTopicsTemporarily para evitar reintentarlo dentro de esta misma ejecución.
+
+          if (topicAttempt === MAX_TOPIC_ATTEMPTS) {
+            const skipReason = `Se alcanzaron ${MAX_TOPIC_ATTEMPTS} intentos de temas sin superar el filtro editorial de calidad. Último: ${lastSkipReason}`;
+            await saveExecutionState({
+              lastRun: nowIso,
+              lastResult: "skipped",
+              lastSkipReason: skipReason,
+              lastError: null,
+              lastDiagnosticReport: {
+                executionId,
+                workerVersion,
+                timestamp: nowIso,
+                skippedTopicsCount,
+                topicAttemptsLog
+              }
+            });
+            return {
+              status: "skipped",
+              reason: skipReason,
+              skippedTopicsCount,
+              diagnosticReport: {
+                executionId,
+                workerVersion,
+                topicAttemptsLog
+              }
+            };
+          }
+          // Continuar al siguiente intento de tema
+          continue;
+        }
+        // Error técnico imprevisto (ej. fallo de Workers AI, red, timeout en pickTopic o createEditorialBrief)
+        throw err;
+      }
+    }
+
+    if (!article) {
+      const skipReason = "No fue posible producir un artículo aprobado tras evaluar los temas disponibles.";
+      await saveExecutionState({
+        lastRun: nowIso,
+        lastResult: "skipped",
+        lastSkipReason: skipReason,
+        lastError: null
+      });
+      return {
+        status: "skipped",
+        reason: skipReason,
+        skippedTopicsCount
+      };
+    }
+
+    // Guardia anti-duplicados por título final antes de generar portada
+    if (existingTitles.has(normTitle(article.title))) {
+      console.warn(`[DUP TITLE] Título ya existente: "${article.title}". Omitiendo publicación.`);
+      const skipReason = `El título generado "${article.title}" ya existe en el catálogo.`;
+      await saveExecutionState({
+        lastRun: nowIso,
+        lastResult: "skipped",
+        lastSkipReason: skipReason,
+        lastError: null
+      });
+      return {
+        status: "skipped",
+        reason: skipReason,
+        skippedTopicsCount
+      };
+    }
+
+    // Generar portada fotográfica
+    const imgBytes = await generateCover.call(env, topic);
+    if (!imgBytes || imgBytes.byteLength < 1000) {
+      throw new Error("Fallo de portada: La imagen generada no contiene bytes válidos.");
+    }
+
+    let slug = slugify(article.title);
+    if (existingSlugs.has(slug)) slug = slug + "-" + String(Date.now()).slice(-4);
+
+    const kind = sniffImage(imgBytes);
+    const coverKey = "img:covers/" + slug + "." + kind.ext;
+    await env.BLOG_POSTS.put(coverKey, imgBytes);
+
+    const words = article.content.map((b) => b.text).join(" ").split(/\s+/).length;
+    const post = {
+      slug,
+      title: article.title,
+      tag: article.tag,
+      date: new Date().toISOString().slice(0, 10),
+      readingTime: Math.max(3, Math.round(words / 200)) + " min",
+      cover: "/media/covers/" + slug + "." + kind.ext,
+      excerpt: article.excerpt,
+      content: article.content,
+      seoVersion: article.seoVersion || "2.0",
+      executiveSummary: article.executiveSummary || null,
+      targetService: article.targetService || null,
+      customMetaDesc: article.customMetaDesc || article.excerpt,
+      faqs: article.faqs || [],
+      relatedSlugs: article.relatedSlugs || []
+    };
+
+    // Persistencia dual: D1 permanente sin truncamiento + KV compatible
+    const persistResult = await persistPost(env, post, { enableD1: true, enableKV: true, kvLimit: MAX_POSTS });
+    if (persistResult && persistResult.d1 && persistResult.d1.error) {
+      throw new Error(`D1 Persistence Failure: ${persistResult.d1.error}`);
+    }
+    if (persistResult && persistResult.kv && persistResult.kv.error) {
+      throw new Error(`KV Persistence Failure: ${persistResult.kv.error}`);
+    }
+
+    /* Memoria anti-repetición confirmada tras persistencia exitosa */
+    if (source === "curado") {
+      state.usedTopics.push(topic.id);
+      if (state.topicReservations && state.topicReservations[topic.id]) {
+        delete state.topicReservations[topic.id];
+      }
+    }
+    if (source === "rss" && topic._headline) {
+      state.usedHeadlines.push(normTitle(topic._headline));
+      state.usedHeadlines = state.usedHeadlines.slice(-MAX_HEADLINES);
+    }
+    state.generatedHistory.push(normTitle(article.title));
+    state.generatedHistory = state.generatedHistory.slice(-MAX_HISTORY);
+
+    await saveExecutionState({
+      lastRun: nowIso,
+      lastResult: "published",
+      lastPublishedAt: nowIso,
+      lastSkipReason: null,
+      lastError: null,
+      lastSource: source
+    });
+
+    return { status: "published", post, source };
+  } catch (technicalError) {
+    // Registro explícito del error técnico antes de relanzar
+    try {
+      await saveExecutionState({
+        lastRun: nowIso,
+        lastResult: "failed",
+        lastError: {
+          message: technicalError.message,
+          name: technicalError.name,
+          timestamp: nowIso
+        }
+      });
+    } catch (saveErr) {
+      console.error("[OBSERVABILITY KV ERROR] Falló guardar estado de error:", saveErr.message);
+    }
+    throw technicalError;
   }
-  state.generatedHistory.push(normTitle(article.title));
-  state.generatedHistory = state.generatedHistory.slice(-MAX_HISTORY);
-  state.lastRun = new Date().toISOString();
-  state.lastSource = source;
-  await env.BLOG_POSTS.put("state", JSON.stringify(state));
-
-  return { post, source };
 }
 
 async function sendEmailNotification(env, post, source) {
@@ -663,23 +1150,92 @@ async function sendEmailNotification(env, post, source) {
   }
 }
 
+function isAuthorized(request, env) {
+  if (!env.BOT_TOKEN) return false;
+
+  // 1. Cabecera estándar HTTPS Authorization: Bearer <token>
+  const authHeader = request.headers.get("Authorization") || "";
+  if (authHeader.startsWith("Bearer ")) {
+    const bearer = authHeader.slice(7).trim();
+    if (bearer === env.BOT_TOKEN) return true;
+  }
+
+  // 2. Cabecera opcional segura X-Bot-Token
+  const xBotToken = request.headers.get("X-Bot-Token");
+  if (xBotToken && xBotToken.trim() === env.BOT_TOKEN) return true;
+
+  // Se ha eliminado de forma definitiva la autenticación por parámetro ?token= en URL
+  // para evitar fugas del secreto en historiales, proxies o logs de acceso.
+  return false;
+}
+
+export {
+  createEditorialBrief,
+  auditArticle,
+  generateArticle,
+  publish,
+  pickTopic,
+  normTitle,
+  slugify,
+  sniffImage,
+  validateTopic,
+  EditorialSkipError,
+  isAuthorized,
+  BRIEF_THRESHOLD,
+  QUALITY_GATE_THRESHOLD,
+  MIN_EDITORIAL_WORDS,
+  MAX_EDITORIAL_WORDS,
+  countEditorialWords,
+  checkDuplicateParagraphs
+};
+
 export default {
   async scheduled(event, env, ctx) {
     const hourUTC = new Date(event.scheduledTime || Date.now()).getUTCHours();
     ctx.waitUntil(
-      publish(env, hourUTC, "auto").then(({ post, source }) => sendEmailNotification(env, post, source))
+      (async () => {
+        try {
+          const result = await publish(env, hourUTC, "auto");
+          if (result && result.status === "published" && result.post) {
+            console.log(`[SCHEDULED OK] Publicado: ${result.post.title} (${result.source})`);
+            await sendEmailNotification(env, result.post, result.source);
+          } else if (result && result.status === "skipped") {
+            console.warn(`[SCHEDULED SKIPPED] ${result.reason} (Temas evaluados: ${result.skippedTopicsCount || 0})`);
+          } else {
+            console.warn(`[SCHEDULED UNKNOWN] Resultado no concluyente:`, JSON.stringify(result));
+          }
+        } catch (err) {
+          // Captura defensiva de errores graves de infraestructura (D1, KV, Workers AI)
+          console.error(`[SCHEDULED ERROR] Excepción no controlada en ejecución programada: ${err.message}`, err.stack);
+        }
+      })()
     );
   },
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === "/publicar-ahora") {
-      if (!env.BOT_TOKEN || url.searchParams.get("token") !== env.BOT_TOKEN) {
+      // Restricción estricta de métodos HTTP: Solo POST para publicaciones manuales.
+      if (request.method !== "POST") {
+        return new Response("Método no permitido. Las publicaciones manuales requieren exclusivamente POST con cabecera Authorization: Bearer <token>", {
+          status: 405,
+          headers: { "Allow": "POST" }
+        });
+      }
+
+      if (!isAuthorized(request, env)) {
         return new Response("No autorizado", { status: 401 });
       }
+
       const modo = url.searchParams.get("modo") || "auto"; // auto | curado | rss | ia
       try {
-        const { post, source } = await publish(env, new Date().getUTCHours(), modo);
-        return new Response("Publicado [" + source + "]: " + post.title + " (/post.html?slug=" + post.slug + ")", { status: 200 });
+        const result = await publish(env, new Date().getUTCHours(), modo);
+        if (result && result.status === "published" && result.post) {
+          return new Response("Publicado [" + result.source + "]: " + result.post.title + " (/post.html?slug=" + result.post.slug + ")", { status: 200 });
+        }
+        if (result && result.status === "skipped") {
+          return new Response("Omitido por calidad editorial: " + result.reason, { status: 200 });
+        }
+        return new Response("Resultado inesperado: " + JSON.stringify(result), { status: 500 });
       } catch (e) {
         return new Response("Error al publicar: " + e.message, { status: 500 });
       }

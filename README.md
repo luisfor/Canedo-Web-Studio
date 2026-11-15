@@ -416,6 +416,12 @@ Los adaptadores de canales están deshabilitados por defecto. Se prueba recepci�
 
 Generación local con planes/suscripciones administrados por operador, cuotas mensuales UTC, alertas y auditoría por empresa. No procesa cobros. Los comandos `npm run kit:packages -- combinations --json` y `npm run kit:packages -- combination --name H --docker --json` consultan las combinaciones A–I y generan planes revisables. [Operación SaaS y alcance de cada combinación](docs/monetization/README.md). E-commerce reutiliza venta/stock; pagos, facturas y marketing tienen flujos locales de preparación, sin proveedores activos.
 
+### Automatismos: Canedo Admin y Blog Bot (Cloudflare Workers)
+
+En [`automatismos/`](automatismos/) se encuentran los Workers de automatización editorial y operativa:
+- **`canedo-admin`:** Worker de administración vía Telegram. Incluye pipeline editorial desacoplado con soporte para los 5 tipos de artículos, observabilidad persistente por etapas en D1 (`admin_pending_jobs` y `admin_job_events`), control quirúrgico de extensión (micro-ampliación y condensación) y consulta de estado bajo demanda (`🔎 Consultar estado`) sin llamadas redundantes a Workers AI.
+- **`canedostudio-blog-bot`:** Worker programado (`0 12,22 * * *`) para generación autónoma de artículos con Quality Gate determinista y auditoría semántica con Llama 3.3 70B y Flux Schnell.
+
 ### Eficiencia y evidencia
 
 El kit ofrece caché derivada optativa en disco, análisis incremental con verificación fresca del contenido, presupuestos de respuesta, páginas MCP y memoria técnica. Consulta [comandos, controles y límites](docs/cli/resource-efficiency.md) y el [informe de verificación](docs/reports/UNIVERSAL-4-8-EFFICIENCY.md). Reconocer una tecnología no certifica su compilador ni un cliente de IA real.

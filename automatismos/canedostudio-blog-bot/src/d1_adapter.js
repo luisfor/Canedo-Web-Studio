@@ -97,7 +97,12 @@ export async function persistPost(env, post, options = {}) {
       if (isIdentical) {
         d1Action = "unchanged";
       } else {
-        d1Action = "updated";
+        d1Action = "conflict_rejected";
+        // REGLA CRÍTICA DE SEGURIDAD: Una publicación automática NUNCA debe sobrescribir silenciosamente
+        // un artículo previo con contenido diferente. Se rechaza con error explícito de conflicto.
+        result.d1.action = "conflict_rejected";
+        result.d1.error = `CONTENT_CONFLICT: Ya existe un artículo publicado con slug '${post.slug}' y contenido diferente. Operación abortada para proteger integridad editorial.`;
+        throw new Error(result.d1.error);
       }
     } else {
       d1Action = "inserted";
@@ -108,19 +113,17 @@ export async function persistPost(env, post, options = {}) {
     for (let attempt = 1; attempt <= maxRetries + 1; attempt++) {
       result.d1.attempts = attempt;
       try {
+        if (d1Action === "unchanged") {
+          // El artículo ya está exactamente en D1; no sobreescribir ni tocar updated_at
+          result.d1.success = true;
+          result.d1.error = null;
+          break;
+        }
+
+        // Inserción estricta sin DO UPDATE silencioso para contenido nuevo
         const sql = `
           INSERT INTO blog_posts (slug, title, tag, date, reading_time, cover_url, excerpt, content_json, status)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'published')
-          ON CONFLICT(slug) DO UPDATE SET
-            title = excluded.title,
-            tag = excluded.tag,
-            date = excluded.date,
-            reading_time = excluded.reading_time,
-            cover_url = excluded.cover_url,
-            excerpt = excluded.excerpt,
-            content_json = excluded.content_json,
-            status = 'published',
-            updated_at = CURRENT_TIMESTAMP;
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'published');
         `;
         await env.BLOG_DB.prepare(sql).bind(
           post.slug,
