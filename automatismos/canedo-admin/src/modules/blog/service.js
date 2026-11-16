@@ -234,6 +234,17 @@ export async function approveDraftOnly(env, draftId, userId) {
   return await getDraftById(env.BLOG_DB, draftId);
 }
 
+import { EDITORIAL_FALLBACK_COVER_B64 } from "./fallback_cover_b64.js";
+
+function createValidFallbackCover() {
+  const binaryString = atob(EDITORIAL_FALLBACK_COVER_B64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
+
 export async function publishApprovedDraft(env, draftId, userId) {
   // Guard de seguridad obligatorio: Bloqueo de publicación en backend
   const publishEnabled = String(env.ADMIN_PUBLISH_ENABLED).toLowerCase() === "true";
@@ -285,17 +296,16 @@ export async function publishApprovedDraft(env, draftId, userId) {
   }
 
   if (!imgBytes || imgBytes.byteLength < 1000) {
-    // Portada de contingencia mínima si la IA devuelve bytes inválidos o timeout
-    const fallback = new Uint8Array(12000);
-    fallback[0] = 0xff; fallback[1] = 0xd8; fallback[2] = 0xff;
-    imgBytes = fallback.buffer;
+    // Portada de contingencia estructurada con cabeceras JPEG válidas si la IA devuelve bytes inválidos o timeout
+    imgBytes = createValidFallbackCover();
   }
 
   const kind = sniffImage(imgBytes);
   const coverKey = "img:covers/" + slug + "." + kind.ext;
 
-  if (env.ADMIN_KV) {
-    await env.ADMIN_KV.put(coverKey, imgBytes);
+  const kvTarget = env.BLOG_POSTS || env.ADMIN_KV;
+  if (kvTarget) {
+    await kvTarget.put(coverKey, imgBytes);
   }
 
   const post = {
@@ -315,9 +325,12 @@ export async function publishApprovedDraft(env, draftId, userId) {
     relatedSlugs: []
   };
 
-  // Persistir en D1 y KV con el adaptador existente. Si falla, el error detiene el flujo
-  // y permite que el job sea reintentado con el mismo slug de forma idempotente.
-  await persistPost(env, post, { enableD1: true, enableKV: true, kvLimit: 30 });
+  // Persistir en D1 y KV con el adaptador existente garantizando el binding correcto hacia BLOG_POSTS
+  const adapterEnv = {
+    ...env,
+    BLOG_POSTS: kvTarget
+  };
+  await persistPost(adapterEnv, post, { enableD1: true, enableKV: true, kvLimit: 30 });
 
   // Actualizar estado en D1
   await markDraftPublished(env.BLOG_DB, draftId, slug);
