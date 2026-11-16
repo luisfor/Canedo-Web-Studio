@@ -46,20 +46,20 @@ La automatización de presupuestos con IA es un proceso que utiliza algoritmos p
 Para implementar la automatización en una clínica dental, es fundamental comenzar por identificar los procesos manuales.
 `;
     const blocks = parseMarkdownToBlocks(md, "Automatiza presupuestos");
-    
+
     // Debe separar el encabezado H2 del párrafo que venía pegado
     assert.equal(blocks.length, 5);
     assert.equal(blocks[0].type, "p");
-    
+
     assert.equal(blocks[1].type, "h2");
     assert.equal(blocks[1].text, "Introducción a la automatización de presupuestos con IA");
-    
+
     assert.equal(blocks[2].type, "p");
     assert.match(blocks[2].text, /^La automatización de presupuestos/);
-    
+
     assert.equal(blocks[3].type, "h2");
     assert.equal(blocks[3].text, "Implementación y optimización");
-    
+
     assert.equal(blocks[4].type, "p");
     assert.match(blocks[4].text, /^Para implementar la automatización/);
   });

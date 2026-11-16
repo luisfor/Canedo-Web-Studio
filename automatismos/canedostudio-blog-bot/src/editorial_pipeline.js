@@ -15,10 +15,13 @@ REGLAS DURAS OBLIGATORIAS:
 - EJEMPLOS OBLIGATORIOS: Desarrolla ejemplos prácticos basados en tipos o arquetipos de negocios cotidianos (por ejemplo: un taller mecánico, una clínica dental, un despacho contable, un restaurante o una tienda local), describiendo la fricción operativa real que viven y cómo se resuelve.
 - CERO REPETICIÓN: Cada párrafo debe aportar un argumento o matiz nuevo. Está TERMINANTEMENTE PROHIBIDO repetir párrafos o duplicar ideas textualmente.
 
-FORMATO DE SALIDA OBLIGATORIO:
+FORMATO Y JERARQUÍA EDITORIAL ESTRICTA:
 - Devuelve ÚNICAMENTE texto en formato Markdown estándar limpio.
+- NO repitas el título principal del artículo (# Título) al comienzo del texto. Empieza directamente con el primer párrafo de introducción.
+- Encabezados de sección principal: Usa EXCLUSIVAMENTE ## Subtítulo Corto (entre 3 y 8 palabras). NUNCA pongas oraciones completas ni párrafos dentro del encabezado.
+- Subsecciones cuando apliquen: Usa ### Subtítulo Técnico.
+- SEPARACIÓN OBLIGATORIA: Deja SIEMPRE un doble salto de línea (una línea en blanco) entre cada encabezado y su párrafo de desarrollo. NUNCA escribas el texto del párrafo en la misma línea ni inmediatamente pegado tras el ##.
 - NO uses bloques JSON ni código envolvente. NO uses comillas globales.
-- Encabezados de sección usando ## Subtítulo.
 - Opcionalmente una cita destacada usando > Cita potente.
 - Párrafos de conclusión y cierre con llamada a la acción hacia un diagnóstico estratégico.`;
 
@@ -378,10 +381,11 @@ Contexto inmediato anterior para mantener la fluidez:
 "...${prevContext}..."
 
 REGLAS ESTRICTAS:
-- Comienza con el subtítulo ## ${sec.heading}
+- Comienza con el subtítulo ## ${sec.heading} seguido obligatoriamente de dos saltos de línea (una línea en blanco) antes de empezar a redactar el párrafo.
+- Mantén el subtítulo corto y conciso; jamás fusionar el texto del párrafo con el encabezado.
 - Desarrolla ejemplos prácticos sectoriales (talleres, clínicas dentales, asesorías, comercio local).
 - ${isLast ? "Esta es la sección final: incluye conclusiones claras y llamada a la acción hacia un diagnóstico estratégico con Canedo Studio." : "No concluyas todavía el artículo, continúa profundizando."}
-- NO repitas frases ni ideas del texto previo. Salida en Markdown limpio.`;
+- NO repitas el título principal del artículo ni frases del texto previo. Salida en Markdown limpio.`;
 
     const secRes = await env.AI.run(MODEL_TEXT, {
       messages: [
