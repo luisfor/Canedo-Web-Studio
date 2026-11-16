@@ -4,6 +4,7 @@
 
 import { validateEnrichedArticleData } from "./seo/service_mapping.js";
 import { resolveArticleType } from "./article_types.js";
+import { sanitizeCrossSectionDuplicates } from "./duplicate_checker.js";
 
 const MODEL_TEXT = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 
@@ -396,7 +397,15 @@ REGLAS ESTRICTAS:
       temperature: 0.70
     });
 
-    const secText = readTextResponse(secRes).trim();
+    let secText = readTextResponse(secRes).trim();
+
+    // Sanitización determinista de puentes transicionales repetidos entre secciones consecutivas
+    const sanitizeResult = sanitizeCrossSectionDuplicates(secText, prevContext);
+    if (sanitizeResult.modified) {
+      console.log(`[SECTION SANITIZE] Duplicación transicional eliminada en sección ${i + 1}:`, sanitizeResult.logs);
+      secText = sanitizeResult.sanitizedText;
+    }
+
     sectionTexts.push({ heading: sec.heading, text: secText });
     fullMarkdown += secText + "\n\n";
     prevContext = secText.slice(-400);

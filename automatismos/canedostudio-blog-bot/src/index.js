@@ -2,6 +2,7 @@ import { persistPost } from "./d1_adapter.js";
 import { validateEnrichedArticleData, VALID_SERVICE_KEYS } from "./seo/service_mapping.js";
 import { generateRobustArticle, parseMarkdownToBlocks } from "./editorial_pipeline.js";
 import { resolveArticleType, getBlogBotEligibleTypes } from "./article_types.js";
+import { checkDuplicateSentences } from "./duplicate_checker.js";
 /* Robot redactor del blog de Canedo Studio.
    7:00 AM y 5:00 PM todos los días (hora Colombia): escribe un artículo
    con IA, le genera portada con IA, lo guarda en KV y avisa por email.
@@ -428,7 +429,7 @@ async function auditArticle(env, article, brief, stats = null) {
     };
   }
 
-  // 2. DETERMINISTIC QUALITY GATE: Detección de párrafos duplicados o redundancia sustancial
+  // 2. DETERMINISTIC QUALITY GATE: Detección de párrafos u oraciones duplicadas
   const duplicateCheck = checkDuplicateParagraphs(article);
   let duplicateViolation = null;
   if (duplicateCheck.hasDuplicate) {
@@ -440,6 +441,19 @@ async function auditArticle(env, article, brief, stats = null) {
       problem: "DuplicateParagraph",
       correction: "Eliminar párrafos idénticos o reformular la sección con ideas y argumentos diferenciados."
     };
+  } else {
+    // Verificación granular antirrepetición de oraciones entre bloques
+    const sentenceCheck = checkDuplicateSentences(article);
+    if (sentenceCheck.hasDuplicate) {
+      const firstSentenceDup = sentenceCheck.duplicates[0];
+      duplicateViolation = {
+        metric: "originality",
+        score: 0,
+        evidence: `Oración sustancial duplicada detectada entre ${firstSentenceDup.sourceA} y ${firstSentenceDup.sourceB}. Texto: "${firstSentenceDup.preview}..."`,
+        problem: "DuplicateSentence",
+        correction: "Eliminar la oración repetida o redactar una transición única con argumento diferenciado."
+      };
+    }
   }
 
   // LLM Auditor semántico con reintento aislado
