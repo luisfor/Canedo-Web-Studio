@@ -11,7 +11,19 @@ import {
 } from "../../../../canedostudio-blog-bot/src/index.js";
 import { generateRobustArticle, parseMarkdownToBlocks, resolveArticleType } from "./editorial_pipeline.js";
 import { persistPost } from "../../../../canedostudio-blog-bot/src/d1_adapter.js";
-import { saveDraft, getDraftById, updateDraft, markDraftApproved, markDraftPublished, markDraftDiscarded } from "../../db.js";
+import {
+  saveDraft,
+  getDraftById,
+  updateDraft,
+  markDraftApproved,
+  markDraftPublished,
+  markDraftDiscarded,
+  getPostBySlugForAdmin,
+  recordPostHistory,
+  setPostStatusInD1,
+  updatePostInD1,
+  getPostHistoryById
+} from "../../db.js";
 
 const MODEL_IMG = "@cf/black-forest-labs/flux-1-schnell";
 
@@ -364,4 +376,255 @@ export async function publishApprovedDraft(env, draftId, userId) {
 export async function discardDraft(env, draftId, userId) {
   if (!env.BLOG_DB) return false;
   return await markDraftDiscarded(env.BLOG_DB, draftId, userId);
+}
+
+/**
+ * Despublica un artículo de forma segura:
+ * 1. Respalda en blog_post_history
+ * 2. Cambia status a 'unpublished' en D1
+ * 3. Remueve el artículo del KV buffer 'posts'
+ */
+export async function unpublishArticle(env, slug, userId) {
+  if (!env.BLOG_DB) throw new Error("BLOG_DB no disponible");
+  const post = await getPostBySlugForAdmin(env.BLOG_DB, slug);
+  if (!post) throw new Error(`Artículo no encontrado: ${slug}`);
+  if (post.status !== "published") throw new Error(`El artículo no está publicado (estado actual: ${post.status})`);
+
+  // 1. Respaldar en historial antes de cambiar estado
+  await recordPostHistory(env.BLOG_DB, post, userId, "unpublish", "Despublicado por el administrador");
+
+  // 2. Control de concurrencia optimista
+  const expectedVersion = post.updated_at;
+
+  // 3. Actualizar D1
+  const updatedD1 = await setPostStatusInD1(env.BLOG_DB, slug, "unpublished", expectedVersion);
+  if (!updatedD1) {
+    throw new Error("CONFLICTO_CONCURRENTE: El artículo fue modificado o ya cambió de estado concurrentemente.");
+  }
+
+  // 4. Sincronizar KV removiendo del buffer público con reporte de consistencia
+  let kvSyncStatus = "not_applicable";
+  let kvError = null;
+
+  const kvTarget = env.BLOG_POSTS || env.ADMIN_KV;
+  if (kvTarget && typeof kvTarget.get === "function") {
+    try {
+      const raw = await kvTarget.get("posts");
+      if (raw) {
+        const postsData = JSON.parse(raw);
+        const posts = Array.isArray(postsData.posts) ? postsData.posts : (Array.isArray(postsData) ? postsData : []);
+        const filtered = posts.filter(p => p.slug !== slug);
+        if (Array.isArray(postsData.posts)) {
+          postsData.posts = filtered;
+          await kvTarget.put("posts", JSON.stringify(postsData));
+        } else {
+          await kvTarget.put("posts", JSON.stringify({ posts: filtered }));
+        }
+        kvSyncStatus = "removed_from_kv";
+      }
+    } catch (err) {
+      kvSyncStatus = "failed";
+      kvError = err.message;
+      console.warn(`[KV INCONSISTENCY ON UNPUBLISH] Error al remover de KV para '${slug}': ${err.message}. D1 garantiza que la petición pública retorne 404.`);
+    }
+  }
+
+  return { ok: true, slug, previousStatus: "published", newStatus: "unpublished", kvSyncStatus, kvError };
+}
+
+/**
+ * Restaura un artículo previamente despublicado:
+ * 1. Respalda en blog_post_history
+ * 2. Cambia status a 'published' en D1
+ * 3. Reinserta en KV buffer 'posts'
+ */
+export async function restoreArticle(env, slug, userId) {
+  if (!env.BLOG_DB) throw new Error("BLOG_DB no disponible");
+  const post = await getPostBySlugForAdmin(env.BLOG_DB, slug);
+  if (!post) throw new Error(`Artículo no encontrado: ${slug}`);
+  if (post.status === "published") throw new Error("El artículo ya se encuentra publicado");
+
+  // 1. Respaldar en historial antes de restaurar
+  await recordPostHistory(env.BLOG_DB, post, userId, "restore", "Restaurado a publicado por el administrador");
+
+  // 2. Control de concurrencia optimista
+  const expectedVersion = post.updated_at;
+
+  // 3. Actualizar D1
+  const updatedD1 = await setPostStatusInD1(env.BLOG_DB, slug, "published", expectedVersion);
+  if (!updatedD1) {
+    throw new Error("CONFLICTO_CONCURRENTE: El artículo fue modificado concurrentemente.");
+  }
+
+  // 4. Reinsertar en KV
+  let kvSyncStatus = "not_applicable";
+  let kvError = null;
+
+  const kvTarget = env.BLOG_POSTS || env.ADMIN_KV;
+  if (kvTarget && typeof kvTarget.get === "function") {
+    try {
+      const adapterEnv = { ...env, BLOG_POSTS: kvTarget };
+      const fullPost = {
+        slug: post.slug,
+        title: post.title,
+        tag: post.tag,
+        date: post.date,
+        readingTime: post.reading_time || "4 min",
+        cover: post.cover_url || `/media/covers/${post.slug}.jpg`,
+        excerpt: post.excerpt,
+        content: post.content
+      };
+      await persistPost(adapterEnv, fullPost, { enableD1: false, enableKV: true, kvLimit: 30 });
+      kvSyncStatus = "synced";
+    } catch (err) {
+      kvSyncStatus = "failed";
+      kvError = err.message;
+      console.warn(`[KV INCONSISTENCY ON RESTORE] Error al reinsertar en KV para '${slug}': ${err.message}.`);
+    }
+  }
+
+  return { ok: true, slug, previousStatus: post.status, newStatus: "published", kvSyncStatus, kvError };
+}
+
+/**
+ * Edita campos de un artículo existente con historial y validación
+ */
+export async function editArticleDetails(env, slug, updates, userId, changeSummary = "Edición granular") {
+  if (!env.BLOG_DB) throw new Error("BLOG_DB no disponible");
+  const currentPost = await getPostBySlugForAdmin(env.BLOG_DB, slug);
+  if (!currentPost) throw new Error(`Artículo no encontrado: ${slug}`);
+
+  // 1. Respaldar versión previa completa en historial
+  await recordPostHistory(env.BLOG_DB, currentPost, userId, "edit", changeSummary);
+
+  // 2. Control de concurrencia optimista: verificar que no haya sido mutado entre la lectura y la escritura
+  const expectedVersion = currentPost.updated_at;
+
+  // 3. Aplicar actualización en D1 manteniendo el slug original inmutable
+  const updated = await updatePostInD1(env.BLOG_DB, slug, updates, expectedVersion);
+  if (!updated) {
+    throw new Error("CONFLICTO_CONCURRENTE: El artículo fue modificado por otra sesión o proceso. Por favor recarga los datos antes de editar.");
+  }
+
+  // 4. Obtener post actualizado de D1 (fuente de verdad primaria)
+  const freshPost = await getPostBySlugForAdmin(env.BLOG_DB, slug);
+
+  // 5. Estrategia de consistencia eventual D1 -> KV con recuperación verificable
+  let kvSyncStatus = "not_applicable";
+  let kvError = null;
+
+  if (freshPost.status === "published") {
+    const kvTarget = env.BLOG_POSTS || env.ADMIN_KV;
+    if (kvTarget && typeof kvTarget.get === "function") {
+      try {
+        const adapterEnv = { ...env, BLOG_POSTS: kvTarget };
+        const fullPost = {
+          slug: freshPost.slug,
+          title: freshPost.title,
+          tag: freshPost.tag,
+          date: freshPost.date,
+          readingTime: freshPost.reading_time || "4 min",
+          cover: freshPost.cover_url || `/media/covers/${freshPost.slug}.jpg`,
+          excerpt: freshPost.excerpt,
+          content: freshPost.content
+        };
+        await persistPost(adapterEnv, fullPost, { enableD1: false, enableKV: true, kvLimit: 30 });
+        kvSyncStatus = "synced";
+      } catch (err) {
+        kvSyncStatus = "failed";
+        kvError = err.message;
+        console.warn(`[KV INCONSISTENCY DETECTED] Falló sincronización de KV para slug '${slug}': ${err.message}. D1 permanece consistente como fuente de verdad.`);
+      }
+    }
+  }
+
+  return { ok: true, post: freshPost, kvSyncStatus, kvError };
+}
+
+/**
+ * Revierte un artículo a una versión histórica previa
+ */
+export async function rollbackArticleToHistory(env, historyId, userId) {
+  if (!env.BLOG_DB) throw new Error("BLOG_DB no disponible");
+  const historyEntry = await getPostHistoryById(env.BLOG_DB, historyId);
+  if (!historyEntry) throw new Error(`Entrada de historial #${historyId} no encontrada`);
+
+  const slug = historyEntry.post_slug;
+  const currentPost = await getPostBySlugForAdmin(env.BLOG_DB, slug);
+  if (!currentPost) throw new Error(`El artículo ${slug} ya no existe en D1`);
+
+  // 1. Guardar estado actual antes del rollback
+  await recordPostHistory(env.BLOG_DB, currentPost, userId, "rollback", `Rollback hacia versión #${historyId}`);
+
+  // 2. Control de concurrencia optimista
+  const expectedVersion = currentPost.updated_at;
+
+  // 3. Restaurar valores desde el historial
+  const updates = {
+    title: historyEntry.title,
+    tag: historyEntry.tag,
+    excerpt: historyEntry.excerpt,
+    content_json: historyEntry.content_json,
+    status: historyEntry.status,
+    reading_time: historyEntry.reading_time
+  };
+
+  const ok = await updatePostInD1(env.BLOG_DB, slug, updates, expectedVersion);
+  if (!ok) {
+    throw new Error("CONFLICTO_CONCURRENTE: El artículo fue modificado por otro proceso mientras se preparaba el rollback.");
+  }
+
+  const restored = await getPostBySlugForAdmin(env.BLOG_DB, slug);
+
+  // 4. Sincronizar KV según el nuevo estado restaurado con manejo defensivo de inconsistencias
+  let kvSyncStatus = "not_applicable";
+  let kvError = null;
+
+  const kvTarget = env.BLOG_POSTS || env.ADMIN_KV;
+  if (kvTarget && typeof kvTarget.get === "function") {
+    if (restored.status === "published") {
+      try {
+        const adapterEnv = { ...env, BLOG_POSTS: kvTarget };
+        const fullPost = {
+          slug: restored.slug,
+          title: restored.title,
+          tag: restored.tag,
+          date: restored.date,
+          readingTime: restored.reading_time || "4 min",
+          cover: restored.cover_url || `/media/covers/${restored.slug}.jpg`,
+          excerpt: restored.excerpt,
+          content: restored.content
+        };
+        await persistPost(adapterEnv, fullPost, { enableD1: false, enableKV: true, kvLimit: 30 });
+        kvSyncStatus = "synced";
+      } catch (err) {
+        kvSyncStatus = "failed";
+        kvError = err.message;
+        console.warn(`[KV INCONSISTENCY ON ROLLBACK] Falló re-inserción en KV para ${slug}: ${err.message}.`);
+      }
+    } else {
+      // Remover de KV si la versión recuperada no estaba publicada
+      try {
+        const raw = await kvTarget.get("posts");
+        if (raw) {
+          const postsData = JSON.parse(raw);
+          const posts = Array.isArray(postsData.posts) ? postsData.posts : (Array.isArray(postsData) ? postsData : []);
+          const filtered = posts.filter(p => p.slug !== slug);
+          if (Array.isArray(postsData.posts)) {
+            postsData.posts = filtered;
+            await kvTarget.put("posts", JSON.stringify(postsData));
+          } else {
+            await kvTarget.put("posts", JSON.stringify({ posts: filtered }));
+          }
+          kvSyncStatus = "removed_from_kv";
+        }
+      } catch (err) {
+        kvSyncStatus = "failed";
+        kvError = err.message;
+        console.warn(`[KV INCONSISTENCY ON ROLLBACK REMOVAL] Falló remoción de KV para ${slug}: ${err.message}.`);
+      }
+    }
+  }
+
+  return { ok: true, slug, restoredPost: restored, kvSyncStatus, kvError };
 }

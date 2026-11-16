@@ -459,21 +459,153 @@ export async function markDraftDiscarded(db, draftId, userId) {
   return Boolean(result && (result.meta?.changes > 0 || result.changes > 0 || result.success));
 }
 
-export async function getRecentPublishedArticles(db, limit = 5, offset = 0) {
+export async function getRecentPublishedArticles(db, limit = 5, offset = 0, status = "published") {
   const query = `
-    SELECT id, slug, title, tag, date, created_at
+    SELECT id, slug, title, tag, date, status, created_at, updated_at
     FROM blog_posts
+    WHERE status = ?
     ORDER BY id DESC
     LIMIT ? OFFSET ?
   `;
-  const { results } = await db.prepare(query).bind(limit, offset).all();
-  const countRow = await db.prepare(`SELECT count(*) as total FROM blog_posts`).first ?
-    await db.prepare(`SELECT count(*) as total FROM blog_posts`).first() :
-    (await db.prepare(`SELECT count(*) as total FROM blog_posts`).bind().first());
+  const { results } = await db.prepare(query).bind(status, limit, offset).all();
+  const countRow = await db.prepare(`SELECT count(*) as total FROM blog_posts WHERE status = ?`).bind(status).first();
   return {
     posts: results || [],
     total: countRow?.total || 0,
     limit,
-    offset
+    offset,
+    status
   };
+}
+
+export async function searchArticles(db, searchTerm, limit = 5, offset = 0) {
+  if (!db || !searchTerm) return { posts: [], total: 0, limit, offset };
+  const pattern = `%${searchTerm.trim()}%`;
+  const query = `
+    SELECT id, slug, title, tag, date, status, created_at, updated_at
+    FROM blog_posts
+    WHERE title LIKE ? OR slug LIKE ? OR excerpt LIKE ?
+    ORDER BY id DESC
+    LIMIT ? OFFSET ?
+  `;
+  const { results } = await db.prepare(query).bind(pattern, pattern, pattern, limit, offset).all();
+  const countRow = await db.prepare(`
+    SELECT count(*) as total FROM blog_posts WHERE title LIKE ? OR slug LIKE ? OR excerpt LIKE ?
+  `).bind(pattern, pattern, pattern).first();
+  return {
+    posts: results || [],
+    total: countRow?.total || 0,
+    limit,
+    offset,
+    searchTerm
+  };
+}
+
+export async function getPostBySlugForAdmin(db, slug) {
+  if (!db || !slug) return null;
+  const query = `SELECT * FROM blog_posts WHERE slug = ? LIMIT 1`;
+  const row = await db.prepare(query).bind(slug).first();
+  if (!row) return null;
+  return {
+    ...row,
+    content: typeof row.content_json === "string" ? JSON.parse(row.content_json) : row.content_json
+  };
+}
+
+export async function recordPostHistory(db, post, userId, operation, changeSummary = null) {
+  if (!db || !post) return false;
+  try {
+    const query = `
+      INSERT INTO blog_post_history (
+        post_slug, title, tag, date, reading_time, cover_url, excerpt, content_json, status, modified_by, operation, change_summary
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    const res = await db.prepare(query).bind(
+      post.slug,
+      post.title,
+      post.tag,
+      post.date,
+      post.reading_time || post.readingTime || null,
+      post.cover_url || post.cover || null,
+      post.excerpt,
+      typeof post.content_json === "object" ? JSON.stringify(post.content_json) : (typeof post.content === "object" ? JSON.stringify(post.content) : String(post.content_json || post.content || "")),
+      post.status || "published",
+      String(userId),
+      operation,
+      changeSummary
+    ).run();
+    return Boolean(res && (res.meta?.changes > 0 || res.changes > 0 || res.success));
+  } catch (err) {
+    console.warn("[POST HISTORY WARN] No fue posible guardar el historial:", err.message);
+    return false;
+  }
+}
+
+export async function getPostHistory(db, slug, limit = 5) {
+  if (!db || !slug) return [];
+  try {
+    const query = `
+      SELECT id, post_slug, title, status, modified_by, operation, change_summary, created_at
+      FROM blog_post_history
+      WHERE post_slug = ?
+      ORDER BY id DESC
+      LIMIT ?
+    `;
+    const res = await db.prepare(query).bind(slug, limit).all();
+    return res?.results || [];
+  } catch {
+    return [];
+  }
+}
+
+export async function getPostHistoryById(db, historyId) {
+  if (!db || !historyId) return null;
+  try {
+    const query = `SELECT * FROM blog_post_history WHERE id = ? LIMIT 1`;
+    return await db.prepare(query).bind(Number(historyId)).first();
+  } catch {
+    return null;
+  }
+}
+
+export async function setPostStatusInD1(db, slug, newStatus, expectedVersion = null) {
+  if (!db || !slug) return false;
+  let query = `UPDATE blog_posts SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE slug = ?`;
+  const params = [newStatus, slug];
+  if (expectedVersion !== null && expectedVersion !== undefined) {
+    query += ` AND updated_at = ?`;
+    params.push(expectedVersion);
+  }
+  const res = await db.prepare(query).bind(...params).run();
+  return Boolean(res && (res.meta?.changes > 0 || res.changes > 0 || res.success));
+}
+
+export async function updatePostInD1(db, slug, updates = {}, expectedVersion = null) {
+  if (!db || !slug) return false;
+  const fields = [];
+  const values = [];
+
+  if (updates.title !== undefined) { fields.push("title = ?"); values.push(updates.title); }
+  if (updates.tag !== undefined) { fields.push("tag = ?"); values.push(updates.tag); }
+  if (updates.excerpt !== undefined) { fields.push("excerpt = ?"); values.push(updates.excerpt); }
+  if (updates.reading_time !== undefined) { fields.push("reading_time = ?"); values.push(updates.reading_time); }
+  if (updates.content_json !== undefined) {
+    fields.push("content_json = ?");
+    values.push(typeof updates.content_json === "string" ? updates.content_json : JSON.stringify(updates.content_json));
+  }
+  if (updates.status !== undefined) { fields.push("status = ?"); values.push(updates.status); }
+
+  if (fields.length === 0) return true;
+
+  fields.push("updated_at = CURRENT_TIMESTAMP");
+  values.push(slug);
+
+  let query = `UPDATE blog_posts SET ${fields.join(", ")} WHERE slug = ?`;
+  if (expectedVersion !== null && expectedVersion !== undefined) {
+    query += ` AND updated_at = ?`;
+    values.push(expectedVersion);
+  }
+
+  const result = await db.prepare(query).bind(...values).run();
+  return Boolean(result && (result.meta?.changes > 0 || result.changes > 0 || result.success));
 }

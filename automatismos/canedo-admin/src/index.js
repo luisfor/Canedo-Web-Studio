@@ -15,7 +15,11 @@ import {
   markJobCompleted,
   markJobFailed,
   getJobById,
-  getJobEvents
+  getJobEvents,
+  searchArticles,
+  getPostBySlugForAdmin,
+  getPostHistory,
+  getPostHistoryById
 } from "./db.js";
 import {
   generateManualDraft,
@@ -23,7 +27,11 @@ import {
   regenerateDraft,
   approveDraftOnly,
   publishApprovedDraft,
-  discardDraft
+  discardDraft,
+  unpublishArticle,
+  restoreArticle,
+  editArticleDetails,
+  rollbackArticleToHistory
 } from "./modules/blog/service.js";
 
 function isAuthorizedUser(userId, env) {
@@ -61,7 +69,7 @@ function renderMainMenu() {
 function renderBlogMenu(stateData = null) {
   const lastPublished = stateData?.lastPublishedAt ? new Date(stateData.lastPublishedAt).toISOString().replace("T", " ").slice(0, 16) : "N/D";
   const text = `<b>📝 GESTIÓN EDITORIAL — BLOG DE INSIGHTS</b>\n\n` +
-    `• <b>Artículos en catálogo:</b> 73 (D1 activo)\n` +
+    `• <b>D1 Canónico:</b> Permanente e intacto\n` +
     `• <b>Última publicación:</b> <code>${lastPublished} UTC</code>\n` +
     `• <b>Quality Gate:</b> Fase 6L (650–900 palabras reales, cero repetición)\n` +
     `• <b>Próximo cron:</b> 17:00 COL (22:00 UTC)\n\n` +
@@ -71,10 +79,14 @@ function renderBlogMenu(stateData = null) {
     inline_keyboard: [
       [
         { text: "✍️ Crear Artículo con IA", callback_data: "blog:create_prompt" },
-        { text: "📂 Ver Mis Borradores", callback_data: "blog:drafts:0" }
+        { text: "📂 Mis Borradores", callback_data: "blog:drafts:0" }
       ],
       [
-        { text: "📚 Consultar Artículos Existentes", callback_data: "blog:list:0" }
+        { text: "📄 Publicados", callback_data: "blog:list:0:published" },
+        { text: "📦 Despublicados", callback_data: "blog:list:0:unpublished" }
+      ],
+      [
+        { text: "🔍 Buscar Artículo", callback_data: "blog:search_prompt" }
       ],
       [
         { text: "🔙 Volver al Menú Principal", callback_data: "menu:main" }
@@ -328,31 +340,329 @@ export default {
       return { ok: true, route: "module_stub", module: modName };
     }
 
-    // Blog: Listar artículos paginados
+    // Blog: Listar artículos paginados (publicados o despublicados)
     if (data.startsWith("blog:list:")) {
-      const offset = parseInt(data.replace("blog:list:", "") || "0", 10);
-      const res = await getRecentPublishedArticles(env.BLOG_DB, 5, offset);
-      let text = `<b>📄 ARTÍCULOS PUBLICADOS (Total: ${res.total})</b>\n\n`;
-      res.posts.forEach((p, i) => {
-        text += `<b>${offset + i + 1}.</b> ${escapeHtml(p.title)}\n`;
-        text += `   🏷️ <i>${p.tag}</i> · 📅 ${p.date}\n`;
-        text += `   🔗 https://canedostudio.com/post.html?slug=${p.slug}\n\n`;
+      const parts = data.replace("blog:list:", "").split(":");
+      const offset = parseInt(parts[0] || "0", 10);
+      const statusFilter = parts[1] || "published";
+
+      const res = await getRecentPublishedArticles(env.BLOG_DB, 5, offset, statusFilter);
+      const isPublished = statusFilter === "published";
+      const headerTitle = isPublished ? "📄 ARTÍCULOS PUBLICADOS" : "📦 ARTÍCULOS DESPUBLICADOS";
+      let text = `<b>${headerTitle} (Total: ${res.total})</b>\n\n`;
+
+      if (res.posts.length === 0) {
+        text += `<i>No hay artículos ${isPublished ? "publicados" : "despublicados"} registrados.</i>\n\n`;
+      } else {
+        res.posts.forEach((p, i) => {
+          text += `<b>${offset + i + 1}.</b> ${escapeHtml(p.title)}\n`;
+          text += `   🏷️ <i>${p.tag}</i> · 📅 ${p.date} · Estado: <code>${p.status}</code>\n`;
+          text += `   🆔 Slug: <code>${p.slug}</code>\n`;
+          if (isPublished) {
+            text += `   🔗 https://canedostudio.com/insights/${p.slug}\n\n`;
+          } else {
+            text += `   <i>(No visible públicamente)</i>\n\n`;
+          }
+        });
+      }
+
+      const inline_keyboard = [];
+      // Fila de acciones por artículo del listado
+      res.posts.forEach(p => {
+        inline_keyboard.push([
+          { text: `👁️ Ver #${p.slug.slice(0, 18)}`, callback_data: `post:manage:${p.slug}` }
+        ]);
       });
 
       const navButtons = [];
       if (offset >= 5) {
-        navButtons.push({ text: "⬅️ Anteriores", callback_data: `blog:list:${offset - 5}` });
+        navButtons.push({ text: "⬅️ Anteriores", callback_data: `blog:list:${offset - 5}:${statusFilter}` });
       }
       if (offset + 5 < res.total) {
-        navButtons.push({ text: "Siguientes ➡️", callback_data: `blog:list:${offset + 5}` });
+        navButtons.push({ text: "Siguientes ➡️", callback_data: `blog:list:${offset + 5}:${statusFilter}` });
       }
-
-      const inline_keyboard = [];
       if (navButtons.length > 0) inline_keyboard.push(navButtons);
+
+      inline_keyboard.push([
+        { text: isPublished ? "📦 Ver Despublicados" : "📄 Ver Publicados", callback_data: isPublished ? "blog:list:0:unpublished" : "blog:list:0:published" },
+        { text: "🔍 Buscar", callback_data: "blog:search_prompt" }
+      ]);
       inline_keyboard.push([{ text: "🔙 Volver a Blog", callback_data: "menu:blog" }]);
 
       await editTelegramMessage(token, chatId, msgId, text, { replyMarkup: { inline_keyboard } });
-      return { ok: true, route: "blog_list", offset };
+      return { ok: true, route: "blog_list", offset, status: statusFilter };
+    }
+
+    // Blog: Prompt para buscar artículos
+    if (data === "blog:search_prompt") {
+      const text = `<b>🔍 BUSCAR ARTÍCULO EN EL BLOG</b>\n\n` +
+        `Escribe el título, palabra clave o slug del artículo que deseas consultar o administrar:\n\n` +
+        `<i>Envía un mensaje de texto con el término a buscar.</i>`;
+      await editTelegramMessage(token, chatId, msgId, text, {
+        replyMarkup: {
+          inline_keyboard: [[{ text: "🔙 Cancelar y Volver", callback_data: "menu:blog" }]]
+        }
+      });
+      return { ok: true, route: "blog_search_prompt" };
+    }
+
+    // Blog: Ficha de gestión de un artículo específico publicado o despublicado
+    if (data.startsWith("post:manage:")) {
+      const slug = data.replace("post:manage:", "");
+      const post = await getPostBySlugForAdmin(env.BLOG_DB, slug);
+      if (!post) {
+        await editTelegramMessage(token, chatId, msgId, `❌ Artículo <code>${slug}</code> no encontrado en D1.`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🔙 Volver", callback_data: "blog:list:0:published" }]] }
+        });
+        return { ok: true, route: "post_not_found" };
+      }
+
+      const isPub = post.status === "published";
+      const manageText = `<b>🏛️ GESTIÓN DE ARTÍCULO</b>\n\n` +
+        `• <b>Título:</b> ${escapeHtml(post.title)}\n` +
+        `• <b>Categoría:</b> ${post.tag}\n` +
+        `• <b>Fecha:</b> ${post.date} · <b>Lectura:</b> ${post.reading_time || "N/D"}\n` +
+        `• <b>Estado actual:</b> <code>${post.status}</code> ${isPub ? "🟢" : "🔴"}\n` +
+        `• <b>Slug (Inmutable):</b> <code>${post.slug}</code>\n\n` +
+        `<b>Resumen BLUF:</b>\n<i>${escapeHtml(post.excerpt)}</i>\n\n` +
+        (isPub ? `🔗 <b>Enlace público:</b>\nhttps://canedostudio.com/insights/${post.slug}\n\n` : `<i>⚠️ Este artículo está despublicado y responde 404 en la web.</i>\n\n`) +
+        `Selecciona una acción:`;
+
+      const inline_keyboard = [
+        [
+          { text: "✏️ Editar Título", callback_data: `post:edit_prompt:${slug}:title` },
+          { text: "✏️ Editar Resumen", callback_data: `post:edit_prompt:${slug}:excerpt` }
+        ],
+        [
+          { text: "🏷️ Cambiar Tag", callback_data: `post:edit_prompt:${slug}:tag` },
+          { text: "🧱 Editar Cuerpo (Bloques)", callback_data: `post:blocks:${slug}:0` }
+        ],
+        [
+          { text: "📜 Ver Historial", callback_data: `post:history:${slug}` }
+        ]
+      ];
+
+      if (isPub) {
+        inline_keyboard.push([
+          { text: "🚫 Despublicar Artículo", callback_data: `post:unpublish_confirm:${slug}` }
+        ]);
+      } else {
+        inline_keyboard.push([
+          { text: "♻️ Restaurar en Producción", callback_data: `post:restore_confirm:${slug}` }
+        ]);
+      }
+
+      inline_keyboard.push([
+        { text: "🔙 Volver al Listado", callback_data: `blog:list:0:${post.status}` }
+      ]);
+
+      await editTelegramMessage(token, chatId, msgId, manageText, { replyMarkup: { inline_keyboard } });
+      return { ok: true, route: "post_manage", slug, status: post.status };
+    }
+
+    // Blog: Confirmación de despublicación
+    if (data.startsWith("post:unpublish_confirm:")) {
+      const slug = data.replace("post:unpublish_confirm:", "");
+      const post = await getPostBySlugForAdmin(env.BLOG_DB, slug);
+      if (!post) {
+        await editTelegramMessage(token, chatId, msgId, `❌ Artículo no encontrado.`);
+        return { ok: false, error: "Artículo no encontrado" };
+      }
+
+      const confirmText = `<b>⚠️ CONFIRMAR DESPUBLICACIÓN</b>\n\n` +
+        `¿Confirmas que deseas <b>despublicar</b> el siguiente artículo?\n\n` +
+        `• <b>Título:</b> ${escapeHtml(post.title)}\n` +
+        `• <b>Slug:</b> <code>${post.slug}</code>\n\n` +
+        `<i>Efecto: El artículo dejará de ser visible de inmediato en la web pública (responderá 404), desaparecerá del sitemap y de los listados, pero se conservará de forma segura en D1 para restauración posterior.</i>`;
+
+      const replyMarkup = {
+        inline_keyboard: [
+          [{ text: "🚫 Sí, Despublicar ahora", callback_data: `post:unpublish_execute:${slug}` }],
+          [{ text: "❌ Cancelar", callback_data: `post:manage:${slug}` }]
+        ]
+      };
+      await editTelegramMessage(token, chatId, msgId, confirmText, { replyMarkup });
+      return { ok: true, route: "post_unpublish_confirm_prompt", slug };
+    }
+
+    // Blog: Ejecución de despublicación
+    if (data.startsWith("post:unpublish_execute:")) {
+      const slug = data.replace("post:unpublish_execute:", "");
+      try {
+        const res = await unpublishArticle(env, slug, userId);
+        await logAdminAction(env.BLOG_DB, {
+          userId,
+          action: "post.unpublish",
+          entityId: slug,
+          details: res
+        });
+
+        const successText = `<b>✅ ARTÍCULO DESPUBLICADO CON ÉXITO</b>\n\n` +
+          `• <b>Slug:</b> <code>${slug}</code>\n` +
+          `• <b>Estado:</b> <code>unpublished</code>\n` +
+          `• <b>D1 + KV:</b> Sincronizados y retirados de la vista pública.\n\n` +
+          `Puedes restaurarlo en cualquier momento desde la sección de despublicados.`;
+
+        const replyMarkup = {
+          inline_keyboard: [
+            [{ text: "📦 Ver Despublicados", callback_data: "blog:list:0:unpublished" }],
+            [{ text: "🔙 Volver a Blog", callback_data: "menu:blog" }]
+          ]
+        };
+        await editTelegramMessage(token, chatId, msgId, successText, { replyMarkup });
+        return { ok: true, route: "post_unpublish_executed", slug };
+      } catch (err) {
+        await editTelegramMessage(token, chatId, msgId, `❌ <b>Error al despublicar:</b> ${escapeHtml(err.message)}`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🔙 Volver al Artículo", callback_data: `post:manage:${slug}` }]] }
+        });
+        return { ok: false, error: err.message };
+      }
+    }
+
+    // Blog: Confirmación de restauración
+    if (data.startsWith("post:restore_confirm:")) {
+      const slug = data.replace("post:restore_confirm:", "");
+      const post = await getPostBySlugForAdmin(env.BLOG_DB, slug);
+      if (!post) {
+        await editTelegramMessage(token, chatId, msgId, `❌ Artículo no encontrado.`);
+        return { ok: false, error: "Artículo no encontrado" };
+      }
+
+      const confirmText = `<b>♻️ CONFIRMAR RESTAURACIÓN</b>\n\n` +
+        `¿Deseas restaurar el siguiente artículo a producción en <b>canedostudio.com</b>?\n\n` +
+        `• <b>Título:</b> ${escapeHtml(post.title)}\n` +
+        `• <b>Slug:</b> <code>${post.slug}</code>\n\n` +
+        `<i>Efecto: El artículo volverá a publicarse en D1 y KV con su misma URL e indexación previa.</i>`;
+
+      const replyMarkup = {
+        inline_keyboard: [
+          [{ text: "♻️ Sí, Restaurar en Producción", callback_data: `post:restore_execute:${slug}` }],
+          [{ text: "❌ Cancelar", callback_data: `post:manage:${slug}` }]
+        ]
+      };
+      await editTelegramMessage(token, chatId, msgId, confirmText, { replyMarkup });
+      return { ok: true, route: "post_restore_confirm_prompt", slug };
+    }
+
+    // Blog: Ejecución de restauración
+    if (data.startsWith("post:restore_execute:")) {
+      const slug = data.replace("post:restore_execute:", "");
+      try {
+        const res = await restoreArticle(env, slug, userId);
+        await logAdminAction(env.BLOG_DB, {
+          userId,
+          action: "post.restore",
+          entityId: slug,
+          details: res
+        });
+
+        const successText = `<b>✅ ARTÍCULO RESTAURADO CON ÉXITO</b>\n\n` +
+          `• <b>Slug:</b> <code>${slug}</code>\n` +
+          `• <b>Estado:</b> <code>published</code> (D1 + KV sincronizados)\n\n` +
+          `🔗 <b>Enlace público activo:</b>\nhttps://canedostudio.com/insights/${slug}`;
+
+        const replyMarkup = {
+          inline_keyboard: [
+            [{ text: "🌐 Ver en mi web", url: `https://canedostudio.com/insights/${slug}` }],
+            [{ text: "🏛️ Gestionar Artículo", callback_data: `post:manage:${slug}` }],
+            [{ text: "🔙 Volver a Blog", callback_data: "menu:blog" }]
+          ]
+        };
+        await editTelegramMessage(token, chatId, msgId, successText, { replyMarkup });
+        return { ok: true, route: "post_restore_executed", slug };
+      } catch (err) {
+        await editTelegramMessage(token, chatId, msgId, `❌ <b>Error al restaurar:</b> ${escapeHtml(err.message)}`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🔙 Volver al Artículo", callback_data: `post:manage:${slug}` }]] }
+        });
+        return { ok: false, error: err.message };
+      }
+    }
+
+    // Blog: Ver Historial de un artículo
+    if (data.startsWith("post:history:")) {
+      const slug = data.replace("post:history:", "");
+      const history = await getPostHistory(env.BLOG_DB, slug, 5);
+      let text = `<b>📜 HISTORIAL DE CAMBIOS — #${slug}</b>\n\n`;
+
+      if (history.length === 0) {
+        text += `<i>No hay versiones históricas registradas para este artículo todavía.</i>\n` +
+          `Cada vez que edites o cambies su estado, se guardará una copia automática.`;
+      } else {
+        history.forEach((h, i) => {
+          text += `<b>${i + 1}. Versión #${h.id}</b> · Op: <code>${h.operation}</code>\n`;
+          text += `   📅 ${h.created_at} · Por: <code>${h.modified_by}</code>\n`;
+          text += `   📝 Resumen: ${escapeHtml(h.change_summary || "Sin detalle")}\n\n`;
+        });
+      }
+
+      const inline_keyboard = [];
+      if (history.length > 0) {
+        history.forEach(h => {
+          inline_keyboard.push([
+            { text: `↩️ Rollback a v#${h.id}`, callback_data: `post:rollback_confirm:${h.id}` }
+          ]);
+        });
+      }
+      inline_keyboard.push([{ text: "🔙 Volver al Artículo", callback_data: `post:manage:${slug}` }]);
+
+      await editTelegramMessage(token, chatId, msgId, text, { replyMarkup: { inline_keyboard } });
+      return { ok: true, route: "post_history", slug };
+    }
+
+    // Blog: Confirmación de Rollback
+    if (data.startsWith("post:rollback_confirm:")) {
+      const historyId = data.replace("post:rollback_confirm:", "");
+      const historyEntry = await getPostHistoryById(env.BLOG_DB, historyId);
+      if (!historyEntry) {
+        await editTelegramMessage(token, chatId, msgId, `❌ Versión histórica no encontrada.`);
+        return { ok: false, error: "Historial no encontrado" };
+      }
+
+      const confirmText = `<b>⚠️ CONFIRMAR ROLLBACK A VERSIÓN #${historyId}</b>\n\n` +
+        `• <b>Artículo:</b> <code>${historyEntry.post_slug}</code>\n` +
+        `• <b>Título histórico:</b> ${escapeHtml(historyEntry.title)}\n` +
+        `• <b>Fecha de guardado:</b> ${historyEntry.created_at}\n\n` +
+        `<i>¿Deseas restaurar esta versión exacta? Se creará una copia del estado actual antes de aplicar el rollback.</i>`;
+
+      const replyMarkup = {
+        inline_keyboard: [
+          [{ text: "↩️ Sí, Aplicar Rollback", callback_data: `post:rollback_execute:${historyId}` }],
+          [{ text: "❌ Cancelar", callback_data: `post:history:${historyEntry.post_slug}` }]
+        ]
+      };
+      await editTelegramMessage(token, chatId, msgId, confirmText, { replyMarkup });
+      return { ok: true, route: "post_rollback_confirm_prompt", historyId };
+    }
+
+    // Blog: Ejecución de Rollback
+    if (data.startsWith("post:rollback_execute:")) {
+      const historyId = data.replace("post:rollback_execute:", "");
+      try {
+        const res = await rollbackArticleToHistory(env, historyId, userId);
+        await logAdminAction(env.BLOG_DB, {
+          userId,
+          action: "post.rollback",
+          entityId: res.slug,
+          details: { historyId }
+        });
+
+        const successText = `<b>✅ ROLLBACK COMPLETADO CON ÉXITO</b>\n\n` +
+          `• <b>Artículo:</b> <code>${res.slug}</code>\n` +
+          `• <b>Versión restaurada:</b> #${historyId}\n` +
+          `• <b>Estado actual:</b> <code>${res.restoredPost.status}</code> (D1 + KV sincronizados)`;
+
+        const replyMarkup = {
+          inline_keyboard: [
+            [{ text: "🏛️ Ver Artículo", callback_data: `post:manage:${res.slug}` }],
+            [{ text: "🔙 Volver a Blog", callback_data: "menu:blog" }]
+          ]
+        };
+        await editTelegramMessage(token, chatId, msgId, successText, { replyMarkup });
+        return { ok: true, route: "post_rollback_executed", historyId };
+      } catch (err) {
+        await editTelegramMessage(token, chatId, msgId, `❌ <b>Error en rollback:</b> ${escapeHtml(err.message)}`);
+        return { ok: false, error: err.message };
+      }
     }
 
     // Blog: Listar mis borradores
@@ -707,7 +1017,213 @@ export default {
     }
 
     // Blog: Publicación de artículo (Requiere ADMIN_PUBLISH_ENABLED=true)
-    // Blog: Solicitud de confirmación para publicar artículo (Visible únicamente si ADMIN_PUBLISH_ENABLED=true)
+    // Blog: Navegación de bloques de contenido para edición granular
+    if (data.startsWith("post:blocks:")) {
+      const parts = data.replace("post:blocks:", "").split(":");
+      const slug = parts[0];
+      const page = parseInt(parts[1] || "0", 10);
+      const post = await getPostBySlugForAdmin(env.BLOG_DB, slug);
+
+      if (!post) {
+        await editTelegramMessage(token, chatId, msgId, `❌ Artículo no encontrado.`);
+        return { ok: false, error: "Artículo no encontrado" };
+      }
+
+      const content = Array.isArray(post.content) ? post.content : [];
+      let blocksText = `<b>🧱 EDICIÓN DE CUERPO — #${slug}</b>\n` +
+        `<i>Total de bloques: ${content.length}</i>\n\n` +
+        `Selecciona el bloque (H2, H3 o párrafo) que deseas editar:\n\n`;
+
+      const pageSize = 5;
+      const startIndex = page * pageSize;
+      const pagedBlocks = content.slice(startIndex, startIndex + pageSize);
+
+      if (pagedBlocks.length === 0) {
+        blocksText += `<i>No hay más bloques en este artículo.</i>`;
+      } else {
+        pagedBlocks.forEach((b, idx) => {
+          const globalIdx = startIndex + idx;
+          const typeBadge = b.type === "h2" ? "📌 H2" : b.type === "h3" ? "📍 H3" : b.type === "callout" ? "💡 Callout" : "📝 Párrafo";
+          const snippet = (b.text || "").length > 80 ? (b.text || "").slice(0, 80) + "..." : (b.text || "");
+          blocksText += `<b>${globalIdx + 1}. [${typeBadge}]</b>\n<i>${escapeHtml(snippet)}</i>\n\n`;
+        });
+      }
+
+      const inline_keyboard = [];
+      pagedBlocks.forEach((b, idx) => {
+        const globalIdx = startIndex + idx;
+        const typeBadge = b.type === "h2" ? "H2" : b.type === "h3" ? "H3" : "Párrafo";
+        inline_keyboard.push([
+          { text: `✏️ Editar Bloque #${globalIdx + 1} (${typeBadge})`, callback_data: `post:block_edit:${slug}:${globalIdx}` }
+        ]);
+      });
+
+      const navRow = [];
+      if (page > 0) {
+        navRow.push({ text: "⬅️ Bloques Anteriores", callback_data: `post:blocks:${slug}:${page - 1}` });
+      }
+      if (startIndex + pageSize < content.length) {
+        navRow.push({ text: "Siguientes Bloques ➡️", callback_data: `post:blocks:${slug}:${page + 1}` });
+      }
+      if (navRow.length > 0) inline_keyboard.push(navRow);
+
+      inline_keyboard.push([{ text: "🔙 Volver al Artículo", callback_data: `post:manage:${slug}` }]);
+
+      await editTelegramMessage(token, chatId, msgId, blocksText, { replyMarkup: { inline_keyboard } });
+      return { ok: true, route: "post_blocks_list", slug, page };
+    }
+
+    // Blog: Prompt para editar un bloque específico de contenido
+    if (data.startsWith("post:block_edit:")) {
+      const parts = data.replace("post:block_edit:", "").split(":");
+      const slug = parts[0];
+      const blockIndex = parseInt(parts[1], 10);
+      const post = await getPostBySlugForAdmin(env.BLOG_DB, slug);
+
+      if (!post) {
+        await editTelegramMessage(token, chatId, msgId, `❌ Artículo no encontrado.`);
+        return { ok: false, error: "Artículo no encontrado" };
+      }
+
+      const content = Array.isArray(post.content) ? post.content : [];
+      const targetBlock = content[blockIndex];
+      if (!targetBlock) {
+        await editTelegramMessage(token, chatId, msgId, `❌ Bloque #${blockIndex + 1} no encontrado.`);
+        return { ok: false, error: "Bloque no encontrado" };
+      }
+
+      const typeBadge = targetBlock.type === "h2" ? "Encabezado H2" : targetBlock.type === "h3" ? "Subtítulo H3" : "Párrafo";
+      const promptText = `<b>✏️ EDITAR BLOQUE #${blockIndex + 1} (${typeBadge})</b>\n\n` +
+        `• <b>Artículo:</b> <code>${slug}</code>\n` +
+        `• <b>Texto actual:</b>\n<i>${escapeHtml(targetBlock.text || "")}</i>\n\n` +
+        `Para modificar este bloque, envía el siguiente comando:\n\n` +
+        `<code>/set_block_${slug}_${blockIndex} [tu nuevo texto aquí]</code>\n\n` +
+        `<i>Ejemplo:</i>\n<code>/set_block_${slug}_${blockIndex} ${escapeHtml(targetBlock.text || "")}</code>`;
+
+      const replyMarkup = {
+        inline_keyboard: [[{ text: "🔙 Volver a Bloques", callback_data: `post:blocks:${slug}:${Math.floor(blockIndex / 5)}` }]]
+      };
+      await editTelegramMessage(token, chatId, msgId, promptText, { replyMarkup });
+      return { ok: true, route: "post_block_edit_prompt", slug, blockIndex };
+    }
+
+    // Blog: Solicitud de edición de campo específico (Título, Resumen, Tag)
+    if (data.startsWith("post:edit_prompt:")) {
+      const parts = data.replace("post:edit_prompt:", "").split(":");
+      const slug = parts[0];
+      const field = parts[1];
+
+      const post = await getPostBySlugForAdmin(env.BLOG_DB, slug);
+      if (!post) {
+        await editTelegramMessage(token, chatId, msgId, `❌ Artículo no encontrado.`);
+        return { ok: false, error: "Artículo no encontrado" };
+      }
+
+      const fieldNames = {
+        title: "Título",
+        excerpt: "Resumen BLUF",
+        tag: "Categoría / Tag"
+      };
+
+      const currentValue = post[field] || "";
+      const promptText = `<b>✏️ EDITAR ${fieldNames[field] || field.toUpperCase()}</b>\n\n` +
+        `• <b>Artículo:</b> <code>${slug}</code>\n` +
+        `• <b>Valor actual:</b>\n<i>${escapeHtml(currentValue)}</i>\n\n` +
+        `Para modificar este campo, responde con el comando de edición:\n\n` +
+        `<code>/set_${field}_${slug} [tu nuevo texto aquí]</code>\n\n` +
+        `<i>Ejemplo:</i>\n<code>/set_${field}_${slug} ${escapeHtml(currentValue)}</code>`;
+
+      const replyMarkup = {
+        inline_keyboard: [[{ text: "🔙 Cancelar y Volver", callback_data: `post:manage:${slug}` }]]
+      };
+      await editTelegramMessage(token, chatId, msgId, promptText, { replyMarkup });
+      return { ok: true, route: "post_edit_prompt", slug, field };
+    }
+
+    // Blog: Confirmación de edición de campo antes de aplicar
+    if (data.startsWith("post:edit_confirm:")) {
+      const parts = data.replace("post:edit_confirm:", "").split(":");
+      const jobId = parts[0];
+
+      const job = await getJobById(env.BLOG_DB, jobId);
+      if (!job || !job.payload_json) {
+        await editTelegramMessage(token, chatId, msgId, `❌ Propuesta de edición no encontrada o expirada.`);
+        return { ok: false, error: "Job no encontrado" };
+      }
+
+      const payload = JSON.parse(job.payload_json);
+      const { slug, field, newValue, oldValue } = payload;
+
+      const previewText = `<b>👁️ VISTA PREVIA DE LOS CAMBIOS</b>\n\n` +
+        `• <b>Artículo:</b> <code>${slug}</code>\n` +
+        `• <b>Campo:</b> <code>${field}</code>\n\n` +
+        `<b>Antes:</b>\n<s>${escapeHtml(oldValue)}</s>\n\n` +
+        `<b>Después:</b>\n<b>${escapeHtml(newValue)}</b>\n\n` +
+        `<i>¿Confirmas que deseas aplicar este cambio en D1 (y KV si está publicado)? Se creará un respaldo histórico automático.</i>`;
+
+      const replyMarkup = {
+        inline_keyboard: [
+          [{ text: "💾 Sí, Guardar en Producción", callback_data: `post:edit_execute:${jobId}` }],
+          [{ text: "❌ Cancelar", callback_data: `post:manage:${slug}` }]
+        ]
+      };
+      await editTelegramMessage(token, chatId, msgId, previewText, { replyMarkup });
+      return { ok: true, route: "post_edit_preview", jobId };
+    }
+
+    // Blog: Ejecución de edición de campo
+    if (data.startsWith("post:edit_execute:")) {
+      const jobId = data.replace("post:edit_execute:", "");
+      const claimed = await claimSpecificJob(env.BLOG_DB, jobId, 60, "edit_worker");
+      if (!claimed) {
+        await editTelegramMessage(token, chatId, msgId, `⚠️ Esta edición ya fue procesada o se encuentra en curso.`);
+        return { ok: true, route: "edit_already_claimed" };
+      }
+
+      const { slug, field, newValue, oldValue, blockIndex, updatedContent } = claimed.payload;
+      try {
+        let updates = {};
+        let changeDesc = `Edición de ${field} desde Telegram`;
+        if (field === "content_block") {
+          updates = { content_json: updatedContent };
+          changeDesc = `Edición de bloque #${blockIndex + 1} desde Telegram`;
+        } else {
+          updates = { [field]: newValue };
+        }
+
+        const res = await editArticleDetails(env, slug, updates, userId, changeDesc);
+        await markJobCompleted(env.BLOG_DB, jobId, { success: true }, claimed.expectedAttempts);
+
+        await logAdminAction(env.BLOG_DB, {
+          userId,
+          action: field === "content_block" ? `post.edit.block_${blockIndex}` : `post.edit.${field}`,
+          entityId: slug,
+          details: { field, blockIndex, oldValue, newValue }
+        });
+
+        const successText = `<b>✅ CAMBIO GUARDADO CON ÉXITO</b>\n\n` +
+          `• <b>Artículo:</b> <code>${slug}</code>\n` +
+          `• <b>Elemento modificado:</b> <code>${field === "content_block" ? `Bloque #${blockIndex + 1}` : field}</code>\n` +
+          `• <b>Estado:</b> Versión previa respaldada en historial.\n\n` +
+          `<b>Nuevo valor:</b>\n${escapeHtml(newValue)}`;
+
+        const replyMarkup = {
+          inline_keyboard: [
+            [{ text: "🏛️ Gestionar Artículo", callback_data: `post:manage:${slug}` }],
+            [{ text: "🧱 Ver Bloques", callback_data: `post:blocks:${slug}:${blockIndex !== undefined ? Math.floor(blockIndex / 5) : 0}` }],
+            [{ text: "🔙 Volver a Blog", callback_data: "menu:blog" }]
+          ]
+        };
+        await editTelegramMessage(token, chatId, msgId, successText, { replyMarkup });
+        return { ok: true, route: "post_edit_executed", slug, field };
+      } catch (err) {
+        await markJobFailed(env.BLOG_DB, jobId, err.message, claimed.expectedAttempts);
+        await editTelegramMessage(token, chatId, msgId, `❌ <b>Error al guardar:</b> ${escapeHtml(err.message)}`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🔙 Volver", callback_data: `post:manage:${slug}` }]] }
+        });
+        return { ok: false, error: err.message };
+      }
+    }
     if (data.startsWith("draft:publish_confirm:")) {
       const draftId = data.replace("draft:publish_confirm:", "");
       const publishEnabled = String(env.ADMIN_PUBLISH_ENABLED).toLowerCase() === "true";
@@ -1210,6 +1726,187 @@ export default {
       }
 
       return { ok: true, route: "draft_modification_dispatched", draftId };
+    }
+
+    // Comprobar si el usuario estaba en estado de búsqueda de artículos
+    if (userState && userState.action === "awaiting_article_search") {
+      if (env.ADMIN_KV) await env.ADMIN_KV.delete(`user_state:${userId}`);
+      const searchTerm = text.trim();
+      const results = await searchArticles(env.BLOG_DB, searchTerm, 5, 0);
+
+      let resultText = `<b>🔍 RESULTADOS DE BÚSQUEDA</b>\n` +
+        `• <b>Término:</b> "${escapeHtml(searchTerm)}"\n` +
+        `• <b>Coincidencias encontradas:</b> ${results.total}\n\n`;
+
+      if (results.posts.length === 0) {
+        resultText += `<i>No se encontraron artículos que coincidan con la búsqueda.</i>\nPrueba con otra palabra clave o slug.`;
+      } else {
+        results.posts.forEach((p, idx) => {
+          const statusIcon = p.status === "published" ? "🟢" : "🔴";
+          resultText += `<b>${idx + 1}. ${statusIcon} ${escapeHtml(p.title)}</b>\n`;
+          resultText += `   🏷️ <i>${p.tag}</i> · 📅 ${p.date} · <code>${p.status}</code>\n`;
+          resultText += `   🔗 <code>${p.slug}</code>\n\n`;
+        });
+      }
+
+      const inline_keyboard = [];
+      for (const p of results.posts) {
+        inline_keyboard.push([
+          { text: `🏛️ Gestionar #${p.slug}`, callback_data: `post:manage:${p.slug}` }
+        ]);
+      }
+      inline_keyboard.push([
+        { text: "🔍 Nueva Búsqueda", callback_data: "blog:search_prompt" },
+        { text: "🔙 Volver a Blog", callback_data: "menu:blog" }
+      ]);
+
+      await sendTelegramMessage(token, chatId, resultText, { replyMarkup: { inline_keyboard } });
+      return { ok: true, route: "article_search_results", term: searchTerm, total: results.total };
+    }
+
+    // Comprobación de comando directo /buscar <termino>
+    if (text.startsWith("/buscar ")) {
+      const searchTerm = text.replace("/buscar ", "").trim();
+      const results = await searchArticles(env.BLOG_DB, searchTerm, 5, 0);
+
+      let resultText = `<b>🔍 RESULTADOS DE BÚSQUEDA</b>\n` +
+        `• <b>Término:</b> "${escapeHtml(searchTerm)}"\n` +
+        `• <b>Coincidencias encontradas:</b> ${results.total}\n\n`;
+
+      if (results.posts.length === 0) {
+        resultText += `<i>No se encontraron artículos que coincidan con la búsqueda.</i>`;
+      } else {
+        results.posts.forEach((p, idx) => {
+          const statusIcon = p.status === "published" ? "🟢" : "🔴";
+          resultText += `<b>${idx + 1}. ${statusIcon} ${escapeHtml(p.title)}</b>\n`;
+          resultText += `   🏷️ <i>${p.tag}</i> · 📅 ${p.date} · <code>${p.status}</code>\n`;
+          resultText += `   🔗 <code>${p.slug}</code>\n\n`;
+        });
+      }
+
+      const inline_keyboard = [];
+      for (const p of results.posts) {
+        inline_keyboard.push([
+          { text: `🏛️ Gestionar #${p.slug}`, callback_data: `post:manage:${p.slug}` }
+        ]);
+      }
+      inline_keyboard.push([
+        { text: "🔍 Nueva Búsqueda", callback_data: "blog:search_prompt" },
+        { text: "🔙 Volver a Blog", callback_data: "menu:blog" }
+      ]);
+
+      await sendTelegramMessage(token, chatId, resultText, { replyMarkup: { inline_keyboard } });
+      return { ok: true, route: "article_search_results_cmd", term: searchTerm, total: results.total };
+    }
+
+    // Comprobación de comandos de edición de bloques: /set_block_<slug>_<index> <nuevo_texto>
+    const blockCmdMatch = text.match(/^\/set_block_([a-zA-Z0-9_-]+)_(\d+)\s+([\s\S]+)$/);
+    if (blockCmdMatch) {
+      const slug = blockCmdMatch[1];
+      const blockIndex = parseInt(blockCmdMatch[2], 10);
+      const newBlockText = blockCmdMatch[3].trim();
+
+      const post = await getPostBySlugForAdmin(env.BLOG_DB, slug);
+      if (!post) {
+        await sendTelegramMessage(token, chatId, `❌ Artículo con slug <code>${escapeHtml(slug)}</code> no encontrado.`);
+        return { ok: false, error: "Artículo no encontrado" };
+      }
+
+      const content = Array.isArray(post.content) ? [...post.content] : [];
+      if (!content[blockIndex]) {
+        await sendTelegramMessage(token, chatId, `❌ Bloque #${blockIndex + 1} no existe en este artículo.`);
+        return { ok: false, error: "Bloque no encontrado" };
+      }
+
+      const oldBlock = content[blockIndex];
+      const oldValue = oldBlock.text || "";
+      const updatedBlock = { ...oldBlock, text: newBlockText };
+      const updatedContent = content.map((b, idx) => idx === blockIndex ? updatedBlock : b);
+
+      const jobId = "edit_blk_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7);
+
+      if (env.BLOG_DB) {
+        await createJob(env.BLOG_DB, {
+          id: jobId,
+          jobType: "blog_edit_field",
+          userId,
+          chatId,
+          payload: {
+            slug,
+            field: "content_block",
+            blockIndex,
+            newValue: newBlockText,
+            oldValue,
+            updatedContent
+          }
+        });
+      }
+
+      const typeBadge = oldBlock.type === "h2" ? "Encabezado H2" : oldBlock.type === "h3" ? "Subtítulo H3" : "Párrafo";
+      const previewText = `<b>👁️ PROPUESTA DE CAMBIO — VISTA PREVIA (DIFF) BLOQUE #${blockIndex + 1} (${typeBadge})</b>\n\n` +
+        `• <b>Artículo:</b> <code>${slug}</code>\n\n` +
+        `<b>Antes:</b>\n<s>${escapeHtml(oldValue)}</s>\n\n` +
+        `<b>Después:</b>\n<b>${escapeHtml(newBlockText)}</b>\n\n` +
+        `<i>¿Deseas aplicar este cambio al cuerpo del artículo? Se creará un respaldo histórico automático.</i>`;
+
+      const replyMarkup = {
+        inline_keyboard: [
+          [{ text: "💾 Sí, Guardar en Producción", callback_data: `post:edit_confirm:${jobId}` }],
+          [{ text: "❌ Cancelar", callback_data: `post:blocks:${slug}:${Math.floor(blockIndex / 5)}` }]
+        ]
+      };
+
+      await sendTelegramMessage(token, chatId, previewText, { replyMarkup });
+      return { ok: true, route: "article_block_diff_ready", jobId, slug, blockIndex };
+    }
+
+    // Comprobación de comandos de edición: /set_<field>_<slug> <nuevo_valor>
+    const editCmdMatch = text.match(/^\/set_(title|excerpt|tag)_([a-zA-Z0-9_-]+)\s+([\s\S]+)$/);
+    if (editCmdMatch) {
+      const field = editCmdMatch[1];
+      const slug = editCmdMatch[2];
+      const newValue = editCmdMatch[3].trim();
+
+      const post = await getPostBySlugForAdmin(env.BLOG_DB, slug);
+      if (!post) {
+        await sendTelegramMessage(token, chatId, `❌ Artículo con slug <code>${escapeHtml(slug)}</code> no encontrado.`);
+        return { ok: false, error: "Artículo no encontrado" };
+      }
+
+      const oldValue = post[field] || "";
+      const jobId = "edit_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7);
+
+      if (env.BLOG_DB) {
+        await createJob(env.BLOG_DB, {
+          id: jobId,
+          jobType: "blog_edit_field",
+          userId,
+          chatId,
+          payload: {
+            slug,
+            field,
+            newValue,
+            oldValue
+          }
+        });
+      }
+
+      const previewText = `<b>👁️ PROPUESTA DE CAMBIO — VISTA PREVIA (DIFF)</b>\n\n` +
+        `• <b>Artículo:</b> <code>${slug}</code>\n` +
+        `• <b>Campo:</b> <code>${field}</code>\n\n` +
+        `<b>Antes:</b>\n<s>${escapeHtml(oldValue)}</s>\n\n` +
+        `<b>Después:</b>\n<b>${escapeHtml(newValue)}</b>\n\n` +
+        `<i>¿Deseas aplicar este cambio en D1 (y sincronizar KV si el artículo está publicado)? Se creará un respaldo histórico automático.</i>`;
+
+      const replyMarkup = {
+        inline_keyboard: [
+          [{ text: "💾 Sí, Guardar en Producción", callback_data: `post:edit_confirm:${jobId}` }],
+          [{ text: "❌ Cancelar", callback_data: `post:manage:${slug}` }]
+        ]
+      };
+
+      await sendTelegramMessage(token, chatId, previewText, { replyMarkup });
+      return { ok: true, route: "article_edit_diff_ready", jobId, slug, field };
     }
 
     // Mensaje libre no reconocido
