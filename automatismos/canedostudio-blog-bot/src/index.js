@@ -554,12 +554,35 @@ function createValidFallbackCover() {
 }
 
 async function generateCover(topic) {
+  // Detección contextual sectorial para afinar el prompt fotográfico
+  const briefContext = (topic.brief && (topic.brief.audience || topic.brief.businessProblem || "")) || "";
+  const fullContext = `${topic.img || ""} ${topic.tema || ""} ${topic.angulo || ""} ${briefContext} ${topic.tag || ""}`.toLowerCase();
+  let sceneSubject = topic.img || topic.tema;
+
+  if (/dent|odont|clinic|diente|salud bucal/i.test(fullContext)) {
+    sceneSubject = "Modern high-end dental clinic office, advanced digital dental technology equipment, clean minimalist clinical environment, professional healthcare setting, luxury aesthetic";
+  } else if (/taller|mec[aá]nic|automotri|veh[ií]cul/i.test(fullContext)) {
+    sceneSubject = "Precision automotive workshop, modern diagnostic tools and engineering equipment, high-tech garage, organized professional mechanical workspace";
+  } else if (/asesor|contab|fiscal|legal|abogad/i.test(fullContext)) {
+    sceneSubject = "Contemporary executive consultancy office, modern architecture, architectural glass desk, subtle business analytics displays, sophisticated corporate atmosphere";
+  } else if (/inmobiliar|propiedad|real estate/i.test(fullContext)) {
+    sceneSubject = "Luxury architectural interior, modern high-end real estate property, ambient architectural lighting, panoramic glass windows";
+  } else if (/comercio|tienda|retail|boutique/i.test(fullContext)) {
+    sceneSubject = "Boutique high-end commercial store, elegant retail environment, warm atmospheric lighting, refined interior design";
+  } else if (/restauran|gastronom|hosteler|hotel|caf[eé]/i.test(fullContext)) {
+    sceneSubject = "High-end luxury restaurant and hospitality interior, elegant dining room, atmospheric warm lighting, architectural hospitality design";
+  } else if (/salud|m[eé]dic|hospital|terap|fisioterap/i.test(fullContext)) {
+    sceneSubject = "State-of-the-art medical consulting facility, advanced healthcare technology, serene professional clinical setting, architectural lighting";
+  } else if (/software|saas|tecnolog|startup/i.test(fullContext)) {
+    sceneSubject = "Cutting-edge tech innovation studio, high-tech workstations, multi-display software development setup, moody blue cinematic lighting";
+  }
+
   const prompt =
     "Premium editorial photograph for a business blog, dark luxurious style, deep black background, " +
     "subtle electric blue and warm gold accent lighting, cinematic, high detail, rich composition with " +
     "multiple visual elements and clear depth, atmospheric light, photographic realism. " +
-    "AVOID: minimalism, abstract shapes, a single floating object on emptiness, text, words, letters. " +
-    "Scene: " + (topic.img || topic.tema);
+    "AVOID: minimalism, abstract shapes, a single floating object on emptiness, text, words, letters, generic industrial machinery. " +
+    "Scene: " + sceneSubject;
 
   let bytes = null;
   try {

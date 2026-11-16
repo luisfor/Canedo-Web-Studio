@@ -22,7 +22,7 @@ FORMATO DE SALIDA OBLIGATORIO:
 - Opcionalmente una cita destacada usando > Cita potente.
 - Párrafos de conclusión y cierre con llamada a la acción hacia un diagnóstico estratégico.`;
 
-export function parseMarkdownToBlocks(md) {
+export function parseMarkdownToBlocks(md, title = "") {
   if (typeof md !== "string") return [];
   let text = md.trim();
   // Limpiar posibles wrappers de bloque de código que el modelo pueda emitir
@@ -30,7 +30,13 @@ export function parseMarkdownToBlocks(md) {
     text = text.replace(/^```(?:markdown)?\s*/i, "").replace(/\s*```$/, "").trim();
   }
 
-  // Dividir por doble salto de línea
+  // Normalizar saltos de línea Windows
+  text = text.replace(/\r\n/g, "\n");
+
+  // Normalizar el título principal para evitar duplicarlo si el modelo lo inserta como H1/H2 inicial
+  const normalizedTitle = typeof title === "string" ? title.trim().toLowerCase() : "";
+
+  // Dividir por doble salto de línea inicial
   const rawSections = text.split(/\n\s*\n/);
   const blocks = [];
 
@@ -38,23 +44,131 @@ export function parseMarkdownToBlocks(md) {
     const s = raw.trim();
     if (!s) continue;
 
-    // Encabezado de nivel 1, 2 o 3 -> normalizado a "h2"
-    if (/^#{1,3}\s+/.test(s)) {
-      const heading = s.replace(/^#{1,3}\s+/, "").replace(/\s*#*$/, "").trim();
-      if (heading) {
-        blocks.push({ type: "h2", text: heading });
+    const lines = s.split("\n").map(l => l.trim()).filter(Boolean);
+    if (!lines.length) continue;
+
+    const firstLine = lines[0];
+
+    // Caso 1: Línea que comienza con encabezado Markdown (#, ##, ###, ####)
+    if (/^#{1,6}\s+/.test(firstLine)) {
+      const match = firstLine.match(/^(#{1,6})\s+(.*)$/);
+      const level = match[1].length;
+      let headingText = (match[2] || "").replace(/\s*#*$/, "").trim();
+
+      // Limpiar asteriscos de negrita innecesarios envolventes en títulos (ej: **Título**)
+      if (headingText.startsWith("**") && headingText.endsWith("**") && headingText.length > 4) {
+        headingText = headingText.slice(2, -2).trim();
       }
-    } else if (/^>\s+/.test(s)) {
-      // Cita
-      const quote = s.split("\n").map(l => l.replace(/^>\s*/, "").trim()).join(" ").trim();
+
+      // Si el encabezado repite exactamente el título del artículo, omitirlo
+      if (normalizedTitle && headingText.toLowerCase() === normalizedTitle) {
+        // Si venían líneas de contenido tras el título duplicado, procesarlas como párrafos
+        if (lines.length > 1) {
+          const restParagraph = lines.slice(1).join(" ").trim();
+          if (restParagraph) {
+            blocks.push({ type: "p", text: restParagraph.replace(/\s+/g, " ") });
+          }
+        }
+        continue;
+      }
+
+      // Determinar si es H2 o H3 (Regla editorial: H2 para secciones principales, H3 para subsecciones)
+      const blockType = level >= 3 ? "h3" : "h2";
+
+      // Manejar el caso donde el encabezado tiene un párrafo pegado en la siguiente línea sin doble salto
+      if (lines.length > 1) {
+        const restParagraph = lines.slice(1).join(" ").trim();
+        if (headingText) {
+          blocks.push({ type: blockType, text: headingText });
+        }
+        if (restParagraph) {
+          // Detectar si el resto era una lista o cita
+          if (/^[-*•]\s+/.test(lines[1])) {
+            const listItems = lines.slice(1).map(l => l.replace(/^[-*•]\s*/, "").trim()).filter(Boolean);
+            blocks.push({ type: "ul", items: listItems });
+          } else {
+            blocks.push({ type: "p", text: restParagraph.replace(/\s+/g, " ") });
+          }
+        }
+      } else {
+        // En una sola línea: preservar el encabezado legítimo independientemente de su longitud
+        // Si contiene puntuación fuerte que divide un título de una oración explicativa (ej: ": ", ". "),
+        // normalizar de forma segura sin degradarlo si es un encabezado extendido.
+        if (headingText) {
+          // Si termina con punto final y contiene más de una oración (punto seguido), separar la segunda oración a párrafo
+          const sentenceSplit = headingText.match(/^([^.?!]+[.?!])\s+([A-ZÁÉÍÓÚÑ].+)$/);
+          if (sentenceSplit && headingText.length > 90) {
+            console.warn(`[EDITORIAL HEADING WARN] Encabezado compuesto normalizado: "${sentenceSplit[1]}"`);
+            blocks.push({ type: blockType, text: sentenceSplit[1].trim() });
+            blocks.push({ type: "p", text: sentenceSplit[2].trim() });
+          } else {
+            blocks.push({ type: blockType, text: headingText });
+          }
+        }
+      }
+    } else if (/^>\s+/.test(firstLine)) {
+      // Caso 2: Cita en bloque
+      const quote = lines.map(l => l.replace(/^>\s*/, "").trim()).join(" ").trim();
       if (quote) {
         blocks.push({ type: "quote", text: quote });
       }
+    } else if (/^[-*•]\s+/.test(firstLine)) {
+      // Caso 3: Lista de viñetas no ordenada
+      const listItems = lines.map(l => l.replace(/^[-*•]\s*/, "").trim()).filter(Boolean);
+      if (listItems.length > 0) {
+        blocks.push({ type: "ul", items: listItems });
+      }
+    } else if (/^\d+\.\s+/.test(firstLine)) {
+      // Caso 4: Lista ordenada o numeral
+      const listItems = lines.map(l => l.replace(/^\d+\.\s*/, "").trim()).filter(Boolean);
+      if (listItems.length > 0) {
+        blocks.push({ type: "ol", items: listItems });
+      }
     } else {
-      // Párrafo editorial estándar
-      const paragraph = s.replace(/\s+/g, " ").trim();
-      if (paragraph) {
-        blocks.push({ type: "p", text: paragraph });
+      // Caso 5: Párrafo estándar
+      // Verificar si en medio de las líneas hay un subtítulo sin doble salto previo
+      let currentParagraphLines = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (/^#{1,6}\s+/.test(line)) {
+          if (currentParagraphLines.length > 0) {
+            blocks.push({ type: "p", text: currentParagraphLines.join(" ").replace(/\s+/g, " ").trim() });
+            currentParagraphLines = [];
+          }
+          const m = line.match(/^(#{1,6})\s+(.*)$/);
+          const lvl = m[1].length;
+          let hText = (m[2] || "").replace(/\s*#*$/, "").trim();
+          if (hText.startsWith("**") && hText.endsWith("**") && hText.length > 4) {
+            hText = hText.slice(2, -2).trim();
+          }
+          if (!(normalizedTitle && hText.toLowerCase() === normalizedTitle)) {
+            blocks.push({ type: lvl >= 3 ? "h3" : "h2", text: hText });
+          }
+        } else if (/^[-*•]\s+/.test(line)) {
+          if (currentParagraphLines.length > 0) {
+            blocks.push({ type: "p", text: currentParagraphLines.join(" ").replace(/\s+/g, " ").trim() });
+            currentParagraphLines = [];
+          }
+          const listLines = [];
+          while (i < lines.length && /^[-*•]\s+/.test(lines[i])) {
+            listLines.push(lines[i].replace(/^[-*•]\s*/, "").trim());
+            i++;
+          }
+          i--; // Ajustar el índice tras consumir la lista
+          if (listLines.length > 0) {
+            blocks.push({ type: "ul", items: listLines });
+          }
+        } else {
+          currentParagraphLines.push(line);
+        }
+      }
+
+      if (currentParagraphLines.length > 0) {
+        const paragraph = currentParagraphLines.join(" ").replace(/\s+/g, " ").trim();
+        if (paragraph) {
+          blocks.push({ type: "p", text: paragraph });
+        }
       }
     }
   }
@@ -482,8 +596,9 @@ export async function generateRobustArticle(env, brief, topic, attempt = 1, feed
     } catch (_) {}
   }
 
-  // 2. Parsear Markdown a bloques de contenido compatibles
-  let content = parseMarkdownToBlocks(trimmed);
+  // 2. Parsear Markdown a bloques de contenido compatibles garantizando título sin duplicados
+  const articleTitle = (topic && (topic.tema || topic.title)) || (brief && brief.uniqueThesis) || "";
+  let content = parseMarkdownToBlocks(trimmed, articleTitle);
   if (content.length < 3) {
     throw new Error(`Artículo Markdown estructurado de forma insuficiente (solo ${content.length} bloques generados)`);
   }

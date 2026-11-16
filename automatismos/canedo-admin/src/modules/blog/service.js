@@ -274,12 +274,35 @@ export async function publishApprovedDraft(env, draftId, userId) {
   let imgBytes;
   if (env.AI) {
     try {
+      // Detección contextual sectorial prioritariamente desde el brief y el tema
+      const briefAudience = (draft.brief && (draft.brief.audience || draft.brief.businessProblem || "")) || "";
+      const contextualContext = `${draft.title} ${draft.topicTema || ""} ${draft.topicAngulo || ""} ${briefAudience} ${draft.tag || ""}`.toLowerCase();
+      let sectorScene = draft.title;
+
+      if (/dent|odont|clinic|diente|salud bucal/i.test(contextualContext)) {
+        sectorScene = "Modern high-end dental clinic office, advanced digital dental technology equipment, clean minimalist clinical environment, professional healthcare setting, luxury aesthetic";
+      } else if (/taller|mec[aá]nic|automotri|veh[ií]cul/i.test(contextualContext)) {
+        sectorScene = "Precision automotive workshop, modern diagnostic tools and engineering equipment, high-tech garage, organized professional mechanical workspace";
+      } else if (/asesor|contab|fiscal|legal|abogad/i.test(contextualContext)) {
+        sectorScene = "Contemporary executive consultancy office, modern architecture, architectural glass desk, subtle business analytics displays, sophisticated corporate atmosphere";
+      } else if (/inmobiliar|propiedad|real estate/i.test(contextualContext)) {
+        sectorScene = "Luxury architectural interior, modern high-end real estate property, ambient architectural lighting, panoramic glass windows";
+      } else if (/comercio|tienda|retail|boutique/i.test(contextualContext)) {
+        sectorScene = "Boutique high-end commercial store, elegant retail environment, warm atmospheric lighting, refined interior design";
+      } else if (/restauran|gastronom|hosteler|hotel|caf[eé]/i.test(contextualContext)) {
+        sectorScene = "High-end luxury restaurant and hospitality interior, elegant dining room, atmospheric warm lighting, architectural hospitality design";
+      } else if (/salud|m[eé]dic|hospital|terap|fisioterap/i.test(contextualContext)) {
+        sectorScene = "State-of-the-art medical consulting facility, advanced healthcare technology, serene professional clinical setting, architectural lighting";
+      } else if (/software|saas|tecnolog|startup/i.test(contextualContext)) {
+        sectorScene = "Cutting-edge tech innovation studio, high-tech workstations, multi-display software development setup, moody blue cinematic lighting";
+      }
+
       const prompt =
         "Premium editorial photograph for a business blog, dark luxurious style, deep black background, " +
         "subtle electric blue and warm gold accent lighting, cinematic, high detail, rich composition with " +
         "multiple visual elements and clear depth, atmospheric light, photographic realism. " +
-        "AVOID: minimalism, abstract shapes, a single floating object on emptiness, text, words, letters. " +
-        "Scene: Editorial image about " + draft.title;
+        "AVOID: minimalism, abstract shapes, a single floating object on emptiness, text, words, letters, generic industrial machinery. " +
+        "Scene: " + sectorScene;
       
       const result = await env.AI.run(MODEL_IMG, { prompt });
       if (result instanceof ArrayBuffer) imgBytes = result;
