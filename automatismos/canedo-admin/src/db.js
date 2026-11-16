@@ -501,10 +501,17 @@ export async function searchArticles(db, searchTerm, limit = 5, offset = 0) {
   };
 }
 
-export async function getPostBySlugForAdmin(db, slug) {
-  if (!db || !slug) return null;
-  const query = `SELECT * FROM blog_posts WHERE slug = ? LIMIT 1`;
-  const row = await db.prepare(query).bind(slug).first();
+export async function getPostBySlugForAdmin(db, slugOrId) {
+  if (!db || !slugOrId) return null;
+  // Búsqueda flexible: por slug o por ID numérico (resuelve slugs largos y referencias por id)
+  const isNumeric = /^\d+$/.test(String(slugOrId).trim());
+  let row = null;
+  if (isNumeric) {
+    row = await db.prepare(`SELECT * FROM blog_posts WHERE id = ? LIMIT 1`).bind(Number(slugOrId)).first();
+  }
+  if (!row) {
+    row = await db.prepare(`SELECT * FROM blog_posts WHERE slug = ? LIMIT 1`).bind(String(slugOrId)).first();
+  }
   if (!row) return null;
   return {
     ...row,
@@ -541,9 +548,14 @@ export async function recordPostHistory(db, post, userId, operation, changeSumma
   }
 }
 
-export async function getPostHistory(db, slug, limit = 5) {
-  if (!db || !slug) return [];
+export async function getPostHistory(db, slugOrId, limit = 5) {
+  if (!db || !slugOrId) return [];
   try {
+    let slug = String(slugOrId);
+    if (/^\d+$/.test(slug.trim())) {
+      const row = await db.prepare(`SELECT slug FROM blog_posts WHERE id = ? LIMIT 1`).bind(Number(slugOrId)).first();
+      if (row?.slug) slug = row.slug;
+    }
     const query = `
       SELECT id, post_slug, title, status, modified_by, operation, change_summary, created_at
       FROM blog_post_history

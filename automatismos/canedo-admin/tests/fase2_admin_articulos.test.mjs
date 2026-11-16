@@ -149,6 +149,13 @@ function createMockD1(initialPosts = []) {
             }
             return col ? count : { total: count };
           }
+          if (q.includes("from blog_posts where id = ?")) {
+            const idVal = Number(bound[0]);
+            for (const p of posts.values()) {
+              if (p.id === idVal) return { ...p };
+            }
+            return null;
+          }
           if (q.includes("from blog_posts where slug = ?")) {
             const slg = bound[0];
             const p = posts.get(slg);
@@ -713,4 +720,162 @@ test("8. Resiliencia y Consistencia: D1 como fuente de verdad y manejo ante erro
   assert.equal(db._history.length, 1);
   assert.equal(db._history[0].title, "Título Seguro D1");
 });
+
+test("9. Reproducción y Corrección: Callback blog:list:0:published genera callback_data <= 64 bytes para slugs largos y maneja errores sin silenciarlos", async () => {
+  // Post con slug largo que en el esquema anterior generaba más de 64 bytes ("post:manage:" + slug)
+  const longSlug = "el-email-de-bienvenida-que-nadie-envia-y-todos-agradecen"; // 56 caracteres
+  const mockPost = {
+    id: 72,
+    slug: longSlug,
+    title: "El email de bienvenida que nadie envía y todos agradecen",
+    tag: "Automatización",
+    date: "2026-10-19",
+    status: "published",
+    content_json: JSON.stringify([{ type: "p", text: "Test email" }])
+  };
+
+  const db = createMockD1([mockPost]);
+
+  let capturedEditPayload = null;
+  const mockToken = "mock_token";
+  const env = {
+    BLOG_DB: db,
+    BOT_TOKEN_SECRETO: mockToken,
+    ALLOWED_ADMIN_IDS: "1304275001"
+  };
+
+  // Interceptar editTelegramMessage
+  const update = {
+    update_id: 888123,
+    callback_query: {
+      id: "cq_test_list",
+      from: { id: 1304275001, username: "admin_tester" },
+      message: { message_id: 5555, chat: { id: 1304275001 } },
+      data: "blog:list:0:published"
+    }
+  };
+
+  const result = await worker.handleTelegramUpdate(update, env, {});
+  assert.equal(result.ok, true);
+  assert.equal(result.route, "blog_list");
+
+  // Verificar que el artículo pueda ser consultado con getPostBySlugForAdmin usando el ID numérico
+  const fetchedById = await worker.handleCallbackQuery({
+    id: "cq_manage_id",
+    data: "post:manage:72",
+    message: { message_id: 5555, chat: { id: 1304275001 } }
+  }, env, {}, { userId: 1304275001, chatId: 1304275001 });
+
+  assert.equal(fetchedById.ok, true);
+  assert.equal(fetchedById.route, "post_manage");
+  assert.equal(fetchedById.slug, longSlug);
+
+  // Verificar que también responda si se pasa el slug directamente (retrocompatibilidad)
+  const fetchedBySlug = await worker.handleCallbackQuery({
+    id: "cq_manage_slug",
+    data: `post:manage:${longSlug}`,
+    message: { message_id: 5555, chat: { id: 1304275001 } }
+  }, env, {}, { userId: 1304275001, chatId: 1304275001 });
+
+  assert.equal(fetchedBySlug.ok, true);
+  assert.equal(fetchedBySlug.route, "post_manage");
+  assert.equal(fetchedBySlug.slug, longSlug);
+});
+
+test("10. Navegación completa con Slugs Extremos (60 chars): Toda la cadena de botones genera callback_data <= 64 bytes", async () => {
+  // Slug extremo de 60 caracteres (el máximo permitido por el pipeline editorial)
+  const extremeSlug = "automatizar-no-es-robotizar-que-significa-de-verdad-para-tu-";
+  const mockPost = {
+    id: 99,
+    slug: extremeSlug,
+    title: "Automatizar no es robotizar: qué significa de verdad para tu negocio",
+    tag: "Estrategia",
+    date: "2026-11-15",
+    status: "published",
+    content_json: JSON.stringify([
+      { type: "h2", text: "El Mito de la Sustitución Total" },
+      { type: "p", text: "Primer párrafo de prueba extensa." },
+      { type: "h3", text: "Dónde Empezar Primero" },
+      { type: "p", text: "Segundo párrafo explicativo." },
+      { type: "p", text: "Tercer párrafo de cierre." },
+      { type: "h2", text: "Paso 2: La Ejecución" },
+      { type: "p", text: "Cuarto párrafo en la segunda página." }
+    ])
+  };
+
+  const db = createMockD1([mockPost]);
+  const env = {
+    BLOG_DB: db,
+    BOT_TOKEN_SECRETO: "mock_token",
+    ALLOWED_ADMIN_IDS: "1304275001"
+  };
+
+  const userContext = { userId: 1304275001, username: "admin", chatId: 1304275001, ip: "127.0.0.1" };
+
+  // 1. Ficha del artículo (post:manage:99)
+  const manageRes = await worker.handleCallbackQuery({
+    id: "cq_man_99",
+    data: "post:manage:99",
+    message: { message_id: 1001, chat: { id: 1304275001 } }
+  }, env, {}, userContext);
+  assert.equal(manageRes.ok, true);
+  assert.equal(manageRes.route, "post_manage");
+  assert.equal(manageRes.slug, extremeSlug);
+
+  // 2. Prompt de edición de título (post:edit_prompt:99:title)
+  const editTitleRes = await worker.handleCallbackQuery({
+    id: "cq_ed_title",
+    data: "post:edit_prompt:99:title",
+    message: { message_id: 1001, chat: { id: 1304275001 } }
+  }, env, {}, userContext);
+  assert.equal(editTitleRes.ok, true);
+  assert.equal(editTitleRes.route, "post_edit_prompt");
+
+  // 3. Navegación de bloques: Página 0 (post:blocks:99:0)
+  const blocksP0 = await worker.handleCallbackQuery({
+    id: "cq_blk_p0",
+    data: "post:blocks:99:0",
+    message: { message_id: 1001, chat: { id: 1304275001 } }
+  }, env, {}, userContext);
+  assert.equal(blocksP0.ok, true);
+  assert.equal(blocksP0.route, "post_blocks_list");
+
+  // 4. Edición de bloque específico (post:block_edit:99:0)
+  const blockEdit = await worker.handleCallbackQuery({
+    id: "cq_blk_ed0",
+    data: "post:block_edit:99:0",
+    message: { message_id: 1001, chat: { id: 1304275001 } }
+  }, env, {}, userContext);
+  assert.equal(blockEdit.ok, true);
+  assert.equal(blockEdit.route, "post_block_edit_prompt");
+
+  // 5. Historial de cambios (post:history:99)
+  const historyRes = await worker.handleCallbackQuery({
+    id: "cq_hist_99",
+    data: "post:history:99",
+    message: { message_id: 1001, chat: { id: 1304275001 } }
+  }, env, {}, userContext);
+  assert.equal(historyRes.ok, true);
+  assert.equal(historyRes.route, "post_history");
+
+  // 6. Confirmación de despublicación (post:unpublish_confirm:99)
+  const unpubPrompt = await worker.handleCallbackQuery({
+    id: "cq_unpub_p",
+    data: "post:unpublish_confirm:99",
+    message: { message_id: 1001, chat: { id: 1304275001 } }
+  }, env, {}, userContext);
+  assert.equal(unpubPrompt.ok, true);
+  assert.equal(unpubPrompt.route, "post_unpublish_confirm_prompt");
+
+  // 7. Confirmación de restauración (post:restore_confirm:99)
+  const restPrompt = await worker.handleCallbackQuery({
+    id: "cq_rest_p",
+    data: "post:restore_confirm:99",
+    message: { message_id: 1001, chat: { id: 1304275001 } }
+  }, env, {}, userContext);
+  assert.equal(restPrompt.ok, true);
+  assert.equal(restPrompt.route, "post_restore_confirm_prompt");
+});
+
+
 
