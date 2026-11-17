@@ -419,8 +419,9 @@ Generación local con planes/suscripciones administrados por operador, cuotas me
 ### Automatismos: Canedo Admin y Blog Bot (Cloudflare Workers)
 
 En [`automatismos/`](automatismos/) se encuentran los Workers de automatización editorial y operativa:
-- **`canedo-admin`:** Worker de administración vía Telegram. Incluye pipeline editorial desacoplado con soporte para los 5 tipos de artículos, observabilidad persistente por etapas en D1 (`admin_pending_jobs` y `admin_job_events`), control quirúrgico de extensión (micro-ampliación y condensación) y consulta de estado bajo demanda (`🔎 Consultar estado`) sin llamadas redundantes a Workers AI.
-- **`canedostudio-blog-bot`:** Worker programado (`0 12,22 * * *`) para generación autónoma de artículos con Quality Gate determinista y auditoría semántica con Llama 3.3 70B y Flux Schnell.
+- **`canedo-admin`:** Worker de administración vía Telegram (@CanedoStudioAdminBot). Incluye pipeline editorial desacoplado con soporte para los 5 tipos de artículos, observabilidad persistente por etapas en D1 (`admin_pending_jobs` y `admin_job_events`), control quirúrgico de extensión (micro-ampliación y condensación), consulta de estado bajo demanda (`🔎 Consultar estado`) sin llamadas redundantes a Workers AI y gestión de artículos (listado paginado, búsqueda, edición granular, despublicación y restauración con identificadores compactos `< 64` bytes).
+- **`canedostudio-blog-bot`:** Worker programado (`0 12,22 * * *`, 7:00 AM y 5:00 PM Colombia) para generación autónoma de artículos con Quality Gate determinista, detector de oraciones duplicadas (`duplicate_checker.js`), sanitización de puentes transicionales y auditoría semántica con Llama 3.3 70B y Flux Schnell (76/76 pruebas aprobadas).
+- **Arquitectura y Producción de Canedo Studio:** Consulta la [Guía Maestra de Arquitectura y Operaciones](docs/CANEDO-STUDIO-ARQUITECTURA.md) y la documentación de la web oficial en [cazas/canedostudio.com/README.md](cazas/canedostudio.com/README.md).
 
 ### Eficiencia y evidencia
 
