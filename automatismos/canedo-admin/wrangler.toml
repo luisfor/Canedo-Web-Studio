@@ -15,6 +15,11 @@ binding = "BLOG_DB"
 database_name = "canedostudio-blog"
 database_id = "d083c7a5-a0fc-4e84-8dd5-d3bb278ccdf0"
 
+[[d1_databases]]
+binding = "CONTACT_DB"
+database_name = "canedostudio-contact-production"
+database_id = "8868bccb-0779-4c29-b996-633d6e954b9e"
+
 [vars]
 # Variables de entorno públicas / configurables (sin secretos reales en repo)
 ADMIN_PUBLISH_ENABLED = "true"

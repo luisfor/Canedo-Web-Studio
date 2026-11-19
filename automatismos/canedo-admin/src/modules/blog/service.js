@@ -9,6 +9,7 @@ import {
   sniffImage,
   slugify
 } from "../../../../canedostudio-blog-bot/src/index.js";
+import { generateSemanticCover } from "../../../../canedostudio-blog-bot/src/semantic_cover.js";
 import { generateRobustArticle, parseMarkdownToBlocks, resolveArticleType } from "./editorial_pipeline.js";
 import { persistPost } from "../../../../canedostudio-blog-bot/src/d1_adapter.js";
 import {
@@ -194,6 +195,38 @@ export async function regenerateDraft(env, { draftId, userId }) {
   if (!draft) throw new Error("Borrador no encontrado");
   if (draft.status !== "draft") throw new Error(`El borrador se encuentra en estado '${draft.status}' y no puede ser regenerado`);
 
+  // Si es un borrador originado desde YouTube, regenerar con el pipeline de YouTube
+  if (draft.sourceType === "youtube" || draft.brief?.sourcePayload || draft.brief?.sourceType === "youtube") {
+    const sourcePayload = draft.brief?.sourcePayload;
+    if (!sourcePayload || !sourcePayload.videoId) {
+      throw new Error("No se encontraron los metadatos originales de YouTube para regenerar");
+    }
+    const { generateYouTubeDraft } = await import("../youtube/editorial_pipeline.js");
+    const angle = draft.topicAngulo || "informativo";
+    const ytResult = await generateYouTubeDraft({
+      env,
+      sourcePayload,
+      userId,
+      angle
+    });
+    if (!ytResult.ok || !ytResult.draft) {
+      throw new Error(ytResult.error || "Falló la regeneración del artículo de YouTube");
+    }
+
+    const newDraft = ytResult.draft;
+    await updateDraft(env.BLOG_DB, draftId, {
+      title: newDraft.title,
+      tag: newDraft.tag,
+      excerpt: newDraft.excerpt,
+      content_json: JSON.parse(newDraft.content_json),
+      brief_json: JSON.parse(newDraft.brief_json),
+      audit_json: JSON.parse(newDraft.audit_json),
+      word_count: newDraft.word_count
+    });
+
+    return await getDraftById(env.BLOG_DB, draftId);
+  }
+
   const topic = {
     id: "regen-" + Date.now().toString(36),
     tema: draft.topicTema,
@@ -286,44 +319,20 @@ export async function publishApprovedDraft(env, draftId, userId) {
   let imgBytes;
   if (env.AI) {
     try {
-      // Detección contextual sectorial prioritariamente desde el brief y el tema
-      const briefAudience = (draft.brief && (draft.brief.audience || draft.brief.businessProblem || "")) || "";
-      const contextualContext = `${draft.title} ${draft.topicTema || ""} ${draft.topicAngulo || ""} ${briefAudience} ${draft.tag || ""}`.toLowerCase();
-      let sectorScene = draft.title;
+      const summaryText = draft.summary || draft.executive_summary || "";
+      const coverResult = await generateSemanticCover({
+        ai: env.AI,
+        title: draft.title,
+        summary: summaryText,
+        tag: draft.service_key || draft.tag,
+        fallbackCoverFn: createValidFallbackCover
+      });
 
-      if (/dent|odont|clinic|diente|salud bucal/i.test(contextualContext)) {
-        sectorScene = "Modern high-end dental clinic office, advanced digital dental technology equipment, clean minimalist clinical environment, professional healthcare setting, luxury aesthetic";
-      } else if (/taller|mec[aá]nic|automotri|veh[ií]cul/i.test(contextualContext)) {
-        sectorScene = "Precision automotive workshop, modern diagnostic tools and engineering equipment, high-tech garage, organized professional mechanical workspace";
-      } else if (/asesor|contab|fiscal|legal|abogad/i.test(contextualContext)) {
-        sectorScene = "Contemporary executive consultancy office, modern architecture, architectural glass desk, subtle business analytics displays, sophisticated corporate atmosphere";
-      } else if (/inmobiliar|propiedad|real estate/i.test(contextualContext)) {
-        sectorScene = "Luxury architectural interior, modern high-end real estate property, ambient architectural lighting, panoramic glass windows";
-      } else if (/comercio|tienda|retail|boutique/i.test(contextualContext)) {
-        sectorScene = "Boutique high-end commercial store, elegant retail environment, warm atmospheric lighting, refined interior design";
-      } else if (/restauran|gastronom|hosteler|hotel|caf[eé]/i.test(contextualContext)) {
-        sectorScene = "High-end luxury restaurant and hospitality interior, elegant dining room, atmospheric warm lighting, architectural hospitality design";
-      } else if (/salud|m[eé]dic|hospital|terap|fisioterap/i.test(contextualContext)) {
-        sectorScene = "State-of-the-art medical consulting facility, advanced healthcare technology, serene professional clinical setting, architectural lighting";
-      } else if (/software|saas|tecnolog|startup/i.test(contextualContext)) {
-        sectorScene = "Cutting-edge tech innovation studio, high-tech workstations, multi-display software development setup, moody blue cinematic lighting";
-      }
-
-      const prompt =
-        "Premium editorial photograph for a business blog, dark luxurious style, deep black background, " +
-        "subtle electric blue and warm gold accent lighting, cinematic, high detail, rich composition with " +
-        "multiple visual elements and clear depth, atmospheric light, photographic realism. " +
-        "AVOID: minimalism, abstract shapes, a single floating object on emptiness, text, words, letters, generic industrial machinery. " +
-        "Scene: " + sectorScene;
-      
-      const result = await env.AI.run(MODEL_IMG, { prompt });
-      if (result instanceof ArrayBuffer) imgBytes = result;
-      else if (result && typeof result.arrayBuffer === "function") imgBytes = await result.arrayBuffer();
-      else if (result && result.image) {
-        const bin = atob(result.image);
-        const arr = new Uint8Array(bin.length);
-        for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-        imgBytes = arr.buffer;
+      imgBytes = coverResult.bytes;
+      if (coverResult.meta.isFallback) {
+        console.warn(`[ADMIN COVER FALLBACK] Se aplicó portada de contingencia para el borrador '${draft.title}'. Causa: ${coverResult.meta.fluxError || "Bytes insuficientes"}`);
+      } else {
+        console.log(`[ADMIN COVER SUCCESS] Portada generada (${coverResult.meta.briefSource}) para borrador '${draft.title}' en ${coverResult.meta.durationMs}ms`);
       }
     } catch (aiErr) {
       console.warn("[FLUX AI WARNING] Falló generación de portada con Flux, aplicando contingencia:", aiErr.message);

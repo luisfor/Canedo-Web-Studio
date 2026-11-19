@@ -33,6 +33,13 @@ import {
   editArticleDetails,
   rollbackArticleToHistory
 } from "./modules/blog/service.js";
+import { AdminCrmService, CRM_STATUS_MAP, STATUS_LABELS } from "./modules/crm/service.js";
+import { renderCrmMenu, renderLeadsList, renderLeadDetail, renderPipelineView, renderReminderNotification, renderReactivateConfirmation } from "./modules/crm/ui.js";
+import { parseAndValidateYouTubeUrl } from "./modules/youtube/validator.js";
+import { YouTubeIngestionService } from "./modules/youtube/service.js";
+import { generateYouTubeDraft } from "./modules/youtube/editorial_pipeline.js";
+import { extractWebContent, validateUrl } from "./modules/research/web_extractor.js";
+import { generateWebDraft } from "./modules/blog/web_pipeline.js";
 
 function isAuthorizedUser(userId, env) {
   if (!userId) return false;
@@ -79,16 +86,18 @@ function renderBlogMenu(stateData = null) {
     inline_keyboard: [
       [
         { text: "✍️ Crear Artículo con IA", callback_data: "blog:create_prompt" },
+        { text: "🎥 Crear desde YouTube", callback_data: "blog:yt:prompt" }
+      ],
+      [
+        { text: "🔗 Crear desde Enlace Web", callback_data: "blog:web:prompt" },
         { text: "📂 Mis Borradores", callback_data: "blog:drafts:0" }
       ],
       [
-        { text: "📄 Publicados", callback_data: "blog:list:0:published" },
-        { text: "📦 Despublicados", callback_data: "blog:list:0:unpublished" }
+        { text: "🔍 Buscar Artículo", callback_data: "blog:search_prompt" },
+        { text: "📄 Publicados", callback_data: "blog:list:0:published" }
       ],
       [
-        { text: "🔍 Buscar Artículo", callback_data: "blog:search_prompt" }
-      ],
-      [
+        { text: "📦 Despublicados", callback_data: "blog:list:0:unpublished" },
         { text: "🔙 Volver al Menú Principal", callback_data: "menu:main" }
       ]
     ]
@@ -316,6 +325,23 @@ export default {
     // Para el resto de callbacks, emitir answerCallbackQuery genérico para apagar el reloj
     await answerCallbackQuery(token, cq.id);
 
+    // Navegación: Retorno al Menú Principal (menu:main)
+    if (data === "menu:main") {
+      // Limpiar cualquier estado conversacional pendiente del usuario al volver al menú principal
+      if (env.ADMIN_KV && userId) {
+        try {
+          await env.ADMIN_KV.delete(`user_state:${userId}`);
+        } catch {}
+      }
+      const menu = renderMainMenu();
+      const editRes = await editTelegramMessage(token, chatId, msgId, menu.text, { replyMarkup: menu.replyMarkup });
+      if (!editRes?.ok) {
+        // Fallback resiliente si Telegram no permite editar el mensaje antiguo
+        await sendTelegramMessage(token, chatId, menu.text, { replyMarkup: menu.replyMarkup });
+      }
+      return { ok: true, route: "main_menu" };
+    }
+
     // Navegación: Módulo Blog
     if (data === "menu:blog") {
       let stateData = null;
@@ -327,6 +353,249 @@ export default {
       const blogMenu = renderBlogMenu(stateData);
       await editTelegramMessage(token, chatId, msgId, blogMenu.text, { replyMarkup: blogMenu.replyMarkup });
       return { ok: true, route: "blog_menu" };
+    }
+
+    // Navegación: Módulo CRM Comercial (Fase 4C)
+    if (data === "menu:crm") {
+      if (!env.CONTACT_DB) {
+        const text = `<b>🚧 MÓDULO EN CONSTRUCCIÓN: CRM</b>\n\nEste módulo se habilitará en las siguientes fases del plan unificado.`;
+        const replyMarkup = {
+          inline_keyboard: [[{ text: "🔙 Volver al Menú Principal", callback_data: "menu:main" }]]
+        };
+        await editTelegramMessage(token, chatId, msgId, text, { replyMarkup });
+        return { ok: true, route: "module_stub", module: "CRM" };
+      }
+      const crmService = new AdminCrmService(env.CONTACT_DB);
+      const summary = await crmService.getPipelineSummary();
+      const crmMenu = renderCrmMenu(summary);
+      await editTelegramMessage(token, chatId, msgId, crmMenu.text, { replyMarkup: crmMenu.replyMarkup });
+      return { ok: true, route: "crm_menu" };
+    }
+
+    // CRM: Resumen detallado de Pipeline
+    if (data === "crm:pipeline") {
+      if (!env.CONTACT_DB) {
+        await editTelegramMessage(token, chatId, msgId, `⚠️ CONTACT_DB no configurado.`);
+        return { ok: false, error: "MISSING_CONTACT_DB" };
+      }
+      const crmService = new AdminCrmService(env.CONTACT_DB);
+      const summary = await crmService.getPipelineSummary();
+      const pipelineView = renderPipelineView(summary);
+      await editTelegramMessage(token, chatId, msgId, pipelineView.text, { replyMarkup: pipelineView.replyMarkup });
+      return { ok: true, route: "crm_pipeline" };
+    }
+
+    // CRM: Listar prospectos paginados y filtrados (crm:list:<offset>:<status>)
+    if (data.startsWith("crm:list:")) {
+      if (!env.CONTACT_DB) {
+        await editTelegramMessage(token, chatId, msgId, `⚠️ CONTACT_DB no configurado.`);
+        return { ok: false, error: "MISSING_CONTACT_DB" };
+      }
+      const parts = data.replace("crm:list:", "").split(":");
+      const offset = parseInt(parts[0] || "0", 10);
+      const statusFilter = parts[1] || "all";
+      const actualStatus = statusFilter === "all" ? null : statusFilter;
+
+      const crmService = new AdminCrmService(env.CONTACT_DB);
+      const res = await crmService.listLeads({ status: actualStatus, limit: 5, offset });
+      const view = renderLeadsList({
+        total: res.total,
+        items: res.items,
+        limit: res.limit,
+        offset: res.offset,
+        statusFilter
+      });
+
+      await editTelegramMessage(token, chatId, msgId, view.text, { replyMarkup: view.replyMarkup });
+      return { ok: true, route: "crm_list", offset, statusFilter };
+    }
+
+    // CRM: Ver detalle comercial de un prospecto (crm:v:<leadNum>)
+    if (data.startsWith("crm:v:")) {
+      if (!env.CONTACT_DB) {
+        await editTelegramMessage(token, chatId, msgId, `⚠️ CONTACT_DB no configurado.`);
+        return { ok: false, error: "MISSING_CONTACT_DB" };
+      }
+      const leadNum = parseInt(data.replace("crm:v:", ""), 10);
+      const crmService = new AdminCrmService(env.CONTACT_DB);
+      const lead = await crmService.getLead(leadNum);
+
+      if (!lead) {
+        await editTelegramMessage(token, chatId, msgId, `❌ No se encontró el prospecto #${leadNum}.`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🔙 Volver a la Lista", callback_data: "crm:list:0:all" }]] }
+        });
+        return { ok: false, error: "LEAD_NOT_FOUND" };
+      }
+
+      const detailView = renderLeadDetail(lead);
+      await editTelegramMessage(token, chatId, msgId, detailView.text, { replyMarkup: detailView.replyMarkup });
+      return { ok: true, route: "crm_detail", leadNum };
+    }
+
+    // CRM: Cambiar estado comercial de forma compacta (crm:s:<code_status>:<leadNum>)
+    if (data.startsWith("crm:s:")) {
+      if (!env.CONTACT_DB) {
+        await editTelegramMessage(token, chatId, msgId, `⚠️ CONTACT_DB no configurado.`);
+        return { ok: false, error: "MISSING_CONTACT_DB" };
+      }
+      const parts = data.replace("crm:s:", "").split(":");
+      const statusCode = parts[0];
+      const leadNum = parseInt(parts[1], 10);
+      const newStatus = CRM_STATUS_MAP[statusCode];
+
+      if (!newStatus) {
+        await editTelegramMessage(token, chatId, msgId, `❌ Código de estado no válido.`);
+        return { ok: false, error: "INVALID_STATUS_CODE" };
+      }
+
+      const crmService = new AdminCrmService(env.CONTACT_DB);
+      await crmService.updateStatus({
+        identifier: leadNum,
+        newStatus,
+        changedBy: username ? `@${username}` : `admin_${userId}`,
+        reason: "Actualización manual vía Telegram"
+      });
+
+      const updatedLead = await crmService.getLead(leadNum);
+      const detailView = renderLeadDetail(updatedLead);
+      await editTelegramMessage(token, chatId, msgId, detailView.text, { replyMarkup: detailView.replyMarkup });
+      return { ok: true, route: "crm_status_updated", leadNum, newStatus };
+    }
+
+    // CRM: Solicitar confirmación para reactivar prospecto (crm:reactivate_ask:<leadNum>)
+    if (data.startsWith("crm:reactivate_ask:")) {
+      if (!env.CONTACT_DB) {
+        await editTelegramMessage(token, chatId, msgId, `⚠️ CONTACT_DB no configurado.`);
+        return { ok: false, error: "MISSING_CONTACT_DB" };
+      }
+      const leadNum = parseInt(data.replace("crm:reactivate_ask:", ""), 10);
+      const crmService = new AdminCrmService(env.CONTACT_DB);
+      const lead = await crmService.getLead(leadNum);
+
+      if (!lead) {
+        await editTelegramMessage(token, chatId, msgId, `❌ No se encontró el prospecto #${leadNum}.`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🔙 Volver a la Lista", callback_data: "crm:list:0:archivado" }]] }
+        });
+        return { ok: false, error: "LEAD_NOT_FOUND" };
+      }
+
+      const confirmView = renderReactivateConfirmation(lead);
+      await editTelegramMessage(token, chatId, msgId, confirmView.text, { replyMarkup: confirmView.replyMarkup });
+      return { ok: true, route: "crm_reactivate_ask", leadNum };
+    }
+
+    // CRM: Confirmar y ejecutar reactivación de prospecto (crm:reactivate_do:<leadNum>)
+    if (data.startsWith("crm:reactivate_do:")) {
+      if (!env.CONTACT_DB) {
+        await editTelegramMessage(token, chatId, msgId, `⚠️ CONTACT_DB no configurado.`);
+        return { ok: false, error: "MISSING_CONTACT_DB" };
+      }
+      const leadNum = parseInt(data.replace("crm:reactivate_do:", ""), 10);
+      const crmService = new AdminCrmService(env.CONTACT_DB);
+
+      await crmService.updateStatus({
+        identifier: leadNum,
+        newStatus: "nuevo",
+        changedBy: username ? `@${username}` : `admin_${userId}`,
+        reason: "Reactivación de prospecto archivado vía Telegram"
+      });
+
+      const updatedLead = await crmService.getLead(leadNum);
+      const detailView = renderLeadDetail(updatedLead);
+      await editTelegramMessage(token, chatId, msgId, detailView.text, { replyMarkup: detailView.replyMarkup });
+      return { ok: true, route: "crm_reactivated", leadNum };
+    }
+
+    // CRM: Prompt para añadir nota comercial (crm:note_prompt:<leadNum>)
+    if (data.startsWith("crm:note_prompt:")) {
+      const leadNum = parseInt(data.replace("crm:note_prompt:", ""), 10);
+      if (env.ADMIN_KV) {
+        await env.ADMIN_KV.put(
+          `user_state:${userId}`,
+          JSON.stringify({ action: "awaiting_crm_note", leadNum }),
+          { expirationTtl: 600 }
+        );
+      }
+      const text =
+        `<b>📝 AÑADIR NOTA AL PROSPECTO #${leadNum}</b>\n\n` +
+        `Escribe el contenido de la nota (llamada, reunión, avance o propuesta):\n\n` +
+        `<i>Envía tu mensaje de texto para guardarla en la bitácora.</i>`;
+      await editTelegramMessage(token, chatId, msgId, text, {
+        replyMarkup: { inline_keyboard: [[{ text: "❌ Cancelar", callback_data: `crm:v:${leadNum}` }]] }
+      });
+      return { ok: true, route: "crm_note_prompt", leadNum };
+    }
+
+    // CRM: Prompt para crear recordatorio (crm:rem_prompt:<leadNum>)
+    if (data.startsWith("crm:rem_prompt:")) {
+      const leadNum = parseInt(data.replace("crm:rem_prompt:", ""), 10);
+      if (env.ADMIN_KV) {
+        await env.ADMIN_KV.put(
+          `user_state:${userId}`,
+          JSON.stringify({ action: "awaiting_crm_reminder", leadNum }),
+          { expirationTtl: 600 }
+        );
+      }
+      const text =
+        `<b>⏰ CREAR RECORDATORIO PARA EL PROSPECTO #${leadNum}</b>\n\n` +
+        `Escribe la acción pendiente y los días para el vencimiento.\n` +
+        `Formato: <code>Acción a realizar | días</code>\n\n` +
+        `<i>Ejemplo: Llamar para revisar propuesta | 2</i>`;
+      await editTelegramMessage(token, chatId, msgId, text, {
+        replyMarkup: { inline_keyboard: [[{ text: "❌ Cancelar", callback_data: `crm:v:${leadNum}` }]] }
+      });
+      return { ok: true, route: "crm_rem_prompt", leadNum };
+    }
+
+    // CRM: Marcar recordatorio como completado (crm:rem_done:<remId>)
+    if (data.startsWith("crm:rem_done:")) {
+      if (!env.CONTACT_DB) {
+        await editTelegramMessage(token, chatId, msgId, `⚠️ CONTACT_DB no configurado.`);
+        return { ok: false, error: "MISSING_CONTACT_DB" };
+      }
+      const reminderId = data.replace("crm:rem_done:", "").trim();
+      const crmService = new AdminCrmService(env.CONTACT_DB);
+      try {
+        await crmService.completeReminder({
+          reminderId,
+          completedBy: username ? `@${username}` : `admin_${userId}`
+        });
+        await editTelegramMessage(token, chatId, msgId, `✅ <b>Recordatorio completado con éxito.</b>`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🔙 Volver al CRM", callback_data: "menu:crm" }]] }
+        });
+        return { ok: true, route: "crm_reminder_done", reminderId };
+      } catch (err) {
+        await editTelegramMessage(token, chatId, msgId, `❌ Error al completar recordatorio: <code>${escapeHtml(err.message)}</code>`);
+        return { ok: false, error: err.message };
+      }
+    }
+
+    // CRM: Posponer / Reprogramar recordatorio (crm:rem_postpone:<remId>:<days>)
+    if (data.startsWith("crm:rem_postpone:")) {
+      if (!env.CONTACT_DB) {
+        await editTelegramMessage(token, chatId, msgId, `⚠️ CONTACT_DB no configurado.`);
+        return { ok: false, error: "MISSING_CONTACT_DB" };
+      }
+      const parts = data.replace("crm:rem_postpone:", "").split(":");
+      const reminderId = parts[0];
+      const days = parseInt(parts[1] || "2", 10);
+      const newDueAt = Date.now() + (days * 86400000);
+
+      const crmService = new AdminCrmService(env.CONTACT_DB);
+      try {
+        await crmService.rescheduleReminder({
+          reminderId,
+          newDueAt,
+          updatedBy: username ? `@${username}` : `admin_${userId}`
+        });
+        await editTelegramMessage(token, chatId, msgId, `⏰ <b>Recordatorio pospuesto por ${days} día(s).</b>`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🔙 Volver al CRM", callback_data: "menu:crm" }]] }
+        });
+        return { ok: true, route: "crm_reminder_postponed", reminderId, days };
+      } catch (err) {
+        await editTelegramMessage(token, chatId, msgId, `❌ Error al posponer recordatorio: <code>${escapeHtml(err.message)}</code>`);
+        return { ok: false, error: err.message };
+      }
     }
 
     // Módulos en construcción (2 al 8)
@@ -1009,6 +1278,450 @@ export default {
       return { ok: true, route: "blog_topic_prompt", articleType: selectedTypeNum };
     }
 
+    // Blog: Inicio de creación desde YouTube
+    if (data === "blog:yt:prompt") {
+      if (env.ADMIN_KV) {
+        await env.ADMIN_KV.put(`user_state:${userId}`, JSON.stringify({
+          action: "awaiting_yt_url"
+        }), { expirationTtl: 600 });
+      }
+
+      const text = `<b>🎥 CREAR ARTÍCULO DESDE YOUTUBE</b>\n\n` +
+        `Envía el enlace oficial del video que deseas transformar en artículo de blog.\n\n` +
+        `<i>Formatos admitidos:</i>\n` +
+        `• <code>https://www.youtube.com/watch?v=VIDEO_ID</code>\n` +
+        `• <code>https://youtu.be/VIDEO_ID</code>\n` +
+        `• <code>https://www.youtube.com/shorts/VIDEO_ID</code>\n\n` +
+        `El sistema consultará los metadatos oficiales, comprobará duplicados y te guiará para definir el contexto y enfoque editorial.`;
+
+      const replyMarkup = {
+        inline_keyboard: [
+          [{ text: "🔙 Cancelar y Volver a Blog", callback_data: "menu:blog" }]
+        ]
+      };
+      await editTelegramMessage(token, chatId, msgId, text, { replyMarkup });
+      return { ok: true, route: "blog_yt_prompt" };
+    }
+
+    // Blog: Confirmación de video tras validación y selección de transcripción/enfoque
+    if (data.startsWith("blog:yt:confirm:")) {
+      const videoId = data.replace("blog:yt:confirm:", "");
+      if (env.ADMIN_KV) {
+        await env.ADMIN_KV.put(`user_state:${userId}`, JSON.stringify({
+          action: "awaiting_yt_context",
+          videoId
+        }), { expirationTtl: 600 });
+      }
+
+      const text = `<b>📝 APORTE DE CONTEXTO / TRANSCRIPCIÓN</b>\n\n` +
+        `Video seleccionado: <code>${videoId}</code>\n\n` +
+        `Para redactar un artículo con rigor analítico, envía a continuación:\n` +
+        `• <b>Transcripción autorizada</b> del video, o\n` +
+        `• <b>Notas y puntos clave</b> (mínimo 50 caracteres).\n\n` +
+        `<i>Nota de seguridad:</i> El contenido será procesado como datos pasivos de contexto y auditado contra prompt injections.`;
+
+      const replyMarkup = {
+        inline_keyboard: [
+          [{ text: "🔙 Cancelar", callback_data: "menu:blog" }]
+        ]
+      };
+      await editTelegramMessage(token, chatId, msgId, text, { replyMarkup });
+      return { ok: true, route: "blog_yt_context_prompt", videoId };
+    }
+
+    // Blog: Selección de enfoque editorial para YouTube
+    if (data.startsWith("blog:yt:angle:")) {
+      const parts = data.replace("blog:yt:angle:", "").split(":");
+      const angle = parts[0] || "informativo";
+      const videoId = parts[1];
+
+      // Recuperar contexto previo de KV
+      let state = {};
+      if (env.ADMIN_KV) {
+        const raw = await env.ADMIN_KV.get(`user_state:${userId}`);
+        if (raw) state = JSON.parse(raw);
+      }
+
+      const sourcePayload = state.sourcePayload;
+      if (!sourcePayload || sourcePayload.videoId !== videoId) {
+        await editTelegramMessage(token, chatId, msgId, `⚠️ La sesión ha expirado o no contiene el video seleccionado. Por favor inicia nuevamente.`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🎥 Iniciar de nuevo", callback_data: "blog:yt:prompt" }]] }
+        });
+        return { ok: false, error: "SESSION_EXPIRED" };
+      }
+
+      // Limpiar estado KV
+      if (env.ADMIN_KV) await env.ADMIN_KV.delete(`user_state:${userId}`);
+
+      const angleLabels = {
+        informativo: "Informativo y Educativo",
+        comercial: "Comercial & Conversión (Canedo Studio)",
+        tecnico: "Análisis Técnico y Arquitectura"
+      };
+
+      const jobId = "job_yt_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7);
+
+      const statusMarkup = {
+        inline_keyboard: [
+          [{ text: "🔎 Consultar estado", callback_data: `job:status:${jobId}` }],
+          [{ text: "🔙 Volver a Blog", callback_data: "menu:blog" }]
+        ]
+      };
+
+      const initialText = `<b>⏳ Generando artículo editorial desde YouTube...</b>\n\n` +
+        `• <b>Video:</b> "${escapeHtml(sourcePayload.title)}"\n` +
+        `• <b>Canal:</b> ${escapeHtml(sourcePayload.authorName || "YouTube")}\n` +
+        `• <b>Enfoque:</b> ${angleLabels[angle] || angle}\n` +
+        `• <b>Estado:</b> ⏳ En cola de procesamiento\n\n` +
+        `<i>Workers AI está redactando el análisis, aplicando el Quality Gate e inyectando el reproductor seguro.</i>`;
+
+      await editTelegramMessage(token, chatId, msgId, initialText, { replyMarkup: statusMarkup });
+
+      if (env.BLOG_DB) {
+        await createJob(env.BLOG_DB, {
+          id: jobId,
+          jobType: "blog_generate_youtube_draft",
+          userId,
+          chatId,
+          messageId: msgId,
+          payload: {
+            sourcePayload,
+            angle,
+            ip,
+            username
+          }
+        });
+      }
+
+      const runYtJob = async () => {
+        let claimed = null;
+        if (env.BLOG_DB) {
+          claimed = await claimSpecificJob(env.BLOG_DB, jobId, 180);
+          if (!claimed) return;
+        }
+
+        const expectedAttempts = claimed?.attempts || 1;
+        try {
+          const ytResult = await generateYouTubeDraft({
+            env,
+            sourcePayload,
+            userId,
+            angle
+          });
+
+          if (!ytResult.ok || !ytResult.draft) {
+            throw new Error(ytResult.error || "No se pudo generar el borrador desde YouTube");
+          }
+
+          const draft = ytResult.draft;
+          // Guardar borrador en D1 si existe BLOG_DB
+          if (env.BLOG_DB) {
+            await env.BLOG_DB.prepare(`
+              INSERT INTO blog_manual_drafts (
+                id, topic_tema, topic_angulo, title, tag, excerpt,
+                content_json, brief_json, audit_json, word_count,
+                status, created_by_user_id
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `).bind(
+              draft.id,
+              draft.topic_tema,
+              draft.topic_angulo,
+              draft.title,
+              draft.tag,
+              draft.excerpt,
+              draft.content_json,
+              draft.brief_json,
+              draft.audit_json,
+              draft.word_count,
+              draft.status,
+              String(userId)
+            ).run();
+          }
+
+          await logAdminAction(env.BLOG_DB, {
+            userId,
+            username,
+            action: "BLOG_DRAFT_YOUTUBE_CREATE",
+            entityId: draft.id,
+            details: { videoId: sourcePayload.videoId, title: draft.title, angle },
+            ip
+          });
+
+          const publishEnabled = String(env.ADMIN_PUBLISH_ENABLED).toLowerCase() === "true";
+          const actionRow = [];
+          if (draft.status === "draft") {
+            actionRow.push({ text: "✅ Aprobar Borrador", callback_data: `draft:approve_only:${draft.id}` });
+          }
+          if (publishEnabled && draft.status === "approved") {
+            actionRow.push({ text: "🚀 Publicar Artículo", callback_data: `draft:publish_confirm:${draft.id}` });
+          }
+          actionRow.push({ text: "🗑️ Descartar", callback_data: `draft:discard:${draft.id}` });
+
+          const previewText = `<b>🎥 BORRADOR DESDE YOUTUBE GENERADO CON ÉXITO</b>\n\n` +
+            `• <b>Título:</b> ${escapeHtml(draft.title)}\n` +
+            `• <b>Canal:</b> ${escapeHtml(sourcePayload.authorName || "YouTube")}\n` +
+            `• <b>Extensión:</b> ${draft.word_count} palabras\n` +
+            `• <b>Quality Gate:</b> Puntuación ${ytResult.audit?.score || 100}/100 ✅\n` +
+            `• <b>Bloque de Video:</b> Integrado (16:9 youtube-nocookie)\n\n` +
+            `<b>Resumen BLUF:</b>\n<i>${escapeHtml(draft.excerpt)}</i>\n\n` +
+            `<i>Estado de publicación: ${publishEnabled ? "🟢 Habilitada" : "🔒 Deshabilitada (ADMIN_PUBLISH_ENABLED=false)"}</i>`;
+
+          const replyMarkup = {
+            inline_keyboard: [
+              actionRow,
+              [
+                { text: "📖 Leer Completo", callback_data: `draft:read_full:${draft.id}` },
+                { text: "✏️ Modificar", callback_data: `draft:modify_prompt:${draft.id}` }
+              ],
+              [
+                { text: "🔄 Regenerar", callback_data: `draft:regen_confirm:${draft.id}` },
+                { text: "🔙 Volver al Menú", callback_data: "menu:blog" }
+              ]
+            ]
+          };
+
+          if (msgId) {
+            await editTelegramMessage(token, chatId, msgId, previewText, { replyMarkup });
+          } else {
+            await sendTelegramMessage(token, chatId, previewText, { replyMarkup });
+          }
+
+          if (env.BLOG_DB) {
+            await markJobCompleted(env.BLOG_DB, jobId, { draftId: draft.id }, expectedAttempts);
+          }
+        } catch (err) {
+          const errorText = `<b>❌ Falló la generación del artículo desde YouTube:</b>\n${escapeHtml(err.message)}\n\nPuedes intentar nuevamente con otro video o contexto.`;
+          const errorMarkup = {
+            inline_keyboard: [
+              [{ text: "🔄 Reintentar", callback_data: "blog:yt:prompt" }],
+              [{ text: "🔙 Volver a Blog", callback_data: "menu:blog" }]
+            ]
+          };
+          if (msgId) {
+            await editTelegramMessage(token, chatId, msgId, errorText, { replyMarkup: errorMarkup });
+          } else {
+            await sendTelegramMessage(token, chatId, errorText, { replyMarkup: errorMarkup });
+          }
+          if (env.BLOG_DB) {
+            await markJobFailed(env.BLOG_DB, jobId, err.message, expectedAttempts, false);
+          }
+        }
+      };
+
+      if (ctx && typeof ctx.waitUntil === "function") {
+        ctx.waitUntil(runYtJob());
+      } else {
+        await runYtJob();
+      }
+
+      return { ok: true, route: "blog_yt_generation_dispatched", jobId, videoId };
+    }
+
+    // Blog: Inicio de creación desde Enlace Web (Fase V1-X)
+    if (data === "blog:web:prompt") {
+      if (env.ADMIN_KV) {
+        await env.ADMIN_KV.put(`user_state:${userId}`, JSON.stringify({
+          action: "awaiting_web_url"
+        }), { expirationTtl: 600 });
+      }
+
+      const text = `<b>🔗 CREAR ARTÍCULO DESDE ENLACE WEB</b>\n\n` +
+        `Envíame el enlace HTTPS del artículo, noticia, blog o página empresarial que deseas utilizar como fuente para tu nuevo artículo.\n\n` +
+        `<i>Características de seguridad y soporte:</i>\n` +
+        `• <b>Protocolo seguro:</b> Únicamente URLs públicas <code>https://</code>\n` +
+        `• <b>Protección SSRF:</b> Acceso restringido contra redes internas y localhost\n` +
+        `• <b>Análisis Original:</b> Workers AI redactará una perspectiva original con atribución canónica a la fuente\n` +
+        `• <b>Calidad Editorial:</b> Verificación por Quality Gate y aprobación humana obligatoria.\n\n` +
+        `Pega el enlace a continuación:`;
+
+      const replyMarkup = {
+        inline_keyboard: [
+          [{ text: "🔙 Cancelar y Volver a Blog", callback_data: "menu:blog" }]
+        ]
+      };
+      await editTelegramMessage(token, chatId, msgId, text, { replyMarkup });
+      return { ok: true, route: "blog_web_prompt" };
+    }
+
+    // Blog: Selección de enfoque editorial para Enlace Web (Fase V1-X)
+    if (data.startsWith("blog:web:angle:")) {
+      const parts = data.replace("blog:web:angle:", "").split(":");
+      const angle = parts[0] || "informativo";
+      const sourceId = parts[1];
+
+      // Recuperar estado previo de KV
+      let state = {};
+      if (env.ADMIN_KV) {
+        const raw = await env.ADMIN_KV.get(`user_state:${userId}`);
+        if (raw) state = JSON.parse(raw);
+      }
+
+      const sourcePayload = state.sourcePayload;
+      if (!sourcePayload || (sourcePayload.sourceId && sourceId && sourcePayload.sourceId !== sourceId && !sourcePayload.canonicalUrl?.includes(sourceId))) {
+        await editTelegramMessage(token, chatId, msgId, `⚠️ La sesión ha expirado o no contiene el enlace seleccionado. Por favor inicia nuevamente.`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🔗 Iniciar de nuevo", callback_data: "blog:web:prompt" }]] }
+        });
+        return { ok: false, error: "SESSION_EXPIRED" };
+      }
+
+      // Limpiar estado en KV
+      if (env.ADMIN_KV) await env.ADMIN_KV.delete(`user_state:${userId}`);
+
+      const angleLabels = {
+        informativo: "Informativo y Educativo",
+        comercial: "Comercial & Conversión (Canedo Studio)",
+        tecnico: "Análisis Técnico & Arquitectura"
+      };
+
+      const initialText = `<b>⏳ Generando artículo editorial desde Enlace Web...</b>\n\n` +
+        `• <b>Fuente:</b> ${escapeHtml(sourcePayload.hostname || "Web")}\n` +
+        `• <b>Título analizado:</b> <i>${escapeHtml(sourcePayload.title || "Artículo")}</i>\n` +
+        `• <b>Enfoque:</b> ${angleLabels[angle] || angle}\n\n` +
+        `Workers AI está procesando el contenido, sintetizando conceptos y auditando contra el Quality Gate. Te notificaré cuando el borrador esté listo.`;
+
+      await editTelegramMessage(token, chatId, msgId, initialText);
+
+      // Encolar trabajo asíncrono
+      const jobId = `job_web_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+      if (env.BLOG_DB) {
+        await createJob(env.BLOG_DB, {
+          id: jobId,
+          jobType: "blog_generate_web_draft",
+          chatId,
+          userId,
+          messageId: msgId,
+          payload: { sourcePayload, angle, ip, username }
+        });
+      }
+
+      const runWebJob = async () => {
+        let claimed = null;
+        if (env.BLOG_DB) {
+          claimed = await claimSpecificJob(env.BLOG_DB, jobId, 180);
+          if (!claimed) return;
+        }
+
+        const expectedAttempts = claimed?.attempts || 1;
+        try {
+          const webResult = await generateWebDraft({
+            env,
+            sourcePayload,
+            userId,
+            angle,
+            jobId
+          });
+
+          if (!webResult.ok || !webResult.draft) {
+            throw new Error(webResult.error || "No se pudo generar el borrador desde el enlace web");
+          }
+
+          const draft = webResult.draft;
+          if (env.BLOG_DB) {
+            await env.BLOG_DB.prepare(`
+              INSERT INTO blog_manual_drafts (
+                id, topic_tema, topic_angulo, title, tag, excerpt,
+                content_json, brief_json, audit_json, word_count,
+                status, created_by_user_id
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+              ON CONFLICT(id) DO UPDATE SET
+                title = excluded.title,
+                content_json = excluded.content_json,
+                brief_json = excluded.brief_json,
+                audit_json = excluded.audit_json,
+                word_count = excluded.word_count,
+                updated_at = CURRENT_TIMESTAMP
+            `).bind(
+              draft.id,
+              draft.topic_tema,
+              draft.topic_angulo,
+              draft.title,
+              draft.tag,
+              draft.excerpt,
+              draft.content_json,
+              draft.brief_json,
+              draft.audit_json,
+              draft.word_count,
+              draft.status,
+              String(userId)
+            ).run();
+          }
+
+          await logAdminAction(env.BLOG_DB, {
+            userId,
+            username,
+            action: "BLOG_DRAFT_WEB_CREATE",
+            entityId: draft.id,
+            details: { url: sourcePayload.canonicalUrl, title: draft.title, angle },
+            ip
+          });
+
+          const publishEnabled = String(env.ADMIN_PUBLISH_ENABLED).toLowerCase() === "true";
+          const actionRow = [];
+          if (draft.status === "draft") {
+            actionRow.push({ text: "✅ Aprobar Borrador", callback_data: `draft:approve_only:${draft.id}` });
+          }
+          if (publishEnabled && draft.status === "approved") {
+            actionRow.push({ text: "🚀 Publicar Artículo", callback_data: `draft:publish_confirm:${draft.id}` });
+          }
+          actionRow.push({ text: "🗑️ Descartar", callback_data: `draft:discard:${draft.id}` });
+
+          const previewText = `<b>🔗 BORRADOR DESDE ENLACE WEB GENERADO CON ÉXITO</b>\n\n` +
+            `• <b>Título:</b> ${escapeHtml(draft.title)}\n` +
+            `• <b>Fuente:</b> ${escapeHtml(sourcePayload.hostname || "Web")}\n` +
+            `• <b>Extensión:</b> ${draft.word_count} palabras\n` +
+            `• <b>Quality Gate:</b> Puntuación ${webResult.audit?.score || 100}/100 ✅\n` +
+            `• <b>Atribución Canónica:</b> Integrada con enlace a la fuente\n\n` +
+            `<b>Resumen BLUF:</b>\n<i>${escapeHtml(draft.excerpt)}</i>\n\n` +
+            `<i>Estado de publicación: ${publishEnabled ? "🟢 Habilitada" : "🔒 Deshabilitada (ADMIN_PUBLISH_ENABLED=false)"}</i>`;
+
+          const replyMarkup = {
+            inline_keyboard: [
+              actionRow,
+              [
+                { text: "📖 Leer Completo", callback_data: `draft:read_full:${draft.id}` },
+                { text: "🔙 Ir a Borradores", callback_data: "blog:drafts:0" }
+              ]
+            ]
+          };
+
+          if (msgId) {
+            await editTelegramMessage(token, chatId, msgId, previewText, { replyMarkup });
+          } else {
+            await sendTelegramMessage(token, chatId, previewText, { replyMarkup });
+          }
+
+          if (env.BLOG_DB) {
+            await markJobCompleted(env.BLOG_DB, jobId, { draftId: draft.id }, expectedAttempts);
+          }
+        } catch (err) {
+          console.error("[BLOG WEB ASYNC ERROR] Error generando borrador web:", err);
+          const errorText = `<b>❌ Falló la generación del artículo desde el enlace web:</b>\n${escapeHtml(err.message)}\n\nPuedes intentar nuevamente con otra URL o contexto.`;
+          const errorMarkup = {
+            inline_keyboard: [
+              [{ text: "🔄 Reintentar", callback_data: "blog:web:prompt" }],
+              [{ text: "🔙 Volver a Blog", callback_data: "menu:blog" }]
+            ]
+          };
+          if (msgId) {
+            await editTelegramMessage(token, chatId, msgId, errorText, { replyMarkup: errorMarkup });
+          } else {
+            await sendTelegramMessage(token, chatId, errorText, { replyMarkup: errorMarkup });
+          }
+          if (env.BLOG_DB) {
+            await markJobFailed(env.BLOG_DB, jobId, err.message, expectedAttempts, false);
+          }
+        }
+      };
+
+      if (ctx && typeof ctx.waitUntil === "function") {
+        ctx.waitUntil(runWebJob());
+      } else {
+        await runWebJob();
+      }
+
+      return { ok: true, route: "blog_web_generation_dispatched", jobId, sourceId };
+    }
+
     // Blog: Aprobación exclusiva de borrador (Sin publicar, no requiere ADMIN_PUBLISH_ENABLED=true)
     if (data.startsWith("draft:approve_only:")) {
       const draftId = data.replace("draft:approve_only:", "");
@@ -1482,11 +2195,338 @@ export default {
       return { ok: true, route: "main_menu" };
     }
 
-    // Comprobar si el usuario estaba en estado de ingreso de tema
+    // Comandos directos del CRM Comercial (Fase 4C)
+    if (text === "/crm" || text === "/leads") {
+      if (!env.CONTACT_DB) {
+        await sendTelegramMessage(token, chatId, `⚠️ Módulo CRM no disponible: el binding <code>CONTACT_DB</code> no está configurado.`);
+        return { ok: false, error: "MISSING_CONTACT_DB" };
+      }
+      const crmService = new AdminCrmService(env.CONTACT_DB);
+      const summary = await crmService.getPipelineSummary();
+      const crmMenu = renderCrmMenu(summary);
+      await sendTelegramMessage(token, chatId, crmMenu.text, { replyMarkup: crmMenu.replyMarkup });
+      return { ok: true, route: "crm_menu_cmd" };
+    }
+
+    if (text === "/pipeline") {
+      if (!env.CONTACT_DB) {
+        await sendTelegramMessage(token, chatId, `⚠️ Módulo CRM no disponible: el binding <code>CONTACT_DB</code> no está configurado.`);
+        return { ok: false, error: "MISSING_CONTACT_DB" };
+      }
+      const crmService = new AdminCrmService(env.CONTACT_DB);
+      const summary = await crmService.getPipelineSummary();
+      const pipelineView = renderPipelineView(summary);
+      await sendTelegramMessage(token, chatId, pipelineView.text, { replyMarkup: pipelineView.replyMarkup });
+      return { ok: true, route: "crm_pipeline_cmd" };
+    }
+
+    if (text.startsWith("/lead ")) {
+      if (!env.CONTACT_DB) {
+        await sendTelegramMessage(token, chatId, `⚠️ Módulo CRM no disponible: el binding <code>CONTACT_DB</code> no está configurado.`);
+        return { ok: false, error: "MISSING_CONTACT_DB" };
+      }
+      const rawNum = text.replace("/lead ", "").trim();
+      const leadNum = parseInt(rawNum, 10);
+      if (isNaN(leadNum)) {
+        await sendTelegramMessage(token, chatId, `⚠️ Introduce un número de prospecto válido. Ejemplo: <code>/lead 1</code>`);
+        return { ok: false, error: "INVALID_LEAD_NUM" };
+      }
+
+      const crmService = new AdminCrmService(env.CONTACT_DB);
+      const lead = await crmService.getLead(leadNum);
+      if (!lead) {
+        await sendTelegramMessage(token, chatId, `❌ No se encontró ningún prospecto con el número #${leadNum}.`);
+        return { ok: false, error: "LEAD_NOT_FOUND" };
+      }
+
+      const detailView = renderLeadDetail(lead);
+      await sendTelegramMessage(token, chatId, detailView.text, { replyMarkup: detailView.replyMarkup });
+      return { ok: true, route: "crm_lead_detail_cmd", leadNum };
+    }
+
+    // Comprobar si el usuario estaba en estado conversacional interactivo
     let userState = null;
     if (env.ADMIN_KV) {
       const rawState = await env.ADMIN_KV.get(`user_state:${userId}`);
       if (rawState) userState = JSON.parse(rawState);
+    }
+
+    // 0. Captura de estado: URL de enlace Web enviada tras pulsar "Crear desde Enlace Web"
+    if (userState && userState.action === "awaiting_web_url") {
+      const trimmedUrl = text.trim();
+      const urlValidation = validateUrl(trimmedUrl);
+      if (!urlValidation || !urlValidation.valid) {
+        await sendTelegramMessage(token, chatId, `⚠️ <b>Enlace no válido o inseguro:</b> ${escapeHtml(urlValidation?.error || "URL no válida")}\n\nPor favor envía una URL pública HTTPS válida (ejemplo: <code>https://ejemplo.com/articulo</code>) o pulsa Cancelar.`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🔙 Cancelar", callback_data: "menu:blog" }]] }
+        });
+        return { ok: false, error: urlValidation?.error || "INVALID_URL" };
+      }
+
+      // Si el enlace es de YouTube, sugerir o conmutar al flujo nativo de YouTube
+      const parsedUrl = urlValidation.url;
+      const hostname = (parsedUrl?.hostname || "").toLowerCase();
+      if (hostname.includes("youtube.com") || hostname.includes("youtu.be")) {
+        const switchText = `<b>🎥 ENLACE DE YOUTUBE DETECTADO</b>\n\n` +
+          `Has enviado un enlace perteneciente a YouTube (<code>${escapeHtml(trimmedUrl)}</code>).\n\n` +
+          `Para videos de YouTube dispones del flujo especializado con inserción de reproductor 16:9 y soporte de transcripción.\n\n` +
+          `¿Deseas procesarlo con el flujo de YouTube o continuar como página web genérica?`;
+        const switchMarkup = {
+          inline_keyboard: [
+            [{ text: "🎥 Usar flujo de YouTube", callback_data: "blog:yt:prompt" }],
+            [{ text: "🔙 Cancelar", callback_data: "menu:blog" }]
+          ]
+        };
+        await sendTelegramMessage(token, chatId, switchText, { replyMarkup: switchMarkup });
+        return { ok: true, route: "web_url_youtube_redirect_suggested" };
+      }
+
+      // Extraer contenido web usando el módulo de research seguro
+      await sendTelegramMessage(token, chatId, `⏳ <b>Analizando enlace web...</b>\nAccediendo de forma segura y extrayendo contenido principal.`);
+
+      const extractResult = await extractWebContent(trimmedUrl);
+      if (!extractResult.ok || !extractResult.data) {
+        await sendTelegramMessage(token, chatId, `❌ <b>No se pudo acceder a la página:</b> ${escapeHtml(extractResult.error || "Error de conexión o timeout")}\n\nVerifica que la web sea de acceso público, no requiera login y responda rápidamente.`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🔙 Volver a Blog", callback_data: "menu:blog" }]] }
+        });
+        return { ok: false, error: extractResult.error };
+      }
+
+      const extracted = extractResult.data;
+      const textContent = extracted.cleanText || extracted.textContent || "";
+      if (textContent.length < 150) {
+        await sendTelegramMessage(token, chatId, `⚠️ <b>Contenido insuficiente:</b> La página no contiene suficiente texto legible (mínimo 150 caracteres) para elaborar un artículo editorial de calidad.\n\nPuede ser una página protegida por JavaScript pesado o un muro de pago.`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🔙 Volver a Blog", callback_data: "menu:blog" }]] }
+        });
+        return { ok: false, error: "INSUFFICIENT_CONTENT" };
+      }
+
+      const wordsCount = textContent.split(/\s+/).filter(Boolean).length;
+      const sourceId = Math.random().toString(36).slice(2, 10);
+      const sourcePayload = {
+        sourceId,
+        canonicalUrl: extracted.canonicalUrl || trimmedUrl,
+        title: extracted.title || "Artículo Web",
+        textContent: textContent,
+        hostname: extracted.siteName || hostname,
+        author: extracted.author || "",
+        publishedTime: extracted.publishedTime || null,
+        wordCount: wordsCount
+      };
+
+      // Guardar en KV el estado esperando selección de ángulo
+      if (env.ADMIN_KV) {
+        await env.ADMIN_KV.put(`user_state:${userId}`, JSON.stringify({
+          action: "awaiting_web_angle",
+          sourcePayload
+        }), { expirationTtl: 600 });
+      }
+
+      const pageInfoText = `<b>🔗 ENLACE ANALIZADO CON ÉXITO</b>\n\n` +
+        `• <b>Título:</b> <i>${escapeHtml(sourcePayload.title)}</i>\n` +
+        `• <b>Sitio web:</b> <code>${escapeHtml(sourcePayload.hostname)}</code>\n` +
+        `• <b>Palabras extraídas:</b> ~${sourcePayload.wordCount} palabras\n` +
+        `• <b>URL Canónica:</b> <code>${escapeHtml(sourcePayload.canonicalUrl)}</code>\n\n` +
+        `<b>🎯 SELECCIÓN DE ENFOQUE EDITORIAL</b>\n\n` +
+        `Elige el ángulo con el que Workers AI sintetizará y redactará el artículo para Canedo Studio:\n\n` +
+        `• <b>1. 💡 Informativo y Educativo:</b> Síntesis didáctica de conceptos, tendencias y valor pedagógico.\n` +
+        `• <b>2. 💼 Comercial & Conversión:</b> Vinculación con dolores empresariales y soluciones estratégicas de Canedo Studio.\n` +
+        `• <b>3. ⚙️ Análisis Técnico:</b> Metodologías, buenas prácticas, arquitectura y análisis riguroso.`;
+
+      const replyMarkup = {
+        inline_keyboard: [
+          [{ text: "💡 1. Informativo y Educativo", callback_data: `blog:web:angle:informativo:${sourceId}` }],
+          [{ text: "💼 2. Comercial & Conversión", callback_data: `blog:web:angle:comercial:${sourceId}` }],
+          [{ text: "⚙️ 3. Análisis Técnico", callback_data: `blog:web:angle:tecnico:${sourceId}` }],
+          [{ text: "🔙 Cancelar", callback_data: "menu:blog" }]
+        ]
+      };
+
+      await sendTelegramMessage(token, chatId, pageInfoText, { replyMarkup });
+      return { ok: true, route: "web_page_analyzed", sourceId };
+    }
+
+    // 0. Captura de estado: URL de YouTube enviada tras pulsar "Crear desde YouTube"
+    if (userState && userState.action === "awaiting_yt_url") {
+      const trimmedUrl = text.trim();
+      const ytValidation = parseAndValidateYouTubeUrl(trimmedUrl);
+      if (!ytValidation.ok) {
+        await sendTelegramMessage(token, chatId, `⚠️ <b>Enlace no válido:</b> ${escapeHtml(ytValidation.error)}\n\nPor favor envía una URL oficial de YouTube (ejemplo: <code>https://www.youtube.com/watch?v=dQw4w9WgXcQ</code>) o pulsa Cancelar.`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🔙 Cancelar", callback_data: "menu:blog" }]] }
+        });
+        return { ok: false, error: ytValidation.error };
+      }
+
+      // Validar metadatos y duplicados con YouTubeIngestionService
+      const ytService = new YouTubeIngestionService(env.BLOG_DB);
+      const ingestResult = await ytService.ingestVideoSource(trimmedUrl);
+      if (!ingestResult.ok) {
+        await sendTelegramMessage(token, chatId, `❌ <b>Error al consultar YouTube:</b> ${escapeHtml(ingestResult.error || "No se pudieron obtener los metadatos")}`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🔙 Volver a Blog", callback_data: "menu:blog" }]] }
+        });
+        return { ok: false, error: ingestResult.error };
+      }
+
+      const payload = ingestResult.payload;
+      const dupInfo = payload.duplicateInfo;
+
+      // Actualizar estado en KV con los metadatos obtenidos
+      if (env.ADMIN_KV) {
+        await env.ADMIN_KV.put(`user_state:${userId}`, JSON.stringify({
+          action: "awaiting_yt_context",
+          sourcePayload: payload
+        }), { expirationTtl: 600 });
+      }
+
+      let dupWarning = "";
+      if (dupInfo && dupInfo.isDuplicate) {
+        if (dupInfo.publishedPost) {
+          dupWarning = `\n\n⚠️ <b>AVISO DE DUPLICADO:</b> Este video ya fue utilizado en el artículo publicado: <code>${escapeHtml(dupInfo.publishedPost.title)}</code> (${dupInfo.publishedPost.slug}).`;
+        } else if (dupInfo.draft) {
+          dupWarning = `\n\n⚠️ <b>AVISO DE DUPLICADO:</b> Ya existe un borrador con este video: <code>${escapeHtml(dupInfo.draft.title)}</code> (ID: ${dupInfo.draft.id}).`;
+        }
+      }
+
+      const videoInfoText = `<b>🎥 VIDEO IDENTIFICADO CON ÉXITO</b>\n\n` +
+        `• <b>Título:</b> ${escapeHtml(payload.title)}\n` +
+        `• <b>Canal:</b> ${escapeHtml(payload.authorName || "YouTube")}\n` +
+        `• <b>Video ID:</b> <code>${payload.videoId}</code>\n` +
+        `• <b>Permite inserción:</b> ${payload.isEmbeddable ? "Sí ✅" : "No ⚠️"}\n` +
+        `• <b>URL Canónica:</b> <code>${payload.canonicalUrl}</code>${dupWarning}\n\n` +
+        `<i>Siguiente paso:</i> Envía la <b>transcripción autorizada</b> o notas clave (mínimo 50 caracteres) para nutrir la redacción editorial.`;
+
+      const replyMarkup = {
+        inline_keyboard: [
+          [{ text: "📝 Aportar Transcripción / Notas", callback_data: `blog:yt:confirm:${payload.videoId}` }],
+          [{ text: "🔙 Cancelar", callback_data: "menu:blog" }]
+        ]
+      };
+
+      await sendTelegramMessage(token, chatId, videoInfoText, { replyMarkup });
+      return { ok: true, route: "yt_video_identified", videoId: payload.videoId };
+    }
+
+    // 0.1 Captura de estado: Transcripción / notas para video de YouTube
+    if (userState && userState.action === "awaiting_yt_context") {
+      const sourcePayload = userState.sourcePayload;
+      if (!sourcePayload || !sourcePayload.videoId) {
+        if (env.ADMIN_KV) await env.ADMIN_KV.delete(`user_state:${userId}`);
+        await sendTelegramMessage(token, chatId, `⚠️ La sesión expiró o no contiene un video válido. Inicia el proceso nuevamente.`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🎥 Iniciar de nuevo", callback_data: "blog:yt:prompt" }]] }
+        });
+        return { ok: false, error: "SESSION_EXPIRED" };
+      }
+
+      const contextText = text.trim();
+      if (contextText.length < 50) {
+        await sendTelegramMessage(token, chatId, `⚠️ <b>Contexto insuficiente:</b> Se requieren al menos 50 caracteres de transcripción o notas para fundamentar el análisis editorial con rigor.\n\nPor favor envía más detalles del video:`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🔙 Cancelar", callback_data: "menu:blog" }]] }
+        });
+        return { ok: false, error: "INSUFFICIENT_CONTEXT" };
+      }
+
+      // Almacenar transcripción/notas en el payload
+      sourcePayload.notes = contextText;
+      sourcePayload.transcript = contextText.length > 200 ? contextText : null;
+      sourcePayload.hasTranscript = Boolean(sourcePayload.transcript);
+
+      // Guardar en KV el estado actualizado con el contexto
+      if (env.ADMIN_KV) {
+        await env.ADMIN_KV.put(`user_state:${userId}`, JSON.stringify({
+          action: "awaiting_yt_angle",
+          sourcePayload
+        }), { expirationTtl: 600 });
+      }
+
+      const angleText = `<b>🎯 SELECCIÓN DE ENFOQUE EDITORIAL</b>\n\n` +
+        `• <b>Video:</b> "${escapeHtml(sourcePayload.title)}"\n` +
+        `• <b>Canal:</b> ${escapeHtml(sourcePayload.authorName || "YouTube")}\n` +
+        `• <b>Contexto recibido:</b> ${contextText.length} caracteres\n\n` +
+        `Elige el ángulo bajo el cual Workers AI redactará el artículo:\n\n` +
+        `• <b>1. 💡 Informativo y Educativo:</b> Síntesis de conceptos clave, pedagogía y tendencias del sector.\n` +
+        `• <b>2. 💼 Comercial & Conversión:</b> Conecta con problemas empresariales y soluciones de Canedo Studio sin venta agresiva ni datos inventados.\n` +
+        `• <b>3. ⚙️ Análisis Técnico:</b> Metodologías, arquitectura, buenas prácticas y trade-offs para directores y desarrolladores.`;
+
+      const replyMarkup = {
+        inline_keyboard: [
+          [{ text: "💡 1. Informativo y Educativo", callback_data: `blog:yt:angle:informativo:${sourcePayload.videoId}` }],
+          [{ text: "💼 2. Comercial & Conversión", callback_data: `blog:yt:angle:comercial:${sourcePayload.videoId}` }],
+          [{ text: "⚙️ 3. Análisis Técnico", callback_data: `blog:yt:angle:tecnico:${sourcePayload.videoId}` }],
+          [{ text: "🔙 Cancelar", callback_data: "menu:blog" }]
+        ]
+      };
+
+      await sendTelegramMessage(token, chatId, angleText, { replyMarkup });
+      return { ok: true, route: "yt_angle_selection", videoId: sourcePayload.videoId };
+    }
+
+    // CRM: Captura de texto para nota comercial
+    if (userState && userState.action === "awaiting_crm_note") {
+      if (env.ADMIN_KV) await env.ADMIN_KV.delete(`user_state:${userId}`);
+      const leadNum = userState.leadNum;
+      if (!env.CONTACT_DB) {
+        await sendTelegramMessage(token, chatId, `⚠️ Error: CONTACT_DB no configurado.`);
+        return { ok: false, error: "MISSING_CONTACT_DB" };
+      }
+
+      const crmService = new AdminCrmService(env.CONTACT_DB);
+      try {
+        await crmService.addNote({
+          identifier: leadNum,
+          content: text,
+          author: username ? `@${username}` : `admin_${userId}`,
+          noteType: "seguimiento"
+        });
+        const lead = await crmService.getLead(leadNum);
+        const detailView = renderLeadDetail(lead);
+        await sendTelegramMessage(token, chatId, `✅ <b>Nota guardada correctamente en el prospecto #${leadNum}.</b>`);
+        await sendTelegramMessage(token, chatId, detailView.text, { replyMarkup: detailView.replyMarkup });
+        return { ok: true, route: "crm_note_saved", leadNum };
+      } catch (err) {
+        await sendTelegramMessage(token, chatId, `❌ Error al guardar la nota: <code>${escapeHtml(err.message)}</code>`);
+        return { ok: false, error: err.message };
+      }
+    }
+
+    // CRM: Captura de texto para recordatorio comercial
+    if (userState && userState.action === "awaiting_crm_reminder") {
+      if (env.ADMIN_KV) await env.ADMIN_KV.delete(`user_state:${userId}`);
+      const leadNum = userState.leadNum;
+      if (!env.CONTACT_DB) {
+        await sendTelegramMessage(token, chatId, `⚠️ Error: CONTACT_DB no configurado.`);
+        return { ok: false, error: "MISSING_CONTACT_DB" };
+      }
+
+      let reminderText = text;
+      let days = 2; // Por defecto 2 días
+
+      if (text.includes("|")) {
+        const parts = text.split("|");
+        reminderText = parts[0].trim();
+        const parsedDays = parseInt(parts[1].trim(), 10);
+        if (!isNaN(parsedDays) && parsedDays > 0) {
+          days = parsedDays;
+        }
+      }
+
+      const dueAt = Date.now() + (days * 86400000);
+      const crmService = new AdminCrmService(env.CONTACT_DB);
+
+      try {
+        await crmService.createReminder({
+          identifier: leadNum,
+          reminderText,
+          dueAt,
+          createdBy: username ? `@${username}` : `admin_${userId}`
+        });
+        const lead = await crmService.getLead(leadNum);
+        const detailView = renderLeadDetail(lead);
+        await sendTelegramMessage(token, chatId, `⏰ <b>Recordatorio programado para dentro de ${days} día(s).</b>`);
+        await sendTelegramMessage(token, chatId, detailView.text, { replyMarkup: detailView.replyMarkup });
+        return { ok: true, route: "crm_reminder_saved", leadNum, days };
+      } catch (err) {
+        await sendTelegramMessage(token, chatId, `❌ Error al programar el recordatorio: <code>${escapeHtml(err.message)}</code>`);
+        return { ok: false, error: err.message };
+      }
     }
 
     if (userState && userState.action === "awaiting_blog_topic") {
@@ -1967,6 +3007,56 @@ export default {
       return { ok: true, route: "article_edit_diff_ready", jobId, slug, field };
     }
 
+    // Comprobación de detección directa de URL de YouTube si no hay otro estado activo
+    const directYtMatch = text.match(/https?:\/\/(?:www\.)?(?:youtube\.com\/(?:watch\?v=|shorts\/|live\/)|youtu\.be\/)[a-zA-Z0-9_-]{11}/i);
+    if (directYtMatch) {
+      const extractedUrl = directYtMatch[0];
+      const ytValidation = parseAndValidateYouTubeUrl(extractedUrl);
+      if (ytValidation.ok) {
+        const ytService = new YouTubeIngestionService(env.BLOG_DB);
+        const ingestResult = await ytService.ingestVideoSource(extractedUrl);
+        if (ingestResult.ok) {
+          const payload = ingestResult.payload;
+          const dupInfo = payload.duplicateInfo;
+
+          if (env.ADMIN_KV) {
+            await env.ADMIN_KV.put(`user_state:${userId}`, JSON.stringify({
+              action: "awaiting_yt_context",
+              sourcePayload: payload
+            }), { expirationTtl: 600 });
+          }
+
+          let dupWarning = "";
+          if (dupInfo && dupInfo.isDuplicate) {
+            if (dupInfo.publishedPost) {
+              dupWarning = `\n\n⚠️ <b>AVISO DE DUPLICADO:</b> Este video ya fue utilizado en el artículo: <code>${escapeHtml(dupInfo.publishedPost.title)}</code>.`;
+            } else if (dupInfo.draft) {
+              dupWarning = `\n\n⚠️ <b>AVISO DE DUPLICADO:</b> Ya existe un borrador con este video: <code>${escapeHtml(dupInfo.draft.title)}</code>.`;
+            }
+          }
+
+          const videoInfoText = `<b>🎥 DETECCIÓN DE VIDEO DE YOUTUBE</b>\n\n` +
+            `• <b>Título:</b> ${escapeHtml(payload.title)}\n` +
+            `• <b>Canal:</b> ${escapeHtml(payload.authorName || "YouTube")}\n` +
+            `• <b>Video ID:</b> <code>${payload.videoId}</code>\n` +
+            `• <b>Permite inserción:</b> ${payload.isEmbeddable ? "Sí ✅" : "No ⚠️"}\n` +
+            `• <b>URL Canónica:</b> <code>${payload.canonicalUrl}</code>${dupWarning}\n\n` +
+            `<i>¿Deseas redactar un artículo a partir de este video?</i>\n` +
+            `Envía la <b>transcripción autorizada</b> o notas clave (mínimo 50 caracteres):`;
+
+          const replyMarkup = {
+            inline_keyboard: [
+              [{ text: "📝 Aportar Transcripción / Notas", callback_data: `blog:yt:confirm:${payload.videoId}` }],
+              [{ text: "🔙 Cancelar", callback_data: "menu:blog" }]
+            ]
+          };
+
+          await sendTelegramMessage(token, chatId, videoInfoText, { replyMarkup });
+          return { ok: true, route: "yt_video_detected_direct", videoId: payload.videoId };
+        }
+      }
+    }
+
     // Mensaje libre no reconocido
     await sendTelegramMessage(token, chatId, `Usa /menu para acceder al panel principal de Canedo Studio.`);
     return { ok: true, route: "fallback_text" };
@@ -2079,6 +3169,182 @@ export default {
           }
           await markJobCompleted(env.BLOG_DB, job.id, { slug }, expectedAttempts);
           processed++;
+        } else if (job.jobType === "blog_generate_youtube_draft") {
+          const { sourcePayload, angle, ip, username } = job.payload;
+          const ytResult = await generateYouTubeDraft({
+            env,
+            sourcePayload,
+            userId: job.userId,
+            angle: angle || "informativo"
+          });
+
+          if (!ytResult.ok || !ytResult.draft) {
+            throw new Error(ytResult.error || "No se pudo recuperar el borrador desde YouTube");
+          }
+
+          const draft = ytResult.draft;
+          if (env.BLOG_DB) {
+            await env.BLOG_DB.prepare(`
+              INSERT INTO blog_manual_drafts (
+                id, topic_tema, topic_angulo, title, tag, excerpt,
+                content_json, brief_json, audit_json, word_count,
+                status, created_by_user_id
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `).bind(
+              draft.id,
+              draft.topic_tema,
+              draft.topic_angulo,
+              draft.title,
+              draft.tag,
+              draft.excerpt,
+              draft.content_json,
+              draft.brief_json,
+              draft.audit_json,
+              draft.word_count,
+              draft.status,
+              String(job.userId)
+            ).run();
+          }
+
+          await logAdminAction(env.BLOG_DB, {
+            userId: job.userId,
+            username,
+            action: "BLOG_DRAFT_YOUTUBE_RETRY",
+            entityId: draft.id,
+            details: { videoId: sourcePayload.videoId, title: draft.title, attempts: job.attempts },
+            ip
+          });
+
+          const publishEnabled = String(env.ADMIN_PUBLISH_ENABLED).toLowerCase() === "true";
+          const actionRow = [];
+          if (draft.status === "draft") {
+            actionRow.push({ text: "✅ Aprobar Borrador", callback_data: `draft:approve_only:${draft.id}` });
+          }
+          if (publishEnabled && draft.status === "approved") {
+            actionRow.push({ text: "🚀 Publicar Artículo", callback_data: `draft:publish_confirm:${draft.id}` });
+          }
+          actionRow.push({ text: "🗑️ Descartar", callback_data: `draft:discard:${draft.id}` });
+
+          const previewText = `<b>🎥 BORRADOR DESDE YOUTUBE (RECUPERADO CON ÉXITO)</b>\n\n` +
+            `• <b>Título:</b> ${escapeHtml(draft.title)}\n` +
+            `• <b>Canal:</b> ${escapeHtml(sourcePayload.authorName || "YouTube")}\n` +
+            `• <b>Extensión:</b> ${draft.word_count} palabras\n` +
+            `• <b>Quality Gate:</b> Puntuación ${ytResult.audit?.score || 100}/100 ✅\n` +
+            `• <b>Bloque de Video:</b> Integrado (16:9 youtube-nocookie)\n\n` +
+            `<b>Resumen BLUF:</b>\n<i>${escapeHtml(draft.excerpt)}</i>`;
+
+          const replyMarkup = {
+            inline_keyboard: [
+              actionRow,
+              [
+                { text: "📖 Leer Completo", callback_data: `draft:read_full:${draft.id}` },
+                { text: "✏️ Modificar", callback_data: `draft:modify_prompt:${draft.id}` }
+              ],
+              [
+                { text: "🔄 Regenerar", callback_data: `draft:regen_confirm:${draft.id}` },
+                { text: "🔙 Volver al Menú", callback_data: "menu:blog" }
+              ]
+            ]
+          };
+
+          if (job.messageId) {
+            await editTelegramMessage(token, job.chatId, job.messageId, previewText, { replyMarkup });
+          } else {
+            await sendTelegramMessage(token, job.chatId, previewText, { replyMarkup });
+          }
+
+          await markJobCompleted(env.BLOG_DB, job.id, { draftId: draft.id }, expectedAttempts);
+          processed++;
+        } else if (job.jobType === "blog_generate_web_draft") {
+          const { sourcePayload, angle, ip, username } = job.payload;
+          const webResult = await generateWebDraft({
+            env,
+            sourcePayload,
+            userId: job.userId,
+            angle: angle || "informativo",
+            jobId: job.id
+          });
+
+          if (!webResult.ok || !webResult.draft) {
+            throw new Error(webResult.error || "No se pudo recuperar el borrador desde enlace web");
+          }
+
+          const draft = webResult.draft;
+          if (env.BLOG_DB) {
+            await env.BLOG_DB.prepare(`
+              INSERT INTO blog_manual_drafts (
+                id, topic_tema, topic_angulo, title, tag, excerpt,
+                content_json, brief_json, audit_json, word_count,
+                status, created_by_user_id
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+              ON CONFLICT(id) DO UPDATE SET
+                title = excluded.title,
+                content_json = excluded.content_json,
+                brief_json = excluded.brief_json,
+                audit_json = excluded.audit_json,
+                word_count = excluded.word_count,
+                updated_at = CURRENT_TIMESTAMP
+            `).bind(
+              draft.id,
+              draft.topic_tema,
+              draft.topic_angulo,
+              draft.title,
+              draft.tag,
+              draft.excerpt,
+              draft.content_json,
+              draft.brief_json,
+              draft.audit_json,
+              draft.word_count,
+              draft.status,
+              String(job.userId)
+            ).run();
+          }
+
+          await logAdminAction(env.BLOG_DB, {
+            userId: job.userId,
+            username,
+            action: "BLOG_DRAFT_WEB_RETRY",
+            entityId: draft.id,
+            details: { url: sourcePayload.canonicalUrl, title: draft.title, attempts: job.attempts },
+            ip
+          });
+
+          const publishEnabled = String(env.ADMIN_PUBLISH_ENABLED).toLowerCase() === "true";
+          const actionRow = [];
+          if (draft.status === "draft") {
+            actionRow.push({ text: "✅ Aprobar Borrador", callback_data: `draft:approve_only:${draft.id}` });
+          }
+          if (publishEnabled && draft.status === "approved") {
+            actionRow.push({ text: "🚀 Publicar Artículo", callback_data: `draft:publish_confirm:${draft.id}` });
+          }
+          actionRow.push({ text: "🗑️ Descartar", callback_data: `draft:discard:${draft.id}` });
+
+          const previewText = `<b>🔗 BORRADOR DESDE ENLACE WEB (RECUPERADO CON ÉXITO)</b>\n\n` +
+            `• <b>Título:</b> ${escapeHtml(draft.title)}\n` +
+            `• <b>Fuente:</b> ${escapeHtml(sourcePayload.hostname || "Web")}\n` +
+            `• <b>Extensión:</b> ${draft.word_count} palabras\n` +
+            `• <b>Quality Gate:</b> Puntuación ${webResult.audit?.score || 100}/100 ✅\n` +
+            `• <b>Atribución Canónica:</b> Integrada con enlace a la fuente\n\n` +
+            `<b>Resumen BLUF:</b>\n<i>${escapeHtml(draft.excerpt)}</i>`;
+
+          const replyMarkup = {
+            inline_keyboard: [
+              actionRow,
+              [
+                { text: "📖 Leer Completo", callback_data: `draft:read_full:${draft.id}` },
+                { text: "🔙 Ir a Borradores", callback_data: "blog:drafts:0" }
+              ]
+            ]
+          };
+
+          if (job.messageId) {
+            await editTelegramMessage(token, job.chatId, job.messageId, previewText, { replyMarkup });
+          } else {
+            await sendTelegramMessage(token, job.chatId, previewText, { replyMarkup });
+          }
+
+          await markJobCompleted(env.BLOG_DB, job.id, { draftId: draft.id }, expectedAttempts);
+          processed++;
         } else {
           await markJobFailed(env.BLOG_DB, job.id, "Tipo de job desconocido: " + job.jobType, expectedAttempts, true, "UNKNOWN_JOB");
         }
@@ -2120,13 +3386,58 @@ export default {
     return { processed };
   },
 
+  /**
+   * Procesa recordatorios comerciales vencidos y los notifica al administrador en Telegram.
+   * Utiliza reserva atómica con lease y attempt_token para evitar duplicados concurrentes.
+   */
+  async processDueCrmReminders(env) {
+    if (!env.CONTACT_DB) return { processed: 0, skipped: "NO_CONTACT_DB" };
+
+    const rawList = env.ALLOWED_ADMIN_IDS || "";
+    const adminChatId = rawList.split(",").map((s) => s.trim()).filter(Boolean)[0];
+    if (!adminChatId) return { processed: 0, skipped: "NO_ADMIN_CHAT_ID" };
+
+    const token = env.BOT_TOKEN_SECRETO;
+    if (!token) return { processed: 0, skipped: "NO_BOT_TOKEN" };
+
+    const crmService = new AdminCrmService(env.CONTACT_DB);
+    // Reclamar hasta 5 recordatorios vencidos de forma atómica
+    const dueReminders = await crmService.claimDueReminders({ limit: 5, leaseMs: 60000 });
+    let notifiedCount = 0;
+
+    for (const rem of dueReminders) {
+      try {
+        const view = renderReminderNotification(rem);
+        const sendRes = await sendTelegramMessage(token, adminChatId, view.text, { replyMarkup: view.replyMarkup });
+
+        if (sendRes?.ok) {
+          await crmService.markReminderNotified(rem.id);
+          notifiedCount++;
+        } else {
+          console.error(`[CRM REMINDER] Error de entrega en recordatorio ${rem.id}:`, sendRes);
+          await crmService.releaseReminderAfterFailure(rem.id);
+        }
+      } catch (err) {
+        console.error(`[CRM REMINDER] Fallo al procesar recordatorio ${rem.id}:`, err);
+        await crmService.releaseReminderAfterFailure(rem.id);
+      }
+    }
+
+    return { processed: notifiedCount, claimed: dueReminders.length };
+  },
+
   async scheduled(event, env, ctx) {
-    // Scheduled trigger seguro: Procesar exclusivamente trabajos asíncronos pendientes de administración
-    console.log(`[CANEDO-ADMIN SCHEDULED] Ejecutando recuperación programada de trabajos administrativos...`);
+    // Scheduled trigger seguro: Procesar trabajos editoriales y recordatorios CRM
+    console.log(`[CANEDO-ADMIN SCHEDULED] Ejecutando tareas programadas de administración y CRM...`);
+    const tasks = [
+      this.recoverInterruptedJobs(env),
+      this.processDueCrmReminders(env)
+    ];
+
     if (ctx && typeof ctx.waitUntil === "function") {
-      ctx.waitUntil(this.recoverInterruptedJobs(env));
+      ctx.waitUntil(Promise.all(tasks));
     } else {
-      await this.recoverInterruptedJobs(env);
+      await Promise.all(tasks);
     }
   }
 };
