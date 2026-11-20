@@ -557,4 +557,159 @@ test("FASE D5: Integración de YouTube con Telegram y Flujo Editorial", async (t
     assert.ok(recResult.processed >= 1);
     assert.equal(env.BLOG_DB._drafts.size, initialDraftCount + 1);
   });
+
+  await t.test("10. FASE V1-AB: Flujo E2E completo preserva metadatos y evita SESSION_EXPIRED (Casos A, B y C)", async () => {
+    const env = createMockEnv();
+
+    // Mock API de Telegram y oEmbed
+    const telegramCalls = [];
+    globalThis.fetch = async (url, options) => {
+      const urlStr = url.toString();
+      if (urlStr.includes("oembed")) {
+        return new Response(JSON.stringify({
+          title: "Arquitectura Cloudflare Workers",
+          author_name: "Canedo Tech",
+          author_url: "https://youtube.com/@canedotech",
+          type: "video"
+        }), { status: 200, headers: { "Content-Type": "application/json" } });
+      }
+      if (urlStr.includes("api.telegram.org")) {
+        const body = options?.body ? JSON.parse(options.body) : {};
+        telegramCalls.push({ url: urlStr, body });
+        return new Response(JSON.stringify({ ok: true, result: { message_id: 101 } }));
+      }
+      return new Response(JSON.stringify({ ok: true }));
+    };
+
+    // Paso 1: Usuario envía la URL del video
+    const reqUrl = createTelegramRequest({
+      update_id: 1101,
+      message: {
+        message_id: 201,
+        from: { id: 12345, username: "luiscanedo" },
+        chat: { id: 12345 },
+        text: "https://www.youtube.com/watch?v=3MQDIgWuZDY"
+      }
+    });
+    const resUrl = await worker.fetch(reqUrl, env);
+    assert.equal(resUrl.status, 200);
+
+    // Paso 2: Usuario pulsa en el botón inline '📝 Aportar Transcripción / Notas'
+    const reqConfirm = createTelegramRequest({
+      update_id: 1102,
+      callback_query: {
+        id: "cb_1102",
+        from: { id: 12345, username: "luiscanedo" },
+        message: { message_id: 201, chat: { id: 12345 } },
+        data: "blog:yt:confirm:3MQDIgWuZDY"
+      }
+    });
+    const resConfirm = await worker.fetch(reqConfirm, env);
+    assert.equal(resConfirm.status, 200);
+
+    // Verificar que sourcePayload NO fue destruido en KV
+    const stateInKv = JSON.parse(await env.ADMIN_KV.get("user_state:12345"));
+    assert.equal(stateInKv.action, "awaiting_yt_context");
+    assert.ok(stateInKv.sourcePayload);
+    assert.equal(stateInKv.sourcePayload.videoId, "3MQDIgWuZDY");
+    assert.equal(stateInKv.sourcePayload.title, "Arquitectura Cloudflare Workers");
+
+    // Paso 3: Usuario envía la transcripción (> 50 caracteres)
+    const reqText = createTelegramRequest({
+      update_id: 1103,
+      message: {
+        message_id: 202,
+        from: { id: 12345, username: "luiscanedo" },
+        chat: { id: 12345 },
+        text: "Puntos clave y transcripción autorizada para el video 3MQDIgWuZDY con suficiente extensión para el análisis."
+      }
+    });
+    const resText = await worker.fetch(reqText, env);
+    assert.equal(resText.status, 200);
+    const textResult = await resText.json();
+    assert.equal(textResult.ok, true);
+    assert.equal(textResult.route, "yt_angle_selection");
+
+    // Verificar que avanzó exitosamente a selección de enfoque sin error SESSION_EXPIRED
+    const stateFinal = JSON.parse(await env.ADMIN_KV.get("user_state:12345"));
+    assert.equal(stateFinal.action, "awaiting_yt_angle");
+    assert.equal(stateFinal.sourcePayload.videoId, "3MQDIgWuZDY");
+    assert.ok(stateFinal.sourcePayload.notes.length >= 50);
+  });
+
+  await t.test("11. FASE V1-AB: Compatibilidad con sesión histórica (videoId plano en raíz de KV)", async () => {
+    const env = createMockEnv();
+
+    globalThis.fetch = async (url, options) => {
+      return new Response(JSON.stringify({ ok: true, result: { message_id: 102 } }));
+    };
+
+    // Inyectar estado histórico
+    await env.ADMIN_KV.put("user_state:12345", JSON.stringify({
+      action: "awaiting_yt_context",
+      videoId: "dQw4w9WgXcQ"
+    }));
+
+    const req = createTelegramRequest({
+      update_id: 1201,
+      message: {
+        message_id: 301,
+        from: { id: 12345, username: "luiscanedo" },
+        chat: { id: 12345 },
+        text: "Notas de contexto histórico válidas y con más de cincuenta caracteres para la prueba."
+      }
+    });
+
+    const res = await worker.fetch(req, env);
+    assert.equal(res.status, 200);
+    const result = await res.json();
+    assert.equal(result.ok, true);
+    assert.equal(result.route, "yt_angle_selection");
+
+    const stateAfter = JSON.parse(await env.ADMIN_KV.get("user_state:12345"));
+    assert.equal(stateAfter.action, "awaiting_yt_angle");
+    assert.equal(stateAfter.sourcePayload.videoId, "dQw4w9WgXcQ");
+  });
+
+  await t.test("12. FASE V1-AB: Seguridad de callbacks: Rechazo de video mismatch y callback manipulado", async () => {
+    const env = createMockEnv();
+
+    globalThis.fetch = async () => new Response(JSON.stringify({ ok: true, result: { message_id: 103 } }));
+
+    // Caso 1: Callback con ID manipulado o inválido
+    const reqInvalid = createTelegramRequest({
+      update_id: 1301,
+      callback_query: {
+        id: "cb_1301",
+        from: { id: 12345, username: "luiscanedo" },
+        message: { message_id: 401, chat: { id: 12345 } },
+        data: "blog:yt:confirm:INVALID_TOO_LONG_STRING"
+      }
+    });
+    const resInvalid = await worker.fetch(reqInvalid, env);
+    const jsonInvalid = await resInvalid.json();
+    assert.equal(jsonInvalid.ok, false);
+    assert.equal(jsonInvalid.error, "INVALID_VIDEO_ID");
+
+    // Caso 2: Callback para un video distinto del que está en KV
+    await env.ADMIN_KV.put("user_state:12345", JSON.stringify({
+      action: "awaiting_yt_context",
+      sourcePayload: { videoId: "11111111111", title: "Video A" }
+    }));
+
+    const reqMismatch = createTelegramRequest({
+      update_id: 1302,
+      callback_query: {
+        id: "cb_1302",
+        from: { id: 12345, username: "luiscanedo" },
+        message: { message_id: 402, chat: { id: 12345 } },
+        data: "blog:yt:confirm:22222222222"
+      }
+    });
+    const resMismatch = await worker.fetch(reqMismatch, env);
+    const jsonMismatch = await resMismatch.json();
+    assert.equal(jsonMismatch.ok, false);
+    assert.equal(jsonMismatch.error, "SESSION_METADATA_NOT_FOUND");
+    assert.equal(await env.ADMIN_KV.get("user_state:12345"), null);
+  });
 });

@@ -1305,16 +1305,49 @@ export default {
 
     // Blog: Confirmación de video tras validación y selección de transcripción/enfoque
     if (data.startsWith("blog:yt:confirm:")) {
-      const videoId = data.replace("blog:yt:confirm:", "");
+      const rawVideoId = data.replace("blog:yt:confirm:", "").trim();
+      const isValidId = /^[a-zA-Z0-9_-]{11}$/.test(rawVideoId);
+      if (!isValidId) {
+        await editTelegramMessage(token, chatId, msgId, `⚠️ <b>Identificador de video inválido:</b> El formato del video no es correcto. Por favor inicia nuevamente el proceso.`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🎥 Iniciar de nuevo", callback_data: "blog:yt:prompt" }]] }
+        });
+        return { ok: false, error: "INVALID_VIDEO_ID" };
+      }
+
+      // Recuperar estado previo en KV para preservar metadatos de YouTube
+      let previousState = null;
+      if (env.ADMIN_KV) {
+        const raw = await env.ADMIN_KV.get(`user_state:${userId}`);
+        if (raw) {
+          try {
+            previousState = JSON.parse(raw);
+          } catch {}
+        }
+      }
+
+      let sourcePayload = null;
+      if (previousState && previousState.sourcePayload && previousState.sourcePayload.videoId === rawVideoId) {
+        // Preservar exactamente el sourcePayload legítimo obtenido durante la ingesta
+        sourcePayload = previousState.sourcePayload;
+      } else {
+        // Si no hay metadatos previos o pertenecen a otro video, requerir inicio limpio
+        if (env.ADMIN_KV) await env.ADMIN_KV.delete(`user_state:${userId}`);
+        await editTelegramMessage(token, chatId, msgId, `⚠️ <b>Sesión de video no encontrada o expirada:</b> Por favor ingresa el enlace de YouTube nuevamente para validar los metadatos.`, {
+          replyMarkup: { inline_keyboard: [[{ text: "🎥 Ingresar enlace de YouTube", callback_data: "blog:yt:prompt" }]] }
+        });
+        return { ok: false, error: "SESSION_METADATA_NOT_FOUND" };
+      }
+
       if (env.ADMIN_KV) {
         await env.ADMIN_KV.put(`user_state:${userId}`, JSON.stringify({
           action: "awaiting_yt_context",
-          videoId
+          sourcePayload
         }), { expirationTtl: 600 });
       }
 
       const text = `<b>📝 APORTE DE CONTEXTO / TRANSCRIPCIÓN</b>\n\n` +
-        `Video seleccionado: <code>${videoId}</code>\n\n` +
+        `Video seleccionado: <code>${rawVideoId}</code>\n` +
+        `Título: <i>${escapeHtml(sourcePayload.title || "Video de YouTube")}</i>\n\n` +
         `Para redactar un artículo con rigor analítico, envía a continuación:\n` +
         `• <b>Transcripción autorizada</b> del video, o\n` +
         `• <b>Notas y puntos clave</b> (mínimo 50 caracteres).\n\n` +
@@ -1326,7 +1359,7 @@ export default {
         ]
       };
       await editTelegramMessage(token, chatId, msgId, text, { replyMarkup });
-      return { ok: true, route: "blog_yt_context_prompt", videoId };
+      return { ok: true, route: "blog_yt_context_prompt", videoId: rawVideoId };
     }
 
     // Blog: Selección de enfoque editorial para YouTube
@@ -2407,8 +2440,21 @@ export default {
 
     // 0.1 Captura de estado: Transcripción / notas para video de YouTube
     if (userState && userState.action === "awaiting_yt_context") {
-      const sourcePayload = userState.sourcePayload;
-      if (!sourcePayload || !sourcePayload.videoId) {
+      let sourcePayload = userState.sourcePayload;
+
+      // Compatibilidad con sesiones históricas donde videoId residía en la raíz
+      if (!sourcePayload && userState.videoId && /^[a-zA-Z0-9_-]{11}$/.test(userState.videoId)) {
+        sourcePayload = {
+          sourceType: "youtube",
+          videoId: userState.videoId,
+          title: "Video de YouTube " + userState.videoId,
+          canonicalUrl: `https://www.youtube.com/watch?v=${userState.videoId}`,
+          authorName: "YouTube",
+          isEmbeddable: true
+        };
+      }
+
+      if (!sourcePayload || !sourcePayload.videoId || !/^[a-zA-Z0-9_-]{11}$/.test(sourcePayload.videoId)) {
         if (env.ADMIN_KV) await env.ADMIN_KV.delete(`user_state:${userId}`);
         await sendTelegramMessage(token, chatId, `⚠️ La sesión expiró o no contiene un video válido. Inicia el proceso nuevamente.`, {
           replyMarkup: { inline_keyboard: [[{ text: "🎥 Iniciar de nuevo", callback_data: "blog:yt:prompt" }]] }

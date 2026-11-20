@@ -20,6 +20,47 @@ Worker de Cloudflare para administración centralizada de Canedo Studio a travé
    - Recuperación automática de jobs interrumpidos (`recoverInterruptedJobs`) sin duplicación de borradores gracias a claves deterministas y `ON CONFLICT DO UPDATE`.
    - Control de sesiones conversacionales mediante Cloudflare KV con caducidad TTL.
 
+## Arquitectura de «Crear desde YouTube»
+
+```
+Telegram Admin --> [🎥 Crear desde YouTube] (callback: blog:yt:prompt)
+       |
+       v
+Solicitud de URL YouTube (KV state: awaiting_yt_url, TTL: 600s)
+       |
+       v
+Recepción de URL y consulta oEmbed (`modules/youtube/service.js`):
+  - Ingesta de metadatos (título, autor, canonicalUrl, embeddability)
+  - Comprobación de duplicados en D1 (`blog_posts` y `blog_manual_drafts`)
+  - Almacena en KV: `{ action: "awaiting_yt_context", sourcePayload }`
+  - Muestra ficha del video y botón inline `[📝 Aportar Transcripción / Notas]`
+       |
+       v
+Pulsación de [📝 Aportar Transcripción / Notas] (callback: blog:yt:confirm:<videoId>):
+  - Validación sintáctica estricta de videoId (11 caracteres)
+  - Preservación íntegra de `sourcePayload` verificado desde KV
+  - Rechazo con reseteo seguro si el callback no coincide con el video en curso
+       |
+       v
+Recepción de transcripción o notas clave (mínimo 50 caracteres):
+  - Admite `sourcePayload.videoId` y normaliza sesiones históricas con `videoId` plano
+  - Sanitización contra prompt injections
+  - Almacena notas en KV y transiciona a `awaiting_yt_angle`
+       |
+       v
+Selección de Enfoque Editorial:
+  - [💡 Informativo] [💼 Comercial Canedo] [⚙️ Técnico]
+       |
+       v
+Encolado asíncrono en D1 (`admin_jobs`, type: `blog_generate_youtube_draft`)
+       |
+       v
+Generación con Workers AI (Llama 3.3 70B) + Quality Gate + Inserción de reproductor 16:9
+       |
+       v
+Notificación y Teclado de Aprobación en Telegram al Administrador
+```
+
 ## Arquitectura de «Crear desde Enlace Web»
 
 ```
