@@ -640,4 +640,35 @@ Publicado originalmente por techcrunch.com como referencia de análisis.
     // Comprobar que NO hay duplicados en D1 (exactamente 1 borrador)
     assert.equal(env.BLOG_DB._drafts.size, 1, "No debe duplicarse el borrador en D1 ante interrupciones");
   });
+
+  await t.test("14. FASE V1-AD: Invocación de Enlace Web utiliza por defecto el modelo vigente Llama 3.3 70B FP8 Fast", async () => {
+    let modelInvoked = null;
+    const mockEnv = {
+      AI: {
+        run: async (model, opts) => {
+          modelInvoked = model;
+          return `# Título del Análisis Web Completo
+
+Este es el primer párrafo de introducción con suficiente sustancia analítica para el lector profesional, superando holgadamente los doscientos caracteres exigidos por el validador editorial del pipeline web.
+
+## Sección 1: Análisis Estratégico de la Fuente
+Detalles de la fuente web y sus implicaciones para el negocio y la industria digital.
+
+## Sección 2: Conclusiones y Soluciones
+Conexión de las lecciones con la eficiencia operativa y llamada a la acción hacia Canedo Studio.`;
+        }
+      }
+    };
+
+    const sourcePayload = {
+      canonicalUrl: "https://ejemplo.com/articulo-relevante",
+      title: "Artículo Web de Prueba",
+      textContent: "Contenido accesible del artículo web con extensión superior a ciento cincuenta caracteres para validar la llamada al modelo editorial sin errores de contexto."
+    };
+
+    const res = await generateWebDraft({ env: mockEnv, sourcePayload });
+    assert.equal(res.ok, true);
+    assert.equal(modelInvoked, "@cf/meta/llama-3.3-70b-instruct-fp8-fast");
+    assert.notEqual(modelInvoked, "@cf/meta/llama-3.1-8b-instruct");
+  });
 });

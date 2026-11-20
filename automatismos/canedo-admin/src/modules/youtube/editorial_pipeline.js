@@ -192,7 +192,7 @@ Redacta el artículo completo con formato Markdown profesional.`;
  * @param {object} [params.aiModel] - Modelo de IA a utilizar
  * @returns {Promise<{ ok: boolean, draft?: object, error?: string }>}
  */
-export async function generateYouTubeDraft({ env, sourcePayload, userId = "admin", angle = "informativo", aiModel = "@cf/meta/llama-3.1-8b-instruct" }) {
+export async function generateYouTubeDraft({ env, sourcePayload, userId = "admin", angle = "informativo", aiModel = "@cf/meta/llama-3.3-70b-instruct-fp8-fast" }) {
   if (!sourcePayload || !sourcePayload.videoId) {
     return { ok: false, error: "INVALID_SOURCE_PAYLOAD" };
   }

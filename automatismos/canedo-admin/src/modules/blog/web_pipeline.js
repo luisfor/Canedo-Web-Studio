@@ -188,7 +188,7 @@ export async function generateWebDraft({
   userId = "admin",
   angle = "informativo",
   jobId = null,
-  aiModel = "@cf/meta/llama-3.1-8b-instruct"
+  aiModel = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
 }) {
   if (!sourcePayload || !sourcePayload.canonicalUrl) {
     return { ok: false, error: "INVALID_SOURCE_PAYLOAD" };

@@ -712,4 +712,66 @@ test("FASE D5: Integración de YouTube con Telegram y Flujo Editorial", async (t
     assert.equal(jsonMismatch.error, "SESSION_METADATA_NOT_FOUND");
     assert.equal(await env.ADMIN_KV.get("user_state:12345"), null);
   });
+
+  await t.test("13. FASE V1-AD: Invocación de YouTube utiliza por defecto el modelo vigente Llama 3.3 70B FP8 Fast", async () => {
+    const { generateYouTubeDraft } = await import("../src/modules/youtube/editorial_pipeline.js");
+    let modelInvoked = null;
+    const mockEnv = {
+      AI: {
+        run: async (model, opts) => {
+          modelInvoked = model;
+          return `# Título del Análisis de YouTube
+
+Este es el primer párrafo de introducción con suficiente sustancia analítica para el lector profesional, superando holgadamente los doscientos caracteres exigidos por el validador editorial.
+
+## Sección 1: Arquitectura y Metodología
+Aquí se detallan los principios de diseño y las buenas prácticas operativas para equipos de ingeniería modernos.
+
+## Sección 2: Impacto en el Negocio
+Conexión de las lecciones del video con la eficiencia operativa y reducción de costos en la empresa.
+
+## Conclusión y Próximos Pasos
+Reflexión final sobre la evolución tecnológica y llamada a la acción hacia Canedo Studio.`;
+        }
+      }
+    };
+
+    const payload = {
+      videoId: "3MQDIgWuZDY",
+      title: "Video Prueba Modelo",
+      notes: "Notas analíticas con más de cincuenta caracteres para validar el modelo de Workers AI."
+    };
+
+    const res = await generateYouTubeDraft({ env: mockEnv, sourcePayload: payload });
+    assert.equal(res.ok, true);
+    assert.equal(modelInvoked, "@cf/meta/llama-3.3-70b-instruct-fp8-fast");
+    assert.notEqual(modelInvoked, "@cf/meta/llama-3.1-8b-instruct");
+  });
+
+  await t.test("14. FASE V1-AD: Prevención de deprecación: Cero referencias ejecutables a modelo retirado en src/", async () => {
+    const fs = await import("fs");
+    const path = await import("path");
+    const srcDir = path.resolve("automatismos/canedo-admin/src");
+
+    function scanDir(dir) {
+      const files = fs.readdirSync(dir);
+      const results = [];
+      for (const f of files) {
+        const fullPath = path.join(dir, f);
+        const stat = fs.statSync(fullPath);
+        if (stat.isDirectory()) {
+          results.push(...scanDir(fullPath));
+        } else if (f.endsWith(".js") || f.endsWith(".mjs")) {
+          const content = fs.readFileSync(fullPath, "utf-8");
+          if (content.includes("@cf/meta/llama-3.1-8b-instruct")) {
+            results.push(fullPath);
+          }
+        }
+      }
+      return results;
+    }
+
+    const deprecatedOccurrences = scanDir(srcDir);
+    assert.deepEqual(deprecatedOccurrences, [], `Se encontraron referencias ejecutables al modelo retirado en: ${deprecatedOccurrences.join(", ")}`);
+  });
 });

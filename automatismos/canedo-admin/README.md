@@ -95,6 +95,22 @@ Persistencia Idempotente en D1 (`blog_manual_drafts` con ON CONFLICT DO UPDATE)
 Notificación y Teclado de Aprobación en Telegram al Administrador
 ```
 
+## Modelos de Inteligencia Artificial (Workers AI)
+
+El panel editorial de Canedo Admin utiliza la infraestructura de Cloudflare Workers AI con los siguientes modelos homologados:
+
+- **Modelo Editorial Principal:** `@cf/meta/llama-3.3-70b-instruct-fp8-fast`
+  - Utilizado tanto en **Crear desde YouTube** (`modules/youtube/editorial_pipeline.js`) como en **Crear desde Enlace Web** (`modules/blog/web_pipeline.js`).
+  - Sustituye de manera definitiva a `@cf/meta/llama-3.1-8b-instruct` (retirado por Cloudflare con error `5028`).
+  - Optimizado para redacción en español de alta calidad, respeto a guías de estilo, estructura en Markdown limpio e inyección de bloques interactivos.
+- **Modelo de Portadas Fotográficas:** `@cf/black-forest-labs/flux-1-schnell`
+  - Generación de portadas fotográficas editoriales de contingencia estructurada y estilizada para artículos aprobados manualmente.
+
+## Quality Gate Determinista y Política de Aprobación Humana
+
+- **Auditoría Local:** Las evaluaciones de calidad (`auditYouTubeArticle` y `auditWebArticle`) se ejecutan con lógica determinista local sin consumir llamadas de IA ni generar costos adicionales.
+- **Sin Publicación Automática:** Toda generación produce exclusivamente un borrador (`status: "draft"`) en la base de datos D1 (`blog_manual_drafts`). La publicación en el sitio web exige la acción humana explícita del administrador mediante el botón `Aprobar Borrador` en Telegram.
+
 ## Pruebas Automatizadas
 
 Para ejecutar las pruebas del módulo de forma offline:
