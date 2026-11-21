@@ -402,4 +402,161 @@ test("FASE V1-AF: Estándar Editorial Inteligente para YouTube y Enlace Web", as
     }
   });
 
+  // ==========================================
+  // CASOS ESPECÍFICOS DE AUDITORÍA FASE V1-AF.1
+  // ==========================================
+
+  // Caso B de la auditoría: 7 prometidas, pero la 7ª está escondida en un párrafo de la 6ª
+  await t.test("21. Caso B: Rechazo de 7 prometidas cuando solo hay 6 H2 y la 7ª está embebida en un párrafo", () => {
+    const title = "7 estrategias para mejorar el marketing digital";
+    const promise = detectListPromise(title);
+    assert.equal(promise.count, 7);
+
+    const markdown = 
+      `## 1. Estrategia Uno\nDetalle.\n\n` +
+      `## 2. Estrategia Dos\nDetalle.\n\n` +
+      `## 3. Estrategia Tres\nDetalle.\n\n` +
+      `## 4. Estrategia Cuatro\nDetalle.\n\n` +
+      `## 5. Estrategia Cinco\nDetalle.\n\n` +
+      `## 6. Estrategia Seis\nDetalle. Como estrategia siete adicional que desarrollamos aquí mismo, recomendamos optimizar el embudo.`;
+
+    const analysis = analyzeSectionEnumeration(markdown, promise.count, "collection");
+    assert.equal(analysis.fulfilledPromise, false);
+    assert.equal(analysis.itemsCount, 6);
+    assert.ok(analysis.errors.some(e => e.includes("UNFULFILLED_LIST_PROMISE")));
+  });
+
+  // Caso C de la auditoría: Lista secuencial ("5 pasos...") desordenada (1, 2, 4, 3, 5) -> ERROR BLOQUEANTE
+  await t.test("22. Caso C: Rechazo estricto (error bloqueante) para listas secuenciales (pasos) desordenadas", () => {
+    const title = "5 pasos para configurar un sistema";
+    const promise = detectListPromise(title);
+    assert.equal(promise.count, 5);
+    assert.equal(promise.noun, "pasos");
+
+    const markdown = 
+      `## 1. Paso Uno\nDetalle.\n\n` +
+      `## 2. Paso Dos\nDetalle.\n\n` +
+      `## 4. Paso Cuatro\nDetalle.\n\n` +
+      `## 3. Paso Tres\nDetalle.\n\n` +
+      `## 5. Paso Cinco\nDetalle.`;
+
+    const analysis = analyzeSectionEnumeration(markdown, 5, "sequential");
+    assert.equal(analysis.isSequential, false);
+    // En listas de pasos debe registrar un error fatal
+    assert.ok(analysis.errors.some(e => e.includes("NON_SEQUENTIAL_SECTION_NUMBERING")));
+  });
+
+  // Caso D de la auditoría: Colección ("5 estrategias...") desordenada (1, 2, 4, 3, 5) -> ADVERTENCIA, no error
+  await t.test("23. Caso D: Advertencia (no error) para colecciones (estrategias) no secuenciales si están las 5", () => {
+    const title = "5 estrategias comerciales";
+    const promise = detectListPromise(title);
+    assert.equal(promise.count, 5);
+
+    const markdown = 
+      `## 1. Estrategia Uno\nDetalle.\n\n` +
+      `## 2. Estrategia Dos\nDetalle.\n\n` +
+      `## 4. Estrategia Cuatro\nDetalle.\n\n` +
+      `## 3. Estrategia Tres\nDetalle.\n\n` +
+      `## 5. Estrategia Cinco\nDetalle.`;
+
+    const analysis = analyzeSectionEnumeration(markdown, 5, "collection");
+    assert.equal(analysis.isSequential, false);
+    assert.equal(analysis.itemsCount, 5);
+    assert.equal(analysis.errors.length, 0); // No hay error bloqueante
+    assert.ok(analysis.warnings.some(w => w.includes("NON_SEQUENTIAL_SECTION_NUMBERING")));
+  });
+
+  // Caso E de la auditoría: 7 prometidas, pero 8 desarrolladas numeradas -> Advertencia justificada
+  await t.test("24. Caso E: Advertencia documentada cuando se excede la lista prometida (7 prometidas, 8 numeradas)", () => {
+    const markdown = 
+      `## 1. E1\nTexto.\n\n## 2. E2\nTexto.\n\n## 3. E3\nTexto.\n\n## 4. E4\nTexto.\n\n` +
+      `## 5. E5\nTexto.\n\n## 6. E6\nTexto.\n\n## 7. E7\nTexto.\n\n## 8. E8\nTexto.`;
+
+    const analysis = analyzeSectionEnumeration(markdown, 7, "collection");
+    assert.equal(analysis.itemsCount, 8);
+    assert.ok(analysis.warnings.some(w => w.includes("EXCEEDED_LIST_PROMISE")));
+  });
+
+  // Caso I de la auditoría: Sección vacía (encabezado sin desarrollo de contenido) -> RECHAZADO
+  await t.test("25. Caso I: Rechazo obligatorio de encabezados de sección vacíos o sin desarrollo", () => {
+    const markdown = 
+      `## 1. Paso Uno\nDesarrollo completo de la sección.\n\n` +
+      `## 2. Paso Dos\n\n` + // Vacío
+      `## 3. Paso Tres\nDesarrollo completo de la sección.`;
+
+    const analysis = analyzeSectionEnumeration(markdown, 3, "sequential");
+    assert.equal(analysis.hasEmptySections, true);
+    assert.ok(analysis.errors.some(e => e.includes("EMPTY_SECTION_HEADER")));
+  });
+
+  // Verificación de Fronteras de Extensión: YouTube (400 - 1600 palabras)
+  await t.test("26. Fronteras YouTube: 399 palabras rechaza, 400 aprueba, 1600 aprueba, 1601 rechaza", () => {
+    const generateMd = (words) => {
+      const p = "Palabra ".repeat(words).trim();
+      return `## 1. Sección Uno\n${p.slice(0, Math.floor(p.length / 2))}\n\n## 2. Sección Dos\nCanedo Tech presenta este análisis en Canedo Studio. ${p.slice(Math.floor(p.length / 2))}`;
+    };
+
+    const validSource = { videoId: "12345678901", authorName: "Canedo Tech" };
+    const validBlocks = [
+      { type: "paragraph", content: "..." },
+      { type: "youtube_embed", videoId: "12345678901", title: "Test", authorName: "Canedo Tech" },
+      { type: "heading", level: 2, content: "1. Sección Uno" },
+      { type: "heading", level: 2, content: "2. Sección Dos" }
+    ];
+
+    // 390 palabras -> Demasiado bajo (< 400)
+    const auditLow = auditArticleWithEditorialStandard({
+      markdown: generateMd(380),
+      blocks: validBlocks,
+      source: validSource,
+      pipelineType: "youtube"
+    });
+    assert.equal(auditLow.passed, false);
+    assert.ok(auditLow.errors.some(e => e.includes("WORD_COUNT_TOO_LOW")));
+
+    // 1650 palabras -> Demasiado alto para YouTube (> 1600)
+    const auditHigh = auditArticleWithEditorialStandard({
+      markdown: generateMd(1650),
+      blocks: validBlocks,
+      source: validSource,
+      pipelineType: "youtube"
+    });
+    assert.equal(auditHigh.passed, false);
+    assert.ok(auditHigh.errors.some(e => e.includes("WORD_COUNT_TOO_HIGH")));
+  });
+
+  // Verificación de Fronteras de Extensión: Web (400 - 1800 palabras)
+  await t.test("27. Fronteras Web: 1750 palabras aprueba, 1850 palabras rechaza", () => {
+    const generateMd = (words) => {
+      const p = "Palabra ".repeat(words).trim();
+      return `## 1. Sección Uno\n${p.slice(0, Math.floor(p.length / 2))}\n\n## 2. Sección Dos\nFuente original en sitio.com con mención a Canedo Studio. ${p.slice(Math.floor(p.length / 2))}`;
+    };
+
+    const validSource = { canonicalUrl: "https://sitio.com", hostname: "sitio.com" };
+    const validBlocks = [
+      { type: "heading", level: 2, content: "1. Sección Uno" },
+      { type: "heading", level: 2, content: "2. Sección Dos" },
+      { type: "quote", text: "Fuente: sitio.com" }
+    ];
+
+    // 1750 palabras en Web -> Pasa (< 1800)
+    const audit1750 = auditArticleWithEditorialStandard({
+      markdown: generateMd(1720),
+      blocks: validBlocks,
+      source: validSource,
+      pipelineType: "web"
+    });
+    assert.equal(audit1750.passed, true);
+
+    // 1850 palabras en Web -> Rechaza (> 1800)
+    const auditHighWeb = auditArticleWithEditorialStandard({
+      markdown: generateMd(1850),
+      blocks: validBlocks,
+      source: validSource,
+      pipelineType: "web"
+    });
+    assert.equal(auditHighWeb.passed, false);
+    assert.ok(auditHighWeb.errors.some(e => e.includes("WORD_COUNT_TOO_HIGH")));
+  });
+
 });

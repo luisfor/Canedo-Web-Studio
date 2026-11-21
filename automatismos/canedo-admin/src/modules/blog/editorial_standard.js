@@ -79,20 +79,22 @@ export function detectListPromise(title) {
  * 
  * @param {string} markdown - Contenido en formato markdown
  * @param {number} [expectedCount] - Cantidad esperada según el título (si aplica)
+ * @param {string} [listType] - 'sequential' (pasos/etapas) | 'collection' (estrategias/claves/errores)
  * @returns {{
  *   h2Count: number,
  *   itemsCount: number,
- *   itemHeaders: Array<{ text: string, number: number | null }>,
+ *   itemHeaders: Array<{ text: string, number: number | null, isMeta?: boolean, isEmpty?: boolean }>,
  *   isNumbered: boolean,
  *   isSequential: boolean,
  *   hasDuplicates: boolean,
+ *   hasEmptySections: boolean,
  *   fulfilledPromise: boolean,
  *   discrepancy: number,
  *   errors: string[],
  *   warnings: string[]
  * }}
  */
-export function analyzeSectionEnumeration(markdown, expectedCount = null) {
+export function analyzeSectionEnumeration(markdown, expectedCount = null, listType = "collection") {
   if (!markdown || typeof markdown !== "string") {
     return {
       h2Count: 0,
@@ -101,6 +103,7 @@ export function analyzeSectionEnumeration(markdown, expectedCount = null) {
       isNumbered: false,
       isSequential: false,
       hasDuplicates: false,
+      hasEmptySections: false,
       fulfilledPromise: false,
       discrepancy: expectedCount || 0,
       errors: ["EMPTY_CONTENT"],
@@ -109,14 +112,34 @@ export function analyzeSectionEnumeration(markdown, expectedCount = null) {
   }
 
   const lines = markdown.split("\n");
-  const h2Headers = [];
+  const h2HeadersWithContent = [];
+
+  let currentHeader = null;
+  let currentBodyLines = [];
 
   for (const line of lines) {
     const trimmed = line.trim();
     if (trimmed.startsWith("## ")) {
-      const headerText = trimmed.replace(/^##\s+/, "").trim();
-      h2Headers.push(headerText);
+      if (currentHeader !== null) {
+        h2HeadersWithContent.push({
+          headerText: currentHeader,
+          bodyText: currentBodyLines.join("\n").trim()
+        });
+      }
+      currentHeader = trimmed.replace(/^##\s+/, "").trim();
+      currentBodyLines = [];
+    } else if (currentHeader !== null) {
+      if (trimmed.length > 0) {
+        currentBodyLines.push(trimmed);
+      }
     }
+  }
+
+  if (currentHeader !== null) {
+    h2HeadersWithContent.push({
+      headerText: currentHeader,
+      bodyText: currentBodyLines.join("\n").trim()
+    });
   }
 
   // Descartar encabezados introductorios o conclusivos si no representan un ítem
@@ -125,18 +148,25 @@ export function analyzeSectionEnumeration(markdown, expectedCount = null) {
 
   const itemHeaders = [];
   const numbersFound = [];
+  let hasEmptySections = false;
 
-  for (const h of h2Headers) {
+  for (const item of h2HeadersWithContent) {
+    const h = item.headerText;
+    const isEmpty = item.bodyText.length === 0;
+    if (isEmpty) {
+      hasEmptySections = true;
+    }
+
     // Verificar si tiene número al inicio: "1. ", "1 - ", "1: ", "(1) " o "Estrategia 1: "
     const numMatch = h.match(/^(?:(?:\w+\s+)?(\d{1,2})[\.\-\:\)]|\((\d{1,2})\))\s*(.*)/i);
     if (numMatch) {
       const num = parseInt(numMatch[1] || numMatch[2], 10);
       numbersFound.push(num);
-      itemHeaders.push({ text: h, number: num });
+      itemHeaders.push({ text: h, number: num, isEmpty });
     } else {
       // Si no tiene número, verificar si es una sección general
       const isMetaHeader = nonItemRegex.test(h);
-      itemHeaders.push({ text: h, number: null, isMeta: isMetaHeader });
+      itemHeaders.push({ text: h, number: null, isMeta: isMetaHeader, isEmpty });
     }
   }
 
@@ -169,6 +199,11 @@ export function analyzeSectionEnumeration(markdown, expectedCount = null) {
   const errors = [];
   const warnings = [];
 
+  // Rechazo de secciones vacías
+  if (hasEmptySections) {
+    errors.push("EMPTY_SECTION_HEADER: Se detectaron encabezados de sección sin contenido desarrollado");
+  }
+
   let fulfilledPromise = true;
   let discrepancy = 0;
 
@@ -180,6 +215,8 @@ export function analyzeSectionEnumeration(markdown, expectedCount = null) {
         `UNFULFILLED_LIST_PROMISE: El título promete ${expectedCount} elementos pero solo se desarrollaron ${itemsCount} secciones numeradas`
       );
     } else if (itemsCount > expectedCount) {
+      // Si se excede la lista prometida:
+      // Si son ítems numerados extras que superan la promesa
       warnings.push(
         `EXCEEDED_LIST_PROMISE: Se desarrollaron ${itemsCount} elementos cuando el título prometía ${expectedCount}`
       );
@@ -190,18 +227,25 @@ export function analyzeSectionEnumeration(markdown, expectedCount = null) {
         errors.push("DUPLICATE_SECTION_NUMBERING: Se detectaron números de sección duplicados");
       }
       if (!isSequential) {
-        warnings.push("NON_SEQUENTIAL_SECTION_NUMBERING: La numeración de las secciones no es continua o no inicia en 1");
+        if (listType === "sequential") {
+          // Para listas secuenciales (pasos, etapas, fases), el orden incorrecto es ERROR bloqueante
+          errors.push("NON_SEQUENTIAL_SECTION_NUMBERING: En guías paso a paso el orden debe ser estrictamente secuencial y continuo");
+        } else {
+          // Para colecciones no estrictamente secuenciales (estrategias, consejos), es una advertencia
+          warnings.push("NON_SEQUENTIAL_SECTION_NUMBERING: La numeración de las secciones no es continua o no inicia en 1");
+        }
       }
     }
   }
 
   return {
-    h2Count: h2Headers.length,
+    h2Count: h2HeadersWithContent.length,
     itemsCount,
     itemHeaders,
     isNumbered: numbersFound.length > 0,
     isSequential,
     hasDuplicates,
+    hasEmptySections,
     fulfilledPromise,
     discrepancy,
     errors,
@@ -244,17 +288,28 @@ export function auditArticleWithEditorialStandard({
     score = 0;
   }
 
-  // 2. Extensión y recuento de palabras
+  // 2. Extensión y recuento de palabras según el contrato histórico de cada pipeline
   const wordCount = countWordsInString(markdown || "");
-  const minWords = pipelineType === "youtube" ? 400 : 400;
-  const maxWords = pipelineType === "web" ? 2200 : 2000;
+  let minWords = 400;
+  let maxWords = 1600;
+
+  if (pipelineType === "web") {
+    minWords = 400;
+    maxWords = 1800;
+  } else if (pipelineType === "youtube") {
+    minWords = 400;
+    maxWords = 1600;
+  } else {
+    minWords = 400;
+    maxWords = 2000;
+  }
 
   if (wordCount < minWords) {
     errors.push(`WORD_COUNT_TOO_LOW: ${wordCount} palabras (mínimo ${minWords})`);
     score -= 30;
   } else if (wordCount > maxWords) {
-    warnings.push(`WORD_COUNT_HIGH: ${wordCount} palabras (máximo recomendado ${maxWords})`);
-    score -= 10;
+    errors.push(`WORD_COUNT_TOO_HIGH: ${wordCount} palabras (máximo ${maxWords})`);
+    score -= 15;
   }
 
   // 3. Encabezados H2 mínimos requeridos
@@ -274,7 +329,8 @@ export function auditArticleWithEditorialStandard({
   let listAnalysis = null;
 
   if (listPromise && listPromise.hasListPromise) {
-    listAnalysis = analyzeSectionEnumeration(markdown, listPromise.count);
+    const listType = /^(pasos?|etapas?|fases?)\b/i.test(listPromise.noun) ? "sequential" : "collection";
+    listAnalysis = analyzeSectionEnumeration(markdown, listPromise.count, listType);
     
     // Si hay errores de lista, agregarlos
     if (listAnalysis.errors.length > 0) {
@@ -292,10 +348,12 @@ export function auditArticleWithEditorialStandard({
     }
   } else {
     // Si no hay promesa de lista en el título, verificar de forma general si tiene numeraciones
-    listAnalysis = analyzeSectionEnumeration(markdown, null);
-    if (listAnalysis.hasDuplicates) {
-      errors.push("DUPLICATE_SECTION_NUMBERING: Se detectaron números de sección duplicados");
-      score -= 20;
+    listAnalysis = analyzeSectionEnumeration(markdown, null, "collection");
+    if (listAnalysis.errors.length > 0) {
+      for (const err of listAnalysis.errors) {
+        errors.push(err);
+        score -= 20;
+      }
     }
   }
 
