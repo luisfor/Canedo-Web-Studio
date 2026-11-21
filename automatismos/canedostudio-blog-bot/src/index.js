@@ -3,6 +3,7 @@ import { validateEnrichedArticleData, VALID_SERVICE_KEYS } from "./seo/service_m
 import { generateRobustArticle, parseMarkdownToBlocks } from "./editorial_pipeline.js";
 import { resolveArticleType, getBlogBotEligibleTypes } from "./article_types.js";
 import { checkDuplicateSentences } from "./duplicate_checker.js";
+import { detectListPromise, analyzeSectionEnumeration } from "./editorial_standard.js";
 /* Robot redactor del blog de Canedo Studio.
    7:00 AM y 5:00 PM todos los días (hora Colombia): escribe un artículo
    con IA, le genera portada con IA, lo guarda en KV y avisa por email.
@@ -515,6 +516,41 @@ async function auditArticle(env, article, brief, stats = null) {
       audit.metrics.originality.evidence = duplicateViolation.evidence;
     }
     audit.reasons.unshift(duplicateViolation);
+  }
+
+  // 3. DETERMINISTIC QUALITY GATE: Cumplimiento estricto de promesas de listas en títulos (Mejora Editorial 1 y 6)
+  const candidateTitle = article?.title || brief?.uniqueThesis || "";
+  const listPromise = detectListPromise(candidateTitle);
+  if (listPromise && listPromise.hasListPromise) {
+    // Reconstruir markdown para análisis semántico de secciones si viene en bloques
+    let articleMd = typeof article.rawMarkdown === "string" ? article.rawMarkdown : "";
+    if (!articleMd && Array.isArray(article.content)) {
+      articleMd = article.content.map(b => {
+        if (b.type === "h2") return `## ${b.text}`;
+        if (b.type === "h3") return `### ${b.text}`;
+        if (b.type === "quote") return `> ${b.text}`;
+        return b.text || "";
+      }).join("\n\n");
+    }
+
+    const listType = /^(pasos?|etapas?|fases?)\b/i.test(listPromise.noun) ? "sequential" : "collection";
+    const listAnalysis = analyzeSectionEnumeration(articleMd, listPromise.count, listType);
+
+    if (listAnalysis.errors.length > 0) {
+      audit.approved = false;
+      const listViolation = {
+        metric: "structure",
+        score: 0,
+        evidence: `Incumplimiento de lista prometida en título ("${listPromise.matchText}"): ${listAnalysis.errors.join("; ")}. Secciones detectadas: ${listAnalysis.itemsCount} de ${listPromise.count}.`,
+        problem: "UnfulfilledListPromise",
+        correction: `Desarrollar exactamente ${listPromise.count} secciones H2 correspondientes a ${listPromise.noun}, numeradas secuencialmente y sin omitir ítems.`
+      };
+      audit.reasons.unshift(listViolation);
+      if (audit.metrics && audit.metrics.specificity) {
+        audit.metrics.specificity.score = Math.min(audit.metrics.specificity.score || 100, 40);
+        audit.metrics.specificity.evidence = listViolation.evidence;
+      }
+    }
   }
   
   // Deterministic checks override LLM approval (clichés de marketing)

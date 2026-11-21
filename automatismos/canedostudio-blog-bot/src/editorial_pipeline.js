@@ -5,6 +5,7 @@
 import { validateEnrichedArticleData } from "./seo/service_mapping.js";
 import { resolveArticleType } from "./article_types.js";
 import { sanitizeCrossSectionDuplicates } from "./duplicate_checker.js";
+import { detectListPromise, buildEnhancedEditorialInstructions } from "./editorial_standard.js";
 
 const MODEL_TEXT = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 
@@ -255,17 +256,28 @@ export function countWordsInString(text) {
 async function generateArticleOutline(env, brief, topic, articleType, targetWords = null) {
   const topicTitle = (topic && topic.tema) ? topic.tema.trim() : "";
   const effectiveWords = targetWords || Math.round((articleType.minWords + articleType.maxWords) / 2);
+
+  // Detección determinista de promesas de listas en el título del tema (Mejora Editorial 1)
+  const listPromise = detectListPromise(topicTitle);
+  const hasListPromise = Boolean(listPromise && listPromise.hasListPromise && listPromise.count >= 2);
+
   let targetSections = 2; // Por defecto 2 secciones + intro para Tipo 2 (~700-900w)
-  if (effectiveWords >= 2200) targetSections = 5;
+  if (hasListPromise) {
+    targetSections = listPromise.count;
+  } else if (effectiveWords >= 2200) targetSections = 5;
   else if (effectiveWords >= 1600) targetSections = 4;
   else if (effectiveWords >= 1100) targetSections = 3;
 
-  const outlinePrompt = `Diseña el esquema estructurado en ${targetSections} secciones para una guía técnica/artículo extenso sobre:
+  const listDirective = hasListPromise
+    ? `IMPORTANTE: El título promete exactamente ${targetSections} ${listPromise.noun}. El esquema DEBE contener EXACTAMENTE ${targetSections} secciones numeradas correlativamente (1. ... hasta ${targetSections}. ...).`
+    : `Diseña el esquema estructurado en ${targetSections} secciones para una guía técnica/artículo extenso sobre:`;
+
+  const outlinePrompt = `${listDirective}
 Tema: "${topicTitle}"
 Tesis: "${brief.uniqueThesis || topicTitle}"
 Perfil: ${articleType.name} (Extensión total esperada: ${articleType.minWords}-${articleType.maxWords} palabras, objetivo específico: ${effectiveWords} palabras).
 
-Devuelve ÚNICAMENTE un JSON con este formato (máx 350 tokens):
+Devuelve ÚNICAMENTE un JSON con este formato (máx 450 tokens):
 {
   "sections": [
     { "heading": "Subtítulo de la sección 1", "goal": "Qué dilema práctico o paso aborda" },
@@ -303,6 +315,18 @@ Sin bloques de código markdown ni explicaciones adicionales.`;
   }
 
   // Fallback determinista seguro
+  if (hasListPromise) {
+    const nounSingular = (listPromise.noun || "elemento").replace(/s$/, "");
+    const generatedSections = [];
+    for (let i = 1; i <= targetSections; i++) {
+      generatedSections.push({
+        heading: `${i}. ${nounSingular.charAt(0).toUpperCase() + nounSingular.slice(1)} ${i}: Protocolo operativo`,
+        goal: `Desarrollo práctico del ítem ${i} con fricciones cotidianas y aplicación empresarial`
+      });
+    }
+    return generatedSections;
+  }
+
   if (targetSections === 2) {
     return [
       { heading: "Fricción operativa real y pérdidas cotidianas", goal: "Explicar el problema con casos reales de negocios" },
@@ -385,6 +409,7 @@ REGLAS ESTRICTAS:
 - Comienza con el subtítulo ## ${sec.heading} seguido obligatoriamente de dos saltos de línea (una línea en blanco) antes de empezar a redactar el párrafo.
 - Mantén el subtítulo corto y conciso; jamás fusionar el texto del párrafo con el encabezado.
 - Desarrolla ejemplos prácticos sectoriales (talleres, clínicas dentales, asesorías, comercio local).
+- Rigor epistémico: Diferencia claramente hechos documentados, opiniones del sector y recomendaciones prácticas sin inventar estadísticas ni citas ficticias.
 - ${isLast ? "Esta es la sección final: incluye conclusiones claras y llamada a la acción hacia un diagnóstico estratégico con Canedo Studio." : "No concluyas todavía el artículo, continúa profundizando."}
 - NO repitas el título principal del artículo ni frases del texto previo. Salida en Markdown limpio.`;
 
