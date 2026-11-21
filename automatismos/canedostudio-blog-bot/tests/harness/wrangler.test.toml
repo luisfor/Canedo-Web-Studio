@@ -1,0 +1,14 @@
+# Configuración aislada de pruebas locales de Cloudflare Workers AI
+# Este archivo es EXCLUSIVAMENTE para pruebas locales con wrangler dev en 127.0.0.1.
+# NUNCA desplegar ni utilizar en producción.
+
+name = "canedo-visual-harness"
+main = "worker.js"
+compatibility_date = "2024-09-23"
+
+# Binding exclusivo de IA para proxy remoto nativo de Workers AI
+[ai]
+binding = "AI"
+
+# Sin D1, sin KV, sin R2, sin colas, sin cron, sin rutas públicas
+

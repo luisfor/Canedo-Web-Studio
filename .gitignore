@@ -41,3 +41,5 @@ prototype_satori.png
 # Respaldos temporales de despliegues y migraciones
 backup_pre_*/
 automatismos/**/backup_pre_*/
+automatismos/**/backups/
+automatismos/canedostudio-blog-bot/tests/output/
