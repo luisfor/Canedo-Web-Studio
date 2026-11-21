@@ -200,6 +200,8 @@ async function generateMonolithicMarkdown(env, brief, topic, articleType, attemp
   const topicTitle = (topic && topic.tema) ? topic.tema.trim() : (brief && brief.uniqueThesis ? brief.uniqueThesis.trim() : "");
   const topicAngle = (topic && topic.angulo) ? topic.angulo.trim() : "";
 
+  const enhancedInstructions = buildEnhancedEditorialInstructions({ title: topicTitle, angle: topicAngle, sourceOrigin: "tema editorial curado" });
+
   let prompt = `Escribe el artículo completo en formato Markdown estándar para el blog "Insights".
 PERFIL DE ARTÍCULO: ${articleType.name}
 EXTENSIÓN ESTRICTA: Entre ${articleType.minWords} y ${articleType.maxWords} palabras reales en el cuerpo editorial.
@@ -210,6 +212,8 @@ TEMA Y ENFOQUE OBLIGATORIO:
 
 Brief Editorial Estratégico:
 ${JSON.stringify(brief, null, 2)}
+
+${enhancedInstructions}
 
 INSTRUCCIONES CLAVE DE DESARROLLO:
 1. Longitud obligatoria: OBLIGATORIO mantenerse entre ${articleType.minWords} y ${articleType.maxWords} palabras reales. Desarrolla los argumentos con rigor.
@@ -363,11 +367,16 @@ async function generateSectionalMarkdown(env, brief, topic, articleType, attempt
   let fullMarkdown = "";
 
   // 2. Generar Introducción y dilema inicial
+  const enhancedInstructions = buildEnhancedEditorialInstructions({ title: topicTitle, angle: topicAngle, sourceOrigin: "tema editorial curado" });
+
   const introPrompt = `Escribe la introducción en Markdown para el artículo:
 Tema: "${topicTitle}"
 Ángulo: "${topicAngle}"
 Tesis: "${brief.uniqueThesis || topicTitle}"
-Objetivo de esta parte introductoria: Plantear el problema comercial de fondo con rigor y concisión. Extensión objetivo: aproximadamente ${wordsPerSection} palabras (máximo ${Math.round(wordsPerSection * 1.25)} palabras) en 2 párrafos sólidos.
+Objetivo de esta parte introductoria: Plantear el problema comercial de fondo con rigor y concisión. Extensión objetivo: aproximadamente ${wordsPerSection} palabras (máximo ${Math.round(wordsPerSection * 1.25)} palabras) en 2 párrafos sólidos siguiendo la técnica BLUF (Bottom Line Up Front).
+
+${enhancedInstructions}
+
 Sin subtítulos, solo los párrafos iniciales de apertura en Markdown. Cero clichés.`;
 
   const introRes = await env.AI.run(MODEL_TEXT, {
