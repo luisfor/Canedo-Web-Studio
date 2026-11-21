@@ -129,14 +129,15 @@ export function validateEnrichedArticleData(data, articleContent = []) {
   }
   result.cleaned.customMetaDesc = sanitizeMetaDescription(rawMeta, 155);
 
-  // 4. faqs (máximo 2 preguntas útiles y no vacías)
+  // 4. faqs (máximo 2 preguntas útiles, sustantivas y no vacías)
   if (Array.isArray(data.faqs)) {
     const validFaqs = [];
     for (const f of data.faqs) {
       if (f && typeof f.q === "string" && typeof f.a === "string") {
         const q = f.q.trim();
         const a = f.a.trim();
-        if (q.length >= 10 && q.length <= 150 && a.length >= 20 && a.length <= 400) {
+        // Exigir al menos 12 caracteres en la pregunta y 35 en la respuesta para evitar respuestas circulares
+        if (q.length >= 12 && q.length <= 150 && a.length >= 35 && a.length <= 400) {
           validFaqs.push({ q, a });
           if (validFaqs.length >= 2) break;
         }

@@ -560,19 +560,19 @@ export async function extractMetadataForArticle(env, { brief, topic, content, ra
 
   // Pedir solo un JSON minúsculo con metadatos de alto valor (<250 tokens)
   const metaPrompt = `A partir del siguiente artículo editorial:
-Título sugerido: "${topicTitle}"
+Título sugerido de referencia: "${topicTitle}"
 Primer párrafo: "${firstParagraph.slice(0, 300)}"
 
 Genera un JSON ultra-conciso con los metadatos SEO:
 {
-  "title": "Título llamativo y profesional fiel a la promesa (máx 90 caracteres)",
+  "title": "Conserva la intención y gancho del título de referencia sin resumirlo en palabras sueltas genéricas (máx 90 caracteres)",
   "tag": "UNA de: Estrategia, Chatbots, Reseñas, Automatización, Diseño web",
   "excerpt": "Resumen breve para listado de blog (máx 150 caracteres)",
   "executiveSummary": "Resumen ejecutivo directo tipo BLUF de 35 a 60 palabras",
   "targetService": "UNA de: diseno_web, chatbots_ia, automatizacion_resenas, blog_automatizado, contacto_estrategico",
   "customMetaDesc": "Meta descripción atractiva para Google (máx 155 caracteres)",
   "faqs": [
-    { "q": "Pregunta relevante", "a": "Respuesta práctica concisa" }
+    { "q": "Pregunta de fondo que se haría un empresario sobre el tema", "a": "Respuesta práctica y accionable de 2 a 3 frases explicando el cómo operativo (sin definiciones circulares o vacías)" }
   ]
 }
 SOLO el JSON, sin markdown ni explicaciones adicionales.`;
@@ -598,10 +598,15 @@ SOLO el JSON, sin markdown ni explicaciones adicionales.`;
     console.warn("[METADATA AI WARN] No se pudo generar metadatos vía IA ligera, aplicando derivación determinista:", err.message);
   }
 
-  // Fallback y validación determinista segura
-  const title = (metaData && typeof metaData.title === "string" && metaData.title.trim().length >= 10)
-    ? metaData.title.trim()
-    : topicTitle || "Artículo de Innovación Empresarial";
+  // 1. Prioridad al título curado del catálogo para evitar pérdida de intención/especificidad
+  let title = topicTitle || "Artículo de Innovación Empresarial";
+  if (topic && topic.tema && topic.tema.trim().length >= 10) {
+    // Si viene de tema curado o explícito, se conserva fielmente
+    title = topic.tema.trim();
+  } else if (metaData && typeof metaData.title === "string" && metaData.title.trim().length >= 15) {
+    // Para temas generados o sin título curado, se usa el de IA si es sustantivo
+    title = metaData.title.trim();
+  }
 
   const tags = new Set(["Estrategia", "Chatbots", "Reseñas", "Automatización", "Diseño web"]);
   const tag = (metaData && tags.has(metaData.tag))

@@ -497,7 +497,8 @@ ESTÁNDAR EDITORIAL INTELIGENTE DE CANEDO STUDIO:
 
 2. ESTRUCTURA SEO, AEO Y GEO (Answer Engine Optimization):
    - Inicia con una respuesta directa y orientada a valor (BLUF: Bottom Line Up Front) en los dos primeros párrafos, sin encabezado repetido.
-   - Emplea párrafos ágiles de 2 a 4 oraciones.
+   - Emplea párrafos ágiles y legibles (máximo 60 a 75 palabras por párrafo). Evita bloques masivos de texto corrido.
+   - Alterna ideas con subtítulos descriptivos y listas breves cuando faciliten la comprensión del lector.
    - Incluye ejemplos prácticos aplicables a pymes y empresas en crecimiento (talleres, clínicas, firmas de servicios, comercio).
 
 3. INTEGRIDAD Y FORMATO:

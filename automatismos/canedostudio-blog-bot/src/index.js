@@ -4,6 +4,7 @@ import { generateRobustArticle, parseMarkdownToBlocks } from "./editorial_pipeli
 import { resolveArticleType, getBlogBotEligibleTypes } from "./article_types.js";
 import { checkDuplicateSentences } from "./duplicate_checker.js";
 import { detectListPromise, analyzeSectionEnumeration } from "./editorial_standard.js";
+import { generateSemanticCover, buildDeterministicScene } from "./semantic_cover.js";
 /* Robot redactor del blog de Canedo Studio.
    7:00 AM y 5:00 PM todos los días (hora Colombia): escribe un artículo
    con IA, le genera portada con IA, lo guarda en KV y avisa por email.
@@ -604,34 +605,35 @@ function createValidFallbackCover() {
 }
 
 async function generateCover(topic) {
-  // Detección contextual sectorial para afinar el prompt fotográfico
-  const briefContext = (topic.brief && (topic.brief.audience || topic.brief.businessProblem || "")) || "";
-  const fullContext = `${topic.img || ""} ${topic.tema || ""} ${topic.angulo || ""} ${briefContext} ${topic.tag || ""}`.toLowerCase();
-  let sceneSubject = topic.img || topic.tema;
-
-  if (/dent|odont|clinic|diente|salud bucal/i.test(fullContext)) {
-    sceneSubject = "Modern high-end dental clinic office, advanced digital dental technology equipment, clean minimalist clinical environment, professional healthcare setting, luxury aesthetic";
-  } else if (/taller|mec[aá]nic|automotri|veh[ií]cul/i.test(fullContext)) {
-    sceneSubject = "Precision automotive workshop, modern diagnostic tools and engineering equipment, high-tech garage, organized professional mechanical workspace";
-  } else if (/asesor|contab|fiscal|legal|abogad/i.test(fullContext)) {
-    sceneSubject = "Contemporary executive consultancy office, modern architecture, architectural glass desk, subtle business analytics displays, sophisticated corporate atmosphere";
-  } else if (/inmobiliar|propiedad|real estate/i.test(fullContext)) {
-    sceneSubject = "Luxury architectural interior, modern high-end real estate property, ambient architectural lighting, panoramic glass windows";
-  } else if (/comercio|tienda|retail|boutique/i.test(fullContext)) {
-    sceneSubject = "Boutique high-end commercial store, elegant retail environment, warm atmospheric lighting, refined interior design";
-  } else if (/restauran|gastronom|hosteler|hotel|caf[eé]/i.test(fullContext)) {
-    sceneSubject = "High-end luxury restaurant and hospitality interior, elegant dining room, atmospheric warm lighting, architectural hospitality design";
-  } else if (/salud|m[eé]dic|hospital|terap|fisioterap/i.test(fullContext)) {
-    sceneSubject = "State-of-the-art medical consulting facility, advanced healthcare technology, serene professional clinical setting, architectural lighting";
-  } else if (/software|saas|tecnolog|startup/i.test(fullContext)) {
-    sceneSubject = "Cutting-edge tech innovation studio, high-tech workstations, multi-display software development setup, moody blue cinematic lighting";
+  // Integración con el generador semántico maestro (semantic_cover.js)
+  // Escena contextual de negocio con iluminación natural y realismo fotográfico
+  try {
+    const title = topic.tema || topic.title || "Innovación para Pymes";
+    const summary = topic.angulo || (topic.brief && (topic.brief.audience || topic.brief.businessProblem)) || "";
+    const coverRes = await generateSemanticCover({
+      ai: this.AI,
+      title,
+      summary,
+      tag: topic.tag,
+      fallbackCoverFn: createValidFallbackCover
+    });
+    if (coverRes && coverRes.bytes && coverRes.bytes.byteLength >= 1000) {
+      return coverRes.bytes;
+    }
+  } catch (err) {
+    console.warn(`[SEMANTIC COVER WARN] Falló generador semántico maestro: ${err.message}. Intentando fallback directo.`);
   }
 
+  // Fallback directo a Flux si semantic_cover no respondió
+  const briefContext = (topic.brief && (topic.brief.audience || topic.brief.businessProblem || "")) || "";
+  const fullContext = `${topic.img || ""} ${topic.tema || ""} ${topic.angulo || ""} ${briefContext} ${topic.tag || ""}`.toLowerCase();
+  const sceneSubject = buildDeterministicScene(fullContext, topic.tema || "business office");
+
   const prompt =
-    "Premium editorial photograph for a business blog, dark luxurious style, deep black background, " +
-    "subtle electric blue and warm gold accent lighting, cinematic, high detail, rich composition with " +
-    "multiple visual elements and clear depth, atmospheric light, photographic realism. " +
-    "AVOID: minimalism, abstract shapes, a single floating object on emptiness, text, words, letters, generic industrial machinery. " +
+    "High-end editorial photograph for a prestigious business publication. Authentic professional environment, " +
+    "natural architectural lighting and realistic atmosphere, high-detail medium format camera aesthetic, " +
+    "cinematic depth of field, clear foreground-to-background composition. " +
+    "AVOID: darkness, lightning strikes, abstract floating spheres, neon lasers, cartoon, 3d render, CGI, text, letters, watermarks, exaggerated fake smiles. " +
     "Scene: " + sceneSubject;
 
   let bytes = null;
@@ -650,7 +652,7 @@ async function generateCover(topic) {
       bytes = arr.buffer;
     }
   } catch (imgErr) {
-    console.warn(`[IMAGE AI WARN] Falló llamada a Flux Schnell: ${imgErr.message}. Aplicando portada de contingencia válida.`);
+    console.warn(`[IMAGE AI WARN] Falló llamada directa a Flux Schnell: ${imgErr.message}. Aplicando portada de contingencia válida.`);
   }
 
   // Si la IA falla, devuelve timeout o bytes truncados (<1000b), aplicar portada de contingencia válida
