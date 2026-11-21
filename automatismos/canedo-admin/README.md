@@ -108,7 +108,13 @@ El panel editorial de Canedo Admin utiliza la infraestructura de Cloudflare Work
 
 ## Quality Gate Determinista y Política de Aprobación Humana
 
-- **Auditoría Local:** Las evaluaciones de calidad (`auditYouTubeArticle` y `auditWebArticle`) se ejecutan con lógica determinista local sin consumir llamadas de IA ni generar costos adicionales.
+- **Estándar Editorial Inteligente (Fase V1-AF):**
+  - Validación semántica de promesas en títulos: si el título promete $N$ elementos (estrategias, pasos, claves, errores, tendencias, lecciones), el validador audita que existan exactamente $N$ encabezados H2 desarrollados. Excluye años (ej. 2027), versiones de software, monedas o porcentajes.
+  - Diferenciación estricta de severidad:
+    - **Errores bloqueantes (`passed: false`, penalización severa):** HTML peligroso no autorizado (`<script>`, `<iframe>`), recuento de palabras insuficiente (< 400), menos de 2 secciones H2, números de sección duplicados, o incumplimiento de listas prometidas.
+    - **Advertencias informativas (`warnings` advisory, no bloquean la aprobación si no hay errores):** Extensión elevada, omisión de mención a Canedo Studio, o numeración no secuencial.
+  - Rigor epistémico inyectado en el prompt de Workers AI: diferenciación estricta entre hechos, predicciones, opiniones y recomendaciones, además de exigencia de ejemplos sectoriales prácticos (clínicas, talleres, consultorías, comercio local).
+- **Auditoría Local:** Las evaluaciones de calidad (`auditArticleWithEditorialStandard`, `auditYouTubeArticle` y `auditWebArticle`) se ejecutan con lógica determinista local sin consumir llamadas de IA ni generar costos adicionales.
 - **Sin Publicación Automática:** Toda generación produce exclusivamente un borrador (`status: "draft"`) en la base de datos D1 (`blog_manual_drafts`). La publicación en el sitio web exige la acción humana explícita del administrador mediante el botón `Aprobar Borrador` en Telegram.
 
 ## Pruebas Automatizadas
@@ -119,9 +125,16 @@ Para ejecutar las pruebas del módulo de forma offline:
 node --test tests/*.test.mjs
 ```
 
-Para verificar exclusivamente el pipeline web:
+Para verificar exclusivamente el estándar editorial inteligente:
 
 ```bash
+node --test tests/fase_v1af_editorial_standard.test.mjs
+```
+
+Para verificar los pipelines de YouTube y Enlace Web:
+
+```bash
+node --test tests/fase_d3_editorial_pipeline.test.mjs
 node --test tests/fase_v1x_web_pipeline.test.mjs
 node --test tests/fase_e1_web_extractor.test.mjs
 ```
